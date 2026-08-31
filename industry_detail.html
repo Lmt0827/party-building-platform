@@ -1,0 +1,1215 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>产业详情 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ============================================
+       页面特有样式
+       ============================================ */
+    
+    /* 返回链接 */
+    .page-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: color 0.2s;
+    }
+    .page-back:hover {
+      color: var(--color-red-deep);
+    }
+    
+    /* 产业信息头部 */
+    .industry-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .industry-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-red-deep), var(--color-gold-primary), var(--color-red-deep));
+    }
+    
+    .industry-header-content {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 30px;
+    }
+    
+    .industry-header-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .industry-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--color-gold-primary), #e8a929);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 30px;
+    }
+    
+    .industry-info-main {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .industry-name-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .industry-name {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .industry-level-tag {
+      display: inline-block;
+      padding: 3px 12px;
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      border-radius: 4px;
+      color: #fff;
+    }
+    
+    .industry-level-tag.level-1 {
+      background: linear-gradient(135deg, var(--color-gold-primary), var(--color-gold-light));
+    }
+    
+    .industry-level-tag.level-2 {
+      background: linear-gradient(135deg, var(--color-blue-medium), var(--color-blue-light));
+    }
+    
+    .industry-level-tag.level-3 {
+      background: linear-gradient(135deg, #6b7280, #9ca3af);
+    }
+    
+    .industry-status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 12px;
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      border-radius: 4px;
+    }
+    
+    .industry-status-tag.status-active {
+      background: rgba(46, 160, 67, 0.12);
+      color: #2ea043;
+    }
+    
+    .industry-status-tag.status-inactive {
+      background: rgba(231, 76, 60, 0.12);
+      color: #e74c3c;
+    }
+    
+    .industry-status-tag .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    
+    .industry-status-tag.status-active .status-dot {
+      background: #2ea043;
+    }
+    
+    .industry-status-tag.status-inactive .status-dot {
+      background: #e74c3c;
+    }
+    
+    .industry-code {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      margin-bottom: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    
+    .industry-code strong {
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-family: inherit;
+    }
+    
+    .industry-parent {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+    
+    .industry-parent .parent-name {
+      color: var(--color-blue-bright);
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    .industry-parent .parent-name:hover {
+      text-decoration: underline;
+    }
+    
+    .industry-header-actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    
+    /* 核心指标卡片 - 对应列表中的数值字段 */
+    .core-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .core-metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .core-metric-card::after {
+      content: '';
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      opacity: 0.1;
+    }
+    
+    .core-metric-card.metric-enterprise::after {
+      background: var(--color-red-primary);
+    }
+    
+    .core-metric-card.metric-output::after {
+      background: var(--color-gold-primary);
+    }
+    
+    .core-metric-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    
+    .core-metric-card.metric-enterprise .core-metric-icon {
+      background: linear-gradient(135deg, rgba(196, 30, 58, 0.15), rgba(232, 56, 79, 0.15));
+      color: var(--color-red-deep);
+    }
+    
+    .core-metric-card.metric-output .core-metric-icon {
+      background: linear-gradient(135deg, rgba(212, 160, 23, 0.15), rgba(232, 184, 41, 0.15));
+      color: var(--color-gold-primary);
+    }
+    
+    .core-metric-content {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .core-metric-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+    
+    .core-metric-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'DIN', 'Arial', sans-serif;
+      line-height: 1.2;
+    }
+    
+    .core-metric-value .unit {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      margin-left: 4px;
+    }
+    
+    .core-metric-trend {
+      font-size: var(--font-size-xs);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .core-metric-trend.up {
+      color: #2ea043;
+    }
+    
+    .core-metric-trend.down {
+      color: var(--color-red-deep);
+    }
+    
+    /* 基本信息卡片 - 完整展示列表7个字段 */
+    .detail-section {
+      margin-bottom: 20px;
+    }
+    
+    .info-field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+    }
+    
+    .info-field-item {
+      display: flex;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .info-field-item:nth-child(odd) {
+      border-right: 1px solid var(--border-light);
+    }
+    
+    .info-field-item:last-child,
+    .info-field-item:nth-last-child(2) {
+      border-bottom: none;
+    }
+    
+    .info-field-label {
+      width: 100px;
+      flex-shrink: 0;
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      line-height: 24px;
+    }
+    
+    .info-field-value {
+      flex: 1;
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+      font-weight: 500;
+      line-height: 24px;
+    }
+    
+    .info-field-value .tag-inline {
+      display: inline-block;
+      padding: 2px 10px;
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      border-radius: 4px;
+      color: #fff;
+    }
+    
+    .info-field-value .tag-gold {
+      background: linear-gradient(135deg, var(--color-gold-primary), var(--color-gold-light));
+    }
+    
+    .info-field-value .tag-blue {
+      background: linear-gradient(135deg, var(--color-blue-medium), var(--color-blue-light));
+    }
+    
+    .info-field-value .tag-gray {
+      background: linear-gradient(135deg, #6b7280, #9ca3af);
+    }
+    
+    .info-field-value .status-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .info-field-value .status-text .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    
+    .info-field-value .status-text.success .status-dot {
+      background: #2ea043;
+    }
+    
+    .info-field-value .status-text.warning .status-dot {
+      background: #f39c12;
+    }
+    
+    .info-field-value .highlight-num {
+      color: var(--color-red-deep);
+      font-weight: 600;
+    }
+    
+    /* 子产业列表 */
+    .sub-industry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .sub-industry-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--bg-gray-light);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    
+    .sub-industry-item:hover {
+      background: var(--bg-hover);
+      transform: translateX(4px);
+    }
+    
+    .sub-industry-name {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: var(--font-size-sm);
+    }
+    
+    .sub-industry-meta {
+      display: flex;
+      gap: 16px;
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+    
+    .sub-industry-meta span strong {
+      color: var(--color-gold-primary);
+      font-weight: 600;
+    }
+    
+    /* 企业列表精简 */
+    .mini-enterprise-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .mini-enterprise-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    
+    .mini-enterprise-item:hover {
+      background: var(--bg-gray-light);
+    }
+    
+    .mini-enterprise-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--color-blue-medium), var(--color-blue-deep));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-gold-primary);
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    
+    .mini-enterprise-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .mini-enterprise-name {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .mini-enterprise-type {
+      font-size: var(--font-size-xs);
+      color: var(--text-tertiary);
+    }
+    
+    .mini-enterprise-status {
+      font-size: var(--font-size-xs);
+      color: #2ea043;
+      flex-shrink: 0;
+    }
+    
+    /* 操作记录 */
+    .operation-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    
+    .operation-item {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .operation-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    
+    .operation-dot.red { background: var(--color-red-deep); }
+    .operation-dot.gold { background: var(--color-gold-primary); }
+    .operation-dot.blue { background: var(--color-blue-medium); }
+    
+    .operation-content {
+      flex: 1;
+    }
+    
+    .operation-title {
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    
+    .operation-meta {
+      font-size: var(--font-size-xs);
+      color: var(--text-tertiary);
+    }
+
+    /* 产值数据管理 */
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* 产值表格样式 */
+    .output-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: var(--font-size-sm);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      overflow: hidden;
+    }
+    .output-table thead th {
+      background: var(--bg-gray-light);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 14px 20px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .output-table thead th:last-child {
+      border-right: none;
+    }
+    .output-table tbody td {
+      padding: 16px 20px;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+    .output-table tbody td:last-child {
+      border-right: none;
+    }
+    .output-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .output-table tbody tr:hover td {
+      background: rgba(196, 30, 58, 0.03);
+    }
+
+    .table-link {
+      color: var(--color-red-deep);
+      cursor: pointer;
+      margin-right: 12px;
+      font-size: var(--font-size-sm);
+    }
+    .table-link:hover {
+      text-decoration: underline;
+    }
+    .table-link-danger {
+      color: var(--color-error);
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li>
+            <li><a href="org_committee.html">工委管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html" class="active">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="#">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">产业基础</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="industry_management.html" style="color: var(--text-secondary);">产业数据管理</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active" id="breadcrumbName">高端装备制造</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+        <!-- 返回链接 -->
+        <div class="page-back" onclick="location.href='industry_management.html'">
+          <span>←</span>
+          <span>返回产业列表</span>
+        </div>
+
+        <!-- 产业头部信息 - 展示名称、层级、状态、编码、上级产业 -->
+        <div class="industry-header">
+          <div class="industry-header-content">
+            <div class="industry-header-left">
+              <div class="industry-icon">🏭</div>
+              <div class="industry-info-main">
+                <div class="industry-name-row">
+                  <span class="industry-name" id="industryName">高端装备制造</span>
+                  <span class="industry-level-tag level-1" id="industryLevelTag">一级产业</span>
+                  <span class="industry-status-tag status-active" id="industryStatusTag">
+                    <span class="status-dot"></span>
+                    <span id="industryStatusText">启用</span>
+                  </span>
+                </div>
+                <div class="industry-code">产业编码：<strong id="industryCode">IND-001</strong></div>
+                <div class="industry-parent" id="industryParentRow">
+                  上级产业：<span class="parent-name" id="industryParent">—</span>
+                </div>
+              </div>
+            </div>
+            <div class="industry-header-actions">
+              <button class="btn btn-outline">导出数据</button>
+              <button class="btn btn-primary">编辑信息</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 核心指标 - 关联企业数、产业产值（列表中的数值字段） -->
+        <div class="core-metrics">
+          <div class="core-metric-card metric-enterprise">
+            <div class="core-metric-icon">🏢</div>
+            <div class="core-metric-content">
+              <div class="core-metric-label">关联企业数</div>
+              <div class="core-metric-value" id="metricEnterprise">328<span class="unit">家</span></div>
+              <div class="core-metric-trend up">
+                <span>▲</span>
+                <span>较上月 +12.5%</span>
+              </div>
+            </div>
+          </div>
+          <div class="core-metric-card metric-output">
+            <div class="core-metric-icon">💰</div>
+            <div class="core-metric-content">
+              <div class="core-metric-label">产业产值</div>
+              <div class="core-metric-value" id="metricOutput">528.6<span class="unit">亿元</span></div>
+              <div class="core-metric-trend up">
+                <span>▲</span>
+                <span>较上月 +8.3%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 基本信息 - 完整展示列表7个字段 -->
+        <div class="card detail-section">
+          <div class="card-header">
+            <div class="card-title">基本信息</div>
+            <span class="card-subtitle" style="font-size: var(--font-size-xs); color: var(--text-tertiary); margin-left: 8px;">与产业列表字段一致</span>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="info-field-grid">
+              <div class="info-field-item">
+                <span class="info-field-label">产业编码</span>
+                <span class="info-field-value" id="fieldCode">IND-001</span>
+              </div>
+              <div class="info-field-item">
+                <span class="info-field-label">产业名称</span>
+                <span class="info-field-value" id="fieldName">高端装备制造</span>
+              </div>
+              <div class="info-field-item">
+                <span class="info-field-label">产业层级</span>
+                <span class="info-field-value">
+                  <span class="tag-inline tag-gold" id="fieldLevel">一级</span>
+                </span>
+              </div>
+              <div class="info-field-item">
+                <span class="info-field-label">上级产业</span>
+                <span class="info-field-value" id="fieldParent">—</span>
+              </div>
+              <div class="info-field-item">
+                <span class="info-field-label">关联企业数</span>
+                <span class="info-field-value"><span class="highlight-num" id="fieldEnterprise">328</span> 家</span>
+              </div>
+              <div class="info-field-item">
+                <span class="info-field-label">产业产值</span>
+                <span class="info-field-value"><span class="highlight-num" id="fieldOutput">528.6</span> 亿元</span>
+              </div>
+              <div class="info-field-item">
+                <span class="info-field-label">状态</span>
+                <span class="info-field-value">
+                  <span class="status-text success" id="fieldStatus">
+                    <span class="status-dot"></span>
+                    <span>启用</span>
+                  </span>
+                </span>
+              </div>
+              <div class="info-field-item">
+                <span class="info-field-label">创建时间</span>
+                <span class="info-field-value">2018-06-15</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 产值数据管理 -->
+        <div class="card detail-section">
+          <div class="card-header">
+            <div class="card-title">产值数据管理</div>
+            <div class="header-actions">
+              <button class="btn btn-primary btn-sm" onclick="openOutputModal()">
+                <span class="btn-icon">+</span>新增产值
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- 年度产值明细表 -->
+            <table class="output-table">
+              <thead>
+                <tr>
+                  <th>年份</th>
+                  <th>产值（亿元）</th>
+                  <th>更新时间</th>
+                </tr>
+              </thead>
+              <tbody id="outputTableBody">
+                <tr>
+                  <td><strong>2024年</strong></td>
+                  <td>528.6</td>
+                  <td>2025-01-10 09:30</td>
+                </tr>
+                <tr>
+                  <td>2023年</td>
+                  <td>489.2</td>
+                  <td>2024-01-15 10:20</td>
+                </tr>
+                <tr>
+                  <td>2022年</td>
+                  <td>418.5</td>
+                  <td>2023-01-12 14:00</td>
+                </tr>
+                <tr>
+                  <td>2021年</td>
+                  <td>342.8</td>
+                  <td>2022-01-18 11:45</td>
+                </tr>
+                <tr>
+                  <td>2020年</td>
+                  <td>286.3</td>
+                  <td>2021-01-20 16:30</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 新增产值弹窗 -->
+        <div class="modal-mask" id="outputModal" onclick="closeOutputModal(event)">
+          <div class="modal-dialog" onclick="event.stopPropagation()">
+            <div class="modal-header">
+              <h3 class="modal-title">新增产值数据</h3>
+              <button type="button" class="modal-close" onclick="closeOutputModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label class="form-label">选择年份 <span class="required">*</span></label>
+                <select class="form-select" id="outputYear">
+                  <option value="">请选择年份</option>
+                  <option value="2025">2025年</option>
+                  <option value="2024">2024年</option>
+                  <option value="2023">2023年</option>
+                  <option value="2022">2022年</option>
+                  <option value="2021">2021年</option>
+                  <option value="2020">2020年</option>
+                  <option value="2019">2019年</option>
+                  <option value="2018">2018年</option>
+                  <option value="2017">2017年</option>
+                  <option value="2016">2016年</option>
+                  <option value="2015">2015年</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">产值（亿元） <span class="required">*</span></label>
+                <input type="number" class="form-input" id="outputValue" placeholder="请输入产值数值" step="0.1" min="0">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" onclick="event.stopPropagation();closeOutputModal()">取消</button>
+              <button type="button" class="btn btn-primary" onclick="event.stopPropagation();submitOutput()">提交</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 下属产业 -->
+        <div class="card detail-section">
+          <div class="card-header">
+            <div class="card-title">下属产业</div>
+            <span class="card-more">共 2 个</span>
+          </div>
+          <div class="card-body">
+            <div class="sub-industry-list" id="subIndustryList">
+              <div class="sub-industry-item">
+                <span class="sub-industry-name">智能制造装备</span>
+                <div class="sub-industry-meta">
+                  <span><strong>156</strong> 家企业</span>
+                  <span><strong>245.3</strong> 亿产值</span>
+                </div>
+              </div>
+              <div class="sub-industry-item">
+                <span class="sub-industry-name">航空航天装备</span>
+                <div class="sub-industry-meta">
+                  <span><strong>89</strong> 家企业</span>
+                  <span><strong>89.2</strong> 亿产值</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 关联企业 -->
+        <div class="card detail-section">
+          <div class="card-header">
+            <div class="card-title">关联企业</div>
+            <span class="card-more">查看全部 →</span>
+          </div>
+          <div class="card-body">
+            <div class="mini-enterprise-list">
+              <div class="mini-enterprise-item">
+                <div class="mini-enterprise-logo">华</div>
+                <div class="mini-enterprise-info">
+                  <div class="mini-enterprise-name">华创智能装备有限公司</div>
+                  <div class="mini-enterprise-type">高新技术企业 · 专精特新</div>
+                </div>
+                <div class="mini-enterprise-status">● 正常</div>
+              </div>
+              <div class="mini-enterprise-item">
+                <div class="mini-enterprise-logo" style="background: linear-gradient(135deg, #c41e3a, #e8384f);">中</div>
+                <div class="mini-enterprise-info">
+                  <div class="mini-enterprise-name">中科新能源装备集团</div>
+                  <div class="mini-enterprise-type">国有企业 · 龙头企业</div>
+                </div>
+                <div class="mini-enterprise-status">● 正常</div>
+              </div>
+              <div class="mini-enterprise-item">
+                <div class="mini-enterprise-logo" style="background: linear-gradient(135deg, #2ea043, #3cb371);">绿</div>
+                <div class="mini-enterprise-info">
+                  <div class="mini-enterprise-name">绿源环保科技股份有限公司</div>
+                  <div class="mini-enterprise-type">民营企业 · 上市企业</div>
+                </div>
+                <div class="mini-enterprise-status">● 正常</div>
+              </div>
+              <div class="mini-enterprise-item">
+                <div class="mini-enterprise-logo" style="background: linear-gradient(135deg, #d4a017, #e8b829);">精</div>
+                <div class="mini-enterprise-info">
+                  <div class="mini-enterprise-name">精工智造科技有限公司</div>
+                  <div class="mini-enterprise-type">专精特新 · 小巨人</div>
+                </div>
+                <div class="mini-enterprise-status">● 正常</div>
+              </div>
+              <div class="mini-enterprise-item">
+                <div class="mini-enterprise-logo" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">智</div>
+                <div class="mini-enterprise-info">
+                  <div class="mini-enterprise-name">智联数控设备有限公司</div>
+                  <div class="mini-enterprise-type">高新技术企业</div>
+                </div>
+                <div class="mini-enterprise-status">● 正常</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // 模拟产业数据映射 - 对应列表中的数据
+    const industryDataMap = {
+      '高端装备制造': {
+        code: 'IND-001',
+        name: '高端装备制造',
+        level: 1,
+        levelText: '一级产业',
+        parent: '—',
+        enterprise: 328,
+        output: 528.6,
+        status: 'active',
+        statusText: '启用'
+      },
+      '智能制造装备': {
+        code: 'IND-001-01',
+        name: '智能制造装备',
+        level: 2,
+        levelText: '二级产业',
+        parent: '高端装备制造',
+        enterprise: 156,
+        output: 245.3,
+        status: 'active',
+        statusText: '启用'
+      },
+      '工业机器人': {
+        code: 'IND-001-01-01',
+        name: '工业机器人',
+        level: 3,
+        levelText: '三级产业',
+        parent: '智能制造装备',
+        enterprise: 68,
+        output: 168.7,
+        status: 'active',
+        statusText: '启用'
+      },
+      '高端数控机床': {
+        code: 'IND-001-01-02',
+        name: '高端数控机床',
+        level: 3,
+        levelText: '三级产业',
+        parent: '智能制造装备',
+        enterprise: 52,
+        output: 114.6,
+        status: 'active',
+        statusText: '启用'
+      },
+      '航空航天装备': {
+        code: 'IND-001-02',
+        name: '航空航天装备',
+        level: 2,
+        levelText: '二级产业',
+        parent: '高端装备制造',
+        enterprise: 89,
+        output: 89.2,
+        status: 'active',
+        statusText: '启用'
+      },
+      '新一代信息技术': {
+        code: 'IND-002',
+        name: '新一代信息技术',
+        level: 1,
+        levelText: '一级产业',
+        parent: '—',
+        enterprise: 412,
+        output: 386.2,
+        status: 'active',
+        statusText: '启用'
+      },
+      '新材料': {
+        code: 'IND-003',
+        name: '新材料',
+        level: 1,
+        levelText: '一级产业',
+        parent: '—',
+        enterprise: 186,
+        output: 412.8,
+        status: 'active',
+        statusText: '启用'
+      },
+      '生物医药': {
+        code: 'IND-004',
+        name: '生物医药',
+        level: 1,
+        levelText: '一级产业',
+        parent: '—',
+        enterprise: 156,
+        output: 295.4,
+        status: 'inactive',
+        statusText: '停用'
+      },
+      '新能源': {
+        code: 'IND-005',
+        name: '新能源',
+        level: 1,
+        levelText: '一级产业',
+        parent: '—',
+        enterprise: 98,
+        output: 178.3,
+        status: 'active',
+        statusText: '启用'
+      }
+    };
+
+    // 从URL参数获取产业名称并更新页面
+    const urlParams = new URLSearchParams(window.location.search);
+    const industryName = urlParams.get('industry');
+    
+    if (industryName && industryDataMap[industryName]) {
+      const data = industryDataMap[industryName];
+      
+      // 更新标题
+      document.title = data.name + ' - 产业详情 - 党建数字化平台';
+      
+      // 更新面包屑
+      document.getElementById('breadcrumbName').textContent = data.name;
+      
+      // 更新头部信息
+      document.getElementById('industryName').textContent = data.name;
+      
+      // 层级标签样式
+      const levelTag = document.getElementById('industryLevelTag');
+      levelTag.textContent = data.levelText;
+      levelTag.className = 'industry-level-tag level-' + data.level;
+      
+      // 状态标签
+      const statusTag = document.getElementById('industryStatusTag');
+      const statusTextEl = document.getElementById('industryStatusText');
+      statusTag.className = 'industry-status-tag status-' + data.status;
+      statusTextEl.textContent = data.statusText;
+      
+      // 编码
+      document.getElementById('industryCode').textContent = data.code;
+      
+      // 上级产业
+      document.getElementById('industryParent').textContent = data.parent;
+      
+      // 核心指标
+      document.getElementById('metricEnterprise').innerHTML = data.enterprise + '<span class="unit">家</span>';
+      document.getElementById('metricOutput').innerHTML = data.output + '<span class="unit">亿元</span>';
+      
+      // 基本信息字段
+      document.getElementById('fieldCode').textContent = data.code;
+      document.getElementById('fieldName').textContent = data.name;
+      
+      const fieldLevel = document.getElementById('fieldLevel');
+      fieldLevel.textContent = data.level === 1 ? '一级' : (data.level === 2 ? '二级' : '三级');
+      fieldLevel.className = 'tag-inline ' + (data.level === 1 ? 'tag-gold' : (data.level === 2 ? 'tag-blue' : 'tag-gray'));
+      
+      document.getElementById('fieldParent').textContent = data.parent;
+      document.getElementById('fieldEnterprise').textContent = data.enterprise;
+      document.getElementById('fieldOutput').textContent = data.output;
+      
+      const fieldStatus = document.getElementById('fieldStatus');
+      fieldStatus.className = 'status-text ' + (data.status === 'active' ? 'success' : 'warning');
+      fieldStatus.querySelector('span:last-child').textContent = data.statusText;
+    }
+
+    // 产值弹窗 - 打开
+    function openOutputModal() {
+      document.getElementById('outputModal').classList.add('show');
+      document.getElementById('outputYear').value = '';
+      document.getElementById('outputValue').value = '';
+    }
+
+    // 产值弹窗 - 关闭
+    function closeOutputModal(event) {
+      if (event && event.target && event.target.id !== 'outputModal') return;
+      document.getElementById('outputModal').classList.remove('show');
+    }
+
+    // 产值弹窗 - 提交
+    function submitOutput() {
+      const year = document.getElementById('outputYear').value;
+      const value = document.getElementById('outputValue').value;
+
+      if (!year) {
+        alert('请选择年份');
+        return;
+      }
+      if (!value || parseFloat(value) <= 0) {
+        alert('请输入有效的产值数值');
+        return;
+      }
+
+      alert('产值数据提交成功！\n年份：' + year + '年\n产值：' + value + ' 亿元');
+      closeOutputModal();
+    }
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
