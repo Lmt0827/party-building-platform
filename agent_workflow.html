@@ -1,0 +1,1291 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>工作流搭建 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* 设计器布局 */
+    .workflow-layout {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - var(--header-height));
+      overflow: hidden;
+    }
+    .workflow-body {
+      display: grid;
+      grid-template-columns: 240px 1fr 300px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* 左侧节点面板 */
+    .node-panel {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .node-panel-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      flex-wrap: wrap;
+    }
+    .node-panel-tab {
+      flex: 1;
+      padding: 10px 4px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .node-panel-tab:hover { color: var(--accent-red); }
+    .node-panel-tab.active {
+      color: var(--accent-red);
+      border-bottom-color: var(--accent-red);
+      background: var(--surface);
+      font-weight: 600;
+    }
+    .node-panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+    .node-pane { display: none; }
+    .node-pane.active { display: block; }
+
+    .node-category-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin: 12px 0 8px;
+    }
+    .node-category-title:first-child { margin-top: 0; }
+
+    .node-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: grab;
+      transition: all 0.2s;
+      background: var(--surface);
+      margin-bottom: 8px;
+    }
+    .node-item:hover {
+      border-color: var(--accent-gold);
+      background: rgba(212,175,55,0.05);
+      transform: translateX(2px);
+      box-shadow: 0 2px 8px rgba(212,175,55,0.15);
+    }
+    .node-item .node-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .node-item .node-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .node-item .node-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+    .node-item .node-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* 中间画布 */
+    .canvas-container {
+      position: relative;
+      overflow: hidden;
+      background: #0a1628;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(196,30,58,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(212,175,55,0.06) 0%, transparent 50%);
+    }
+    .canvas-grid {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        linear-gradient(rgba(212,175,55,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,175,55,0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+    }
+
+    .workflow-canvas {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .workflow-node {
+      position: absolute;
+      background: linear-gradient(135deg, #1a2a44, #142841);
+      border: 1.5px solid rgba(212,175,55,0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      cursor: move;
+      transition: all 0.3s ease;
+      min-width: 140px;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .workflow-node:hover {
+      border-color: var(--accent-gold);
+      box-shadow: 0 6px 20px rgba(212,175,55,0.2);
+    }
+    .workflow-node.selected {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 20px rgba(212,175,55,0.4), 0 0 40px rgba(212,175,55,0.2);
+      animation: breathe 2s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { box-shadow: 0 0 15px rgba(212,175,55,0.3), 0 0 30px rgba(212,175,55,0.1); }
+      50% { box-shadow: 0 0 25px rgba(212,175,55,0.5), 0 0 50px rgba(212,175,55,0.2); }
+    }
+
+    .workflow-node .node-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .workflow-node .node-icon-lg {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .workflow-node .node-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .workflow-node .node-subtitle {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+    .workflow-node .node-status {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+    .workflow-node.start-node {
+      border-color: var(--success);
+      background: linear-gradient(135deg, #0d2818, #0a1f14);
+    }
+    .workflow-node.end-node {
+      border-color: var(--danger);
+      background: linear-gradient(135deg, #2d1515, #1f0d0d);
+    }
+    .workflow-node.condition-node {
+      border-color: var(--accent-gold);
+      background: linear-gradient(135deg, #2a2410, #1f1a0a);
+      border-radius: 50%;
+      width: 100px; height: 100px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 0;
+    }
+
+    /* 节点端口 */
+    .node-port {
+      position: absolute;
+      width: 12px; height: 12px;
+      background: var(--accent-gold);
+      border: 2px solid #0a1628;
+      border-radius: 50%;
+      cursor: crosshair;
+      z-index: 20;
+      transition: all 0.2s;
+    }
+    .node-port:hover {
+      transform: scale(1.3);
+      box-shadow: 0 0 10px var(--accent-gold);
+    }
+    .node-port.input { left: -7px; top: 50%; transform: translateY(-50%); }
+    .node-port.output { right: -7px; top: 50%; transform: translateY(-50%); }
+    .node-port.output-top { right: 50%; top: -7px; transform: translateX(50%); }
+    .node-port.output-bottom { right: 50%; bottom: -7px; transform: translateX(50%); }
+
+    /* SVG连接线 */
+    .connections-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* 小地图 */
+    .minimap {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      width: 180px;
+      height: 120px;
+      background: rgba(20,40,65,0.9);
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: 8px;
+      overflow: hidden;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .minimap-viewport {
+      position: absolute;
+      border: 2px solid var(--accent-gold);
+      background: rgba(212,175,55,0.1);
+      border-radius: 4px;
+      cursor: move;
+    }
+    .minimap-nodes {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+    .minimap-node {
+      position: absolute;
+      background: rgba(212,175,55,0.5);
+      border-radius: 2px;
+    }
+
+    /* 缩放控件 */
+    .zoom-controls {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      background: rgba(20,40,65,0.9);
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: 8px;
+      overflow: hidden;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .zoom-btn {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s;
+      border-bottom: 1px solid rgba(212,175,55,0.2);
+    }
+    .zoom-btn:last-child { border-bottom: none; }
+    .zoom-btn:hover {
+      background: rgba(212,175,55,0.15);
+      color: var(--accent-gold);
+    }
+
+    /* 右侧属性面板 */
+    .prop-panel {
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .prop-panel-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .prop-panel-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .prop-panel-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .prop-panel-meta span { margin-right: 12px; }
+    .prop-panel-body {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .prop-section {
+      border-bottom: 1px solid var(--border-light);
+    }
+    .prop-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      background: var(--bg);
+      transition: background 0.2s;
+    }
+    .prop-section-header:hover { background: #edf2f7; }
+    .prop-section-header .arrow {
+      font-size: 10px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+    .prop-section.collapsed .arrow { transform: rotate(-90deg); }
+    .prop-section.collapsed .prop-section-body { display: none; }
+    .prop-section-body { padding: 12px 16px; }
+
+    .prop-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .prop-row:last-child { margin-bottom: 0; }
+    .prop-label {
+      width: 76px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      padding-top: 7px;
+    }
+    .prop-input, .prop-select {
+      flex: 1;
+      height: 30px;
+      padding: 0 10px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface);
+      font-family: inherit;
+    }
+    .prop-textarea {
+      flex: 1;
+      min-height: 60px;
+      padding: 8px 10px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface);
+      font-family: inherit;
+      resize: vertical;
+    }
+    .prop-input:focus, .prop-select:focus, .prop-textarea:focus {
+      border-color: var(--accent-red);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(196,30,58,0.1);
+    }
+
+    .prop-test-btn {
+      width: 100%;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--accent-gold), #b8941f);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .prop-test-btn:hover {
+      box-shadow: 0 4px 12px rgba(212,175,55,0.4);
+      transform: translateY(-1px);
+    }
+
+    .prop-panel-footer {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    /* 顶部工具栏特殊样式 */
+    .wf-toolbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 16px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .wf-toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .wf-toolbar-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+    .wf-toolbar-icon-btn {
+      width: 32px; height: 32px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .wf-toolbar-icon-btn:hover {
+      background: var(--bg);
+      color: var(--accent-red);
+    }
+    .wf-toolbar-icon-btn.active {
+      background: rgba(196,30,58,0.08);
+      color: var(--accent-red);
+    }
+    .wf-name-input {
+      border: none;
+      outline: none;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      background: transparent;
+      font-family: inherit;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .wf-name-input:hover { background: var(--bg); }
+    .wf-name-input:focus {
+      background: var(--bg);
+      box-shadow: inset 0 0 0 1px var(--accent-red);
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html" class="active">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="index.html">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">AI智能体</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">工作流</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+      <div class="workflow-layout">
+        <!-- 顶部工具栏 -->
+        <div class="wf-toolbar">
+          <div class="wf-toolbar-group">
+            <span style="font-size:18px; color:var(--accent-gold);">⚡</span>
+            <input type="text" class="wf-name-input" value="智能问答工作流" style="width:200px;">
+            <span class="tag tag-green" style="margin-left:8px;">v1.2.0</span>
+            <div class="wf-toolbar-divider"></div>
+            <button class="btn btn-primary btn-sm">💾 保存</button>
+            <button class="btn btn-gold btn-sm">🚀 发布</button>
+            <button class="btn btn-secondary btn-sm">🔧 调试</button>
+          </div>
+
+          <div class="wf-toolbar-group">
+            <div class="wf-toolbar-icon-btn" title="撤销">↶</div>
+            <div class="wf-toolbar-icon-btn" title="重做">↷</div>
+            <div class="wf-toolbar-divider"></div>
+            <button class="btn btn-secondary btn-sm" style="background:rgba(47,133,90,0.08); color:var(--success); border-color:rgba(47,133,90,0.2);">
+              ▶ 运行
+            </button>
+            <button class="btn btn-secondary btn-sm" style="background:rgba(197,48,48,0.08); color:var(--danger); border-color:rgba(197,48,48,0.2);">
+              ■ 停止
+            </button>
+            <div class="wf-toolbar-divider"></div>
+            <div class="wf-toolbar-icon-btn" title="版本管理">📋</div>
+          </div>
+        </div>
+
+        <div class="workflow-body">
+          <!-- 左侧节点面板 -->
+          <div class="node-panel">
+            <div class="node-panel-tabs">
+              <div class="node-panel-tab active" data-pane="data">数据处理</div>
+              <div class="node-panel-tab" data-pane="ai">AI能力</div>
+              <div class="node-panel-tab" data-pane="logic">逻辑控制</div>
+              <div class="node-panel-tab" data-pane="integration">集成服务</div>
+            </div>
+            <div class="node-panel-content">
+              <!-- 数据处理 -->
+              <div class="node-pane active" id="pane-data">
+                <div class="node-category-title">数据采集</div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(43,108,176,0.15); color:var(--info);">📥</div>
+                  <div class="node-info">
+                    <div class="node-name">数据收集解析</div>
+                    <div class="node-desc">多源数据采集</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(47,133,90,0.15); color:var(--success);">📝</div>
+                  <div class="node-info">
+                    <div class="node-name">文本结构化</div>
+                    <div class="node-desc">非结构化文本处理</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(128,90,213,0.15); color:#805ad5;">🔍</div>
+                  <div class="node-info">
+                    <div class="node-name">信息抽取</div>
+                    <div class="node-desc">实体关系抽取</div>
+                  </div>
+                </div>
+                <div class="node-category-title">网络采集</div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(196,30,58,0.15); color:var(--accent-red);">🕸</div>
+                  <div class="node-info">
+                    <div class="node-name">网站爬虫</div>
+                    <div class="node-desc">网页数据抓取</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(212,175,55,0.2); color:#a08020;">🔗</div>
+                  <div class="node-info">
+                    <div class="node-name">多路信息抽取</div>
+                    <div class="node-desc">多通道并行抽取</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- AI能力 -->
+              <div class="node-pane" id="pane-ai">
+                <div class="node-category-title">大模型</div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(196,30,58,0.15); color:var(--accent-red);">🤖</div>
+                  <div class="node-info">
+                    <div class="node-name">大模型问答</div>
+                    <div class="node-desc">LLM智能对话</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(43,108,176,0.15); color:var(--info);">📚</div>
+                  <div class="node-info">
+                    <div class="node-name">长文本检索</div>
+                    <div class="node-desc">RAG知识库检索</div>
+                  </div>
+                </div>
+                <div class="node-category-title">文本处理</div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(47,133,90,0.15); color:var(--success);">📝</div>
+                  <div class="node-info">
+                    <div class="node-name">文本摘要</div>
+                    <div class="node-desc">自动摘要生成</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(192,86,33,0.15); color:var(--warning);">💭</div>
+                  <div class="node-info">
+                    <div class="node-name">情感分析</div>
+                    <div class="node-desc">情感倾向判断</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(128,90,213,0.15); color:#805ad5;">🏷</div>
+                  <div class="node-info">
+                    <div class="node-name">分类标签</div>
+                    <div class="node-desc">智能分类打标</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 逻辑控制 -->
+              <div class="node-pane" id="pane-logic">
+                <div class="node-category-title">流程控制</div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(212,175,55,0.2); color:#a08020;">◆</div>
+                  <div class="node-info">
+                    <div class="node-name">条件判断</div>
+                    <div class="node-desc">if/else分支</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(43,108,176,0.15); color:var(--info);">↻</div>
+                  <div class="node-info">
+                    <div class="node-name">循环执行</div>
+                    <div class="node-desc">for/while循环</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(47,133,90,0.15); color:var(--success);">⫸</div>
+                  <div class="node-info">
+                    <div class="node-name">并行执行</div>
+                    <div class="node-desc">多任务并行</div>
+                  </div>
+                </div>
+                <div class="node-category-title">其他</div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(113,128,150,0.15); color:var(--text-muted);">⏱</div>
+                  <div class="node-info">
+                    <div class="node-name">等待延迟</div>
+                    <div class="node-desc">延时等待</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(128,90,213,0.15); color:#805ad5;">📦</div>
+                  <div class="node-info">
+                    <div class="node-name">子流程</div>
+                    <div class="node-desc">嵌套子工作流</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 集成服务 -->
+              <div class="node-pane" id="pane-integration">
+                <div class="node-category-title">网络服务</div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(43,108,176,0.15); color:var(--info);">🌐</div>
+                  <div class="node-info">
+                    <div class="node-name">HTTP请求</div>
+                    <div class="node-desc">REST API调用</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(47,133,90,0.15); color:var(--success);">🗄</div>
+                  <div class="node-info">
+                    <div class="node-name">数据库查询</div>
+                    <div class="node-desc">SQL执行</div>
+                  </div>
+                </div>
+                <div class="node-category-title">文件处理</div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(192,86,33,0.15); color:var(--warning);">📁</div>
+                  <div class="node-info">
+                    <div class="node-name">文件读写</div>
+                    <div class="node-desc">文件操作</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(196,30,58,0.15); color:var(--accent-red);">📨</div>
+                  <div class="node-info">
+                    <div class="node-name">消息通知</div>
+                    <div class="node-desc">多渠道通知</div>
+                  </div>
+                </div>
+                <div class="node-item">
+                  <div class="node-icon" style="background:rgba(128,90,213,0.15); color:#805ad5;">🔌</div>
+                  <div class="node-info">
+                    <div class="node-name">API调用</div>
+                    <div class="node-desc">第三方API</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 中间画布 -->
+          <div class="canvas-container" id="canvasContainer">
+            <div class="canvas-grid"></div>
+
+            <!-- SVG连接线层 -->
+            <svg class="connections-svg" id="connectionsSvg">
+              <defs>
+                <!-- 发光箭头 -->
+                <marker id="arrowGold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M0,0 L10,5 L0,10 z" fill="#d4af37"/>
+                </marker>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- 连接线 - 贝塞尔曲线 -->
+              <!-- 开始 -> 数据收集 -->
+              <path d="M 130,130 C 200,130 200,130 270,130" 
+                    fill="none" stroke="#d4af37" stroke-width="2" 
+                    marker-end="url(#arrowGold)" filter="url(#glow)"/>
+
+              <!-- 数据收集 -> 文本结构化 -->
+              <path d="M 420,130 C 490,130 490,130 560,130" 
+                    fill="none" stroke="#d4af37" stroke-width="2" 
+                    marker-end="url(#arrowGold)" filter="url(#glow)"/>
+
+              <!-- 文本结构化 -> 信息抽取 -->
+              <path d="M 710,130 C 780,130 780,130 850,130" 
+                    fill="none" stroke="#d4af37" stroke-width="2" 
+                    marker-end="url(#arrowGold)" filter="url(#glow)"/>
+
+              <!-- 信息抽取 -> 条件判断 -->
+              <path d="M 1000,130 C 1070,130 1070,200 1120,220" 
+                    fill="none" stroke="#d4af37" stroke-width="2" 
+                    marker-end="url(#arrowGold)" filter="url(#glow)"/>
+
+              <!-- 条件判断 -> 是 -> 大模型检索 -->
+              <path d="M 1170,270 C 1170,340 1090,370 1020,380" 
+                    fill="none" stroke="#2f855a" stroke-width="2" 
+                    marker-end="url(#arrowGold)" filter="url(#glow)"/>
+              <text x="1130" y="310" fill="#2f855a" font-size="11" font-weight="600">是</text>
+
+              <!-- 条件判断 -> 否 -> 跳过 -->
+              <path d="M 1170,270 C 1170,340 1250,370 1320,380" 
+                    fill="none" stroke="#c53030" stroke-width="2" stroke-dasharray="5,3"
+                    marker-end="url(#arrowGold)" filter="url(#glow)"/>
+              <text x="1175" y="310" fill="#c53030" font-size="11" font-weight="600">否</text>
+
+              <!-- 大模型检索 -> 结果输出 -->
+              <path d="M 890,430 C 960,430 960,500 1020,520" 
+                    fill="none" stroke="#d4af37" stroke-width="2" 
+                    marker-end="url(#arrowGold)" filter="url(#glow)"/>
+
+              <!-- 跳过 -> 合并 -->
+              <path d="M 1390,430 C 1390,500 1310,520 1250,520" 
+                    fill="none" stroke="#d4af37" stroke-width="2" 
+                    marker-end="url(#arrowGold)" filter="url(#glow)"/>
+
+              <!-- 结果输出 -> 合并 -->
+              <path d="M 1170,570 C 1170,600 1170,600 1170,630" 
+                    fill="none" stroke="#d4af37" stroke-width="2" 
+                    marker-end="url(#arrowGold)" filter="url(#glow)"/>
+
+              <!-- 合并 -> 结束 -->
+              <path d="M 1170,730 C 1170,800 1170,800 1170,870" 
+                    fill="none" stroke="#d4af37" stroke-width="2" 
+                    marker-end="url(#arrowGold)" filter="url(#glow)"/>
+            </svg>
+
+            <!-- 工作流节点 -->
+            <div class="workflow-canvas" style="padding: 40px;">
+              <!-- 开始节点 -->
+              <div class="workflow-node start-node" style="left: 50px; top: 100px;">
+                <div class="node-header">
+                  <div class="node-icon-lg" style="background:rgba(47,133,90,0.2); color:#48bb78;">▶</div>
+                  <div>
+                    <div class="node-title">开始</div>
+                    <div class="node-subtitle">workflow_start</div>
+                  </div>
+                </div>
+                <div class="node-port output"></div>
+              </div>
+
+              <!-- 数据收集 -->
+              <div class="workflow-node" style="left: 200px; top: 100px;">
+                <div class="node-header">
+                  <div class="node-icon-lg" style="background:rgba(43,108,176,0.2); color:#63b3ed;">📥</div>
+                  <div>
+                    <div class="node-title">数据收集</div>
+                    <div class="node-subtitle">data_collect</div>
+                  </div>
+                </div>
+                <div class="node-status" style="background:rgba(47,133,90,0.2); color:#48bb78;">成功</div>
+                <div class="node-port input"></div>
+                <div class="node-port output"></div>
+              </div>
+
+              <!-- 文本结构化 -->
+              <div class="workflow-node" style="left: 420px; top: 100px;">
+                <div class="node-header">
+                  <div class="node-icon-lg" style="background:rgba(47,133,90,0.2); color:#48bb78;">📝</div>
+                  <div>
+                    <div class="node-title">文本结构化</div>
+                    <div class="node-subtitle">text_struct</div>
+                  </div>
+                </div>
+                <div class="node-status" style="background:rgba(47,133,90,0.2); color:#48bb78;">成功</div>
+                <div class="node-port input"></div>
+                <div class="node-port output"></div>
+              </div>
+
+              <!-- 信息抽取 -->
+              <div class="workflow-node selected" style="left: 640px; top: 100px;">
+                <div class="node-header">
+                  <div class="node-icon-lg" style="background:rgba(128,90,213,0.25); color:#b794f4;">🔍</div>
+                  <div>
+                    <div class="node-title">信息抽取</div>
+                    <div class="node-subtitle">info_extract</div>
+                  </div>
+                </div>
+                <div class="node-status" style="background:rgba(47,133,90,0.2); color:#48bb78;">成功</div>
+                <div class="node-port input"></div>
+                <div class="node-port output"></div>
+              </div>
+
+              <!-- 条件判断（菱形） -->
+              <div class="workflow-node condition-node" style="left: 880px; top: 170px;">
+                <div style="font-size:20px;">◆</div>
+                <div class="node-title" style="font-size:12px; margin-top:4px;">条件判断</div>
+                <div class="node-subtitle" style="font-size:10px;">is_relevant</div>
+                <div class="node-port input"></div>
+                <div class="node-port output-bottom"></div>
+              </div>
+
+              <!-- 大模型检索 -->
+              <div class="workflow-node" style="left: 750px; top: 380px;">
+                <div class="node-header">
+                  <div class="node-icon-lg" style="background:rgba(196,30,58,0.2); color:#fc8181;">🤖</div>
+                  <div>
+                    <div class="node-title">大模型检索</div>
+                    <div class="node-subtitle">llm_rag</div>
+                  </div>
+                </div>
+                <div class="node-status" style="background:rgba(47,133,90,0.2); color:#48bb78;">成功</div>
+                <div class="node-port input"></div>
+                <div class="node-port output"></div>
+              </div>
+
+              <!-- 跳过节点 -->
+              <div class="workflow-node" style="left: 1180px; top: 380px;">
+                <div class="node-header">
+                  <div class="node-icon-lg" style="background:rgba(160,174,192,0.2); color:#a0aec0;">⏭</div>
+                  <div>
+                    <div class="node-title">跳过处理</div>
+                    <div class="node-subtitle">skip_node</div>
+                  </div>
+                </div>
+                <div class="node-status" style="background:rgba(160,174,192,0.2); color:#a0aec0;">跳过</div>
+                <div class="node-port input"></div>
+                <div class="node-port output"></div>
+              </div>
+
+              <!-- 结果输出 -->
+              <div class="workflow-node" style="left: 920px; top: 520px;">
+                <div class="node-header">
+                  <div class="node-icon-lg" style="background:rgba(212,175,55,0.25); color:#f6e05e;">📤</div>
+                  <div>
+                    <div class="node-title">结果输出</div>
+                    <div class="node-subtitle">result_output</div>
+                  </div>
+                </div>
+                <div class="node-status" style="background:rgba(47,133,90,0.2); color:#48bb78;">成功</div>
+                <div class="node-port input"></div>
+                <div class="node-port output"></div>
+              </div>
+
+              <!-- 合并节点 -->
+              <div class="workflow-node" style="left: 1070px; top: 660px;">
+                <div class="node-header">
+                  <div class="node-icon-lg" style="background:rgba(43,108,176,0.2); color:#63b3ed;">⇲</div>
+                  <div>
+                    <div class="node-title">合并</div>
+                    <div class="node-subtitle">merge</div>
+                  </div>
+                </div>
+                <div class="node-status" style="background:rgba(47,133,90,0.2); color:#48bb78;">成功</div>
+                <div class="node-port input"></div>
+                <div class="node-port output"></div>
+              </div>
+
+              <!-- 结束节点 -->
+              <div class="workflow-node end-node" style="left: 1100px; top: 820px;">
+                <div class="node-header">
+                  <div class="node-icon-lg" style="background:rgba(197,48,48,0.2); color:#fc8181;">■</div>
+                  <div>
+                    <div class="node-title">结束</div>
+                    <div class="node-subtitle">workflow_end</div>
+                  </div>
+                </div>
+                <div class="node-port input"></div>
+              </div>
+            </div>
+
+            <!-- 小地图 -->
+            <div class="minimap">
+              <div class="minimap-nodes">
+                <div class="minimap-node" style="left:10px; top:20px; width:12px; height:8px;"></div>
+                <div class="minimap-node" style="left:30px; top:20px; width:18px; height:8px;"></div>
+                <div class="minimap-node" style="left:55px; top:20px; width:18px; height:8px;"></div>
+                <div class="minimap-node" style="left:80px; top:20px; width:18px; height:8px; background:rgba(212,175,55,0.8);"></div>
+                <div class="minimap-node" style="left:108px; top:35px; width:14px; height:14px; border-radius:50%;"></div>
+                <div class="minimap-node" style="left:90px; top:65px; width:18px; height:8px;"></div>
+                <div class="minimap-node" style="left:140px; top:65px; width:18px; height:8px;"></div>
+                <div class="minimap-node" style="left:110px; top:90px; width:18px; height:8px;"></div>
+                <div class="minimap-node" style="left:125px; top:110px; width:12px; height:8px;"></div>
+              </div>
+              <div class="minimap-viewport" style="left:5px; top:10px; width:100px; height:70px;"></div>
+            </div>
+
+            <!-- 缩放控件 -->
+            <div class="zoom-controls">
+              <div class="zoom-btn">+</div>
+              <div class="zoom-btn" style="font-size:12px; font-weight:600;">100%</div>
+              <div class="zoom-btn">−</div>
+              <div class="zoom-btn">⌂</div>
+            </div>
+          </div>
+
+          <!-- 右侧属性面板 -->
+          <div class="prop-panel">
+            <div class="prop-panel-header">
+              <div class="prop-panel-title">
+                <span class="prop-icon" style="width:28px; height:28px; border-radius:6px; background:rgba(128,90,213,0.15); color:#805ad5; display:flex; align-items:center; justify-content:center; font-size:14px;">🔍</span>
+                信息抽取
+              </div>
+              <div class="prop-panel-meta">
+                <span>类型: 信息抽取</span>
+                <span>ID: node_004</span>
+              </div>
+            </div>
+
+            <div class="prop-panel-body">
+              <!-- 基础属性 -->
+              <div class="prop-section">
+                <div class="prop-section-header">
+                  <span>基础属性</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="prop-section-body">
+                  <div class="prop-row">
+                    <span class="prop-label">节点名称</span>
+                    <input type="text" class="prop-input" value="信息抽取">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">节点描述</span>
+                    <textarea class="prop-textarea">从结构化文本中抽取关键实体和关系信息</textarea>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">节点ID</span>
+                    <input type="text" class="prop-input" value="node_004" style="background:var(--bg); color:var(--text-muted);">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 输入配置 -->
+              <div class="prop-section">
+                <div class="prop-section-header">
+                  <span>输入配置</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="prop-section-body">
+                  <div class="prop-row">
+                    <span class="prop-label">输入源</span>
+                    <select class="prop-select">
+                      <option>上一节点输出</option>
+                      <option>全局变量</option>
+                      <option>指定节点</option>
+                    </select>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">文本字段</span>
+                    <input type="text" class="prop-input" value="content">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">编码格式</span>
+                    <select class="prop-select">
+                      <option>UTF-8</option>
+                      <option>GBK</option>
+                      <option>自动检测</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 处理配置 -->
+              <div class="prop-section">
+                <div class="prop-section-header">
+                  <span>处理配置</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="prop-section-body">
+                  <div class="prop-row">
+                    <span class="prop-label">抽取模型</span>
+                    <select class="prop-select">
+                      <option>通用信息抽取模型</option>
+                      <option>政务领域模型</option>
+                      <option>企业服务模型</option>
+                    </select>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">实体类型</span>
+                    <input type="text" class="prop-input" value="人物,组织,地点,时间,事件">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">置信度阈值</span>
+                    <input type="text" class="prop-input" value="0.75">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">最大抽取数</span>
+                    <input type="text" class="prop-input" value="50">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 输出配置 -->
+              <div class="prop-section collapsed">
+                <div class="prop-section-header">
+                  <span>输出配置</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="prop-section-body">
+                  <div class="prop-row">
+                    <span class="prop-label">输出格式</span>
+                    <select class="prop-select">
+                      <option>JSON</option>
+                      <option>XML</option>
+                      <option>CSV</option>
+                    </select>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">输出变量</span>
+                    <input type="text" class="prop-input" value="extracted_entities">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 错误处理 -->
+              <div class="prop-section collapsed">
+                <div class="prop-section-header">
+                  <span>错误处理</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="prop-section-body">
+                  <div class="prop-row">
+                    <span class="prop-label">失败策略</span>
+                    <select class="prop-select">
+                      <option>继续执行</option>
+                      <option>终止流程</option>
+                      <option>重试3次</option>
+                    </select>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">超时时间</span>
+                    <input type="text" class="prop-input" value="30s">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 底部测试按钮 -->
+            <div class="prop-panel-footer">
+              <button class="prop-test-btn">
+                <span>🧪</span>
+                测试运行此节点
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // 左侧面板Tab切换
+    document.querySelectorAll('.node-panel-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        const target = this.dataset.pane;
+        document.querySelectorAll('.node-panel-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.node-pane').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('pane-' + target).classList.add('active');
+      });
+    });
+
+    // 属性面板折叠
+    document.querySelectorAll('.prop-section-header').forEach(header => {
+      header.addEventListener('click', function() {
+        this.parentElement.classList.toggle('collapsed');
+      });
+    });
+
+    // 节点选中
+    document.querySelectorAll('.workflow-node').forEach(node => {
+      node.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('node-port')) return;
+        document.querySelectorAll('.workflow-node').forEach(n => n.classList.remove('selected'));
+        this.classList.add('selected');
+        e.stopPropagation();
+      });
+    });
+
+    // 点击画布空白取消选中
+    document.querySelector('.canvas-container').addEventListener('mousedown', function(e) {
+      if (e.target === this || e.target.classList.contains('canvas-grid')) {
+        document.querySelectorAll('.workflow-node').forEach(n => n.classList.remove('selected'));
+      }
+    });
+
+    // 导航菜单展开
+    document.querySelectorAll('.nav-group > .nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        const group = this.closest('.nav-group');
+        if (group) {
+          group.classList.toggle('expanded');
+        }
+      });
+    });
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
+
