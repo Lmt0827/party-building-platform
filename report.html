@@ -1,0 +1,504 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能报告管理 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* 页面特有样式 */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .kpi-card .kpi-icon {
+      font-size: 24px;
+    }
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html" class="active">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+      <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="index.html">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">智能报告</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">报表管理</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+
+        <div class="section-title">
+          智能报告管理
+          <span class="section-subtitle">AI驱动的党建数据分析报告，一键生成多维度分析</span>
+        </div>
+
+        <!-- KPI 统计卡 -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">报告总数</div>
+            <div class="kpi-value">1,286<span class="unit">份</span></div>
+            <div class="kpi-trend up">↑ 18.3% 较上月</div>
+            <div class="kpi-icon icon-red">📄</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">本月生成</div>
+            <div class="kpi-value">156<span class="unit">份</span></div>
+            <div class="kpi-trend up">↑ 24 份较上周</div>
+            <div class="kpi-icon icon-blue">📊</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">智能生成率</div>
+            <div class="kpi-value">87.2<span class="unit">%</span></div>
+            <div class="kpi-trend up">↑ 5.6% 较上月</div>
+            <div class="kpi-icon icon-gold">🤖</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">满意度</div>
+            <div class="kpi-value">94.8<span class="unit">%</span></div>
+            <div class="kpi-trend up">↑ 1.2% 较上月</div>
+            <div class="kpi-icon icon-green">⭐</div>
+          </div>
+        </div>
+
+        <!-- 筛选区 -->
+        <div class="filter-bar">
+          <div class="filter-left">
+            <div class="filter-item">
+              <label>报告类型</label>
+              <select class="filter-select">
+                <option>全部类型</option>
+                <option>党建基础</option>
+                <option>产业分析</option>
+                <option>人才分析</option>
+                <option>党建服务</option>
+                <option>教育培训</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>状态</label>
+              <select class="filter-select">
+                <option>全部状态</option>
+                <option>生成中</option>
+                <option>已生成</option>
+                <option>已归档</option>
+                <option>生成失败</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>时间范围</label>
+              <input type="date" class="filter-select" style="width: auto; min-width: 140px;">
+            </div>
+          </div>
+          <div class="filter-right">
+            <button class="btn btn-secondary">
+              <span>↻</span> 重置
+            </button>
+            <button class="btn btn-secondary">
+              <span>↓</span> 导出
+            </button>
+            <button class="btn btn-primary btn-dropdown">
+              <span>+</span> 生成报告
+            </button>
+          </div>
+        </div>
+
+        <!-- 报告卡片网格 -->
+        <div class="report-grid">
+          <!-- 报告卡片 1 -->
+          <div class="report-card">
+            <div class="report-cover">
+              <div class="cover-gradient cover-red"></div>
+              <div class="report-cover-icon">📊</div>
+            </div>
+            <div class="report-body">
+              <div class="report-tags">
+                <span class="tag tag-red">党建基础</span>
+                <span class="badge badge-green">已生成</span>
+              </div>
+              <div class="report-title">2024年1月党建工作月报</div>
+              <div class="report-summary">本月党建工作整体进展良好，组织活动参与率提升15%，党员发展工作稳步推进，党费收缴率达98.5%...</div>
+              <div class="report-meta">
+                <div class="report-meta-item">📅 2024-01-31 23:59</div>
+                <div class="report-meta-item">🤖 AI智能生成</div>
+                <div class="report-meta-item">👁 2,847</div>
+                <div class="report-actions">
+                  <span class="action-link">查看</span>
+                  <span class="action-link">编辑</span>
+                  <span class="action-link">导出</span>
+                  <span class="action-link danger">删除</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 报告卡片 2 -->
+          <div class="report-card">
+            <div class="report-cover">
+              <div class="cover-gradient cover-blue"></div>
+              <div class="report-cover-icon">📈</div>
+            </div>
+            <div class="report-body">
+              <div class="report-tags">
+                <span class="tag tag-blue">产业分析</span>
+                <span class="badge badge-green">已生成</span>
+              </div>
+              <div class="report-title">2023年度园区产业发展分析报告</div>
+              <div class="report-summary">本报告基于园区企业注册数据、经济指标数据及产业分布情况，对2023年度产业发展态势进行全面分析...</div>
+              <div class="report-meta">
+                <div class="report-meta-item">📅 2024-01-28 16:30</div>
+                <div class="report-meta-item">✏ 人工编辑</div>
+                <div class="report-meta-item">👁 5,632</div>
+                <div class="report-actions">
+                  <span class="action-link">查看</span>
+                  <span class="action-link">编辑</span>
+                  <span class="action-link">导出</span>
+                  <span class="action-link danger">删除</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 报告卡片 3 -->
+          <div class="report-card">
+            <div class="report-cover">
+              <div class="cover-gradient cover-gold"></div>
+              <div class="report-cover-icon">💎</div>
+            </div>
+            <div class="report-body">
+              <div class="report-tags">
+                <span class="tag tag-gold">人才分析</span>
+                <span class="badge badge-green">已生成</span>
+              </div>
+              <div class="report-title">2024年第一季度人才结构分析报告</div>
+              <div class="report-summary">本季度园区人才总量稳步增长，高层次人才引进成效显著，人才结构持续优化，年龄结构更趋合理...</div>
+              <div class="report-meta">
+                <div class="report-meta-item">📅 2024-01-25 14:20</div>
+                <div class="report-meta-item">🤖 AI智能生成</div>
+                <div class="report-meta-item">👁 1,896</div>
+                <div class="report-actions">
+                  <span class="action-link">查看</span>
+                  <span class="action-link">编辑</span>
+                  <span class="action-link">导出</span>
+                  <span class="action-link danger">删除</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 报告卡片 4 -->
+          <div class="report-card">
+            <div class="report-cover">
+              <div class="cover-gradient cover-green"></div>
+              <div class="report-cover-icon">🏢</div>
+            </div>
+            <div class="report-body">
+              <div class="report-tags">
+                <span class="tag tag-green">党建服务</span>
+                <span class="badge badge-orange">生成中</span>
+              </div>
+              <div class="report-title">2024年1月企业党建服务满意度分析</div>
+              <div class="report-summary">正在生成中，请稍候... 预计还需 2 分钟完成。</div>
+              <div class="report-meta">
+                <div class="report-meta-item">📅 2024-01-31 正在生成</div>
+                <div class="report-meta-item">🤖 AI智能生成</div>
+                <div class="report-meta-item">⏳ 进度 68%</div>
+                <div class="report-actions">
+                  <span class="action-link">查看进度</span>
+                  <span class="action-link danger">取消</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 报告卡片 5 -->
+          <div class="report-card">
+            <div class="report-cover">
+              <div class="cover-gradient cover-purple"></div>
+              <div class="report-cover-icon">🎓</div>
+            </div>
+            <div class="report-body">
+              <div class="report-tags">
+                <span class="tag tag-blue">教育培训</span>
+                <span class="badge badge-green">已生成</span>
+              </div>
+              <div class="report-title">2023年度党员教育培训工作分析报告</div>
+              <div class="report-summary">2023年度园区党员教育培训工作成效显著，培训覆盖率达95%以上，线上线下培训相结合的模式效果良好...</div>
+              <div class="report-meta">
+                <div class="report-meta-item">📅 2024-01-20 10:15</div>
+                <div class="report-meta-item">🤖 AI智能生成</div>
+                <div class="report-meta-item">👁 3,245</div>
+                <div class="report-actions">
+                  <span class="action-link">查看</span>
+                  <span class="action-link">编辑</span>
+                  <span class="action-link">导出</span>
+                  <span class="action-link danger">删除</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 报告卡片 6 -->
+          <div class="report-card">
+            <div class="report-cover">
+              <div class="cover-gradient cover-teal"></div>
+              <div class="report-cover-icon">📉</div>
+            </div>
+            <div class="report-body">
+              <div class="report-tags">
+                <span class="tag tag-red">党建基础</span>
+                <span class="badge" style="background:#718096;color:#fff;">已归档</span>
+              </div>
+              <div class="report-title">2023年度党组织建设分析报告</div>
+              <div class="report-summary">2023年度园区党组织建设工作取得新进展，党组织覆盖率进一步提升，基层党组织战斗力不断增强...</div>
+              <div class="report-meta">
+                <div class="report-meta-item">📅 2023-12-28 17:40</div>
+                <div class="report-meta-item">✏ 人工编辑</div>
+                <div class="report-meta-item">👁 8,756</div>
+                <div class="report-actions">
+                  <span class="action-link">查看</span>
+                  <span class="action-link">导出</span>
+                  <span class="action-link danger">删除</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 报告卡片 7 -->
+          <div class="report-card">
+            <div class="report-cover">
+              <div class="cover-gradient cover-orange"></div>
+              <div class="report-cover-icon">📊</div>
+            </div>
+            <div class="report-body">
+              <div class="report-tags">
+                <span class="tag tag-blue">产业分析</span>
+                <span class="badge badge-green">已生成</span>
+              </div>
+              <div class="report-title">高新技术产业发展态势月度分析（2024年1月）</div>
+              <div class="report-summary">本月高新技术产业继续保持快速增长态势，新增高新技术企业12家，专利申请量同比增长23%...</div>
+              <div class="report-meta">
+                <div class="report-meta-item">📅 2024-01-29 09:30</div>
+                <div class="report-meta-item">🤖 AI智能生成</div>
+                <div class="report-meta-item">👁 2,134</div>
+                <div class="report-actions">
+                  <span class="action-link">查看</span>
+                  <span class="action-link">编辑</span>
+                  <span class="action-link">导出</span>
+                  <span class="action-link danger">删除</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 报告卡片 8 -->
+          <div class="report-card">
+            <div class="report-cover">
+              <div class="cover-gradient cover-pink"></div>
+              <div class="report-cover-icon">⚠</div>
+            </div>
+            <div class="report-body">
+              <div class="report-tags">
+                <span class="tag tag-orange">人才分析</span>
+                <span class="badge badge-red">生成失败</span>
+              </div>
+              <div class="report-title">2024年高层次人才引进效果评估报告</div>
+              <div class="report-summary">报告生成失败，原因：数据源连接超时。请检查数据连接后重新生成，或联系技术支持。</div>
+              <div class="report-meta">
+                <div class="report-meta-item">📅 2024-01-30 14:00</div>
+                <div class="report-meta-item">🤖 AI智能生成</div>
+                <div class="report-meta-item">⚠ 失败</div>
+                <div class="report-actions">
+                  <span class="action-link">重试</span>
+                  <span class="action-link">查看日志</span>
+                  <span class="action-link danger">删除</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination" style="margin-top: 20px;">
+          <div class="pagination-item">‹</div>
+          <div class="pagination-item active">1</div>
+          <div class="pagination-item">2</div>
+          <div class="pagination-item">3</div>
+          <div class="pagination-item">4</div>
+          <div class="pagination-item">5</div>
+          <div class="pagination-item">...</div>
+          <div class="pagination-item">32</div>
+          <div class="pagination-item">›</div>
+        </div>
+            </main>
+    </div>
+  </div>
+<script src="common.js"></script>
+</body>
+</html>
+
