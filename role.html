@@ -1,0 +1,732 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>角色与权限管理 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* 页面特有样式 */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 16px;
+    }
+    .split-left, .split-right {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      min-height: 700px;
+    }
+    .split-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .split-header-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .split-body {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .empty-permission {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-height: 400px;
+      color: var(--text-muted);
+    }
+    .empty-permission-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+    .empty-permission-text {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html" class="active">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+      <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="index.html">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">系统管理</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">角色权限</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+
+        <div class="section-title">
+          角色与权限管理
+          <span class="section-subtitle">管理系统角色及权限配置，支持细粒度的功能权限和数据权限控制</span>
+        </div>
+
+        <!-- 左右分栏布局 -->
+        <div class="split-layout">
+          <!-- 左侧：角色列表 -->
+          <div class="split-left">
+            <div class="split-header">
+              <div class="split-header-title">角色列表</div>
+              <button class="btn btn-sm btn-primary">+ 新增角色</button>
+            </div>
+            <div class="split-body">
+              <!-- 搜索框 -->
+              <div style="padding: 12px;">
+                <div class="search-box" style="width:100%;">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" placeholder="搜索角色名称..." style="width:100%;">
+                </div>
+              </div>
+
+              <div class="role-list">
+                <!-- 角色卡片 1 -->
+                <div class="role-card active">
+                  <div class="role-name">
+                    <span style="color:var(--accent-red);">👑</span>
+                    系统管理员
+                    <span class="badge badge-red" style="margin-left:auto;">超级管理员</span>
+                  </div>
+                  <div class="role-code">编码：SYS_ADMIN</div>
+                  <div class="role-stats">
+                    <span>用户数</span>
+                    <span class="user-count">3 人</span>
+                  </div>
+                  <div class="role-card-actions">
+                    <span class="action-link">编辑</span>
+                    <span class="action-link">权限配置</span>
+                    <span class="action-link">复制</span>
+                    <span class="action-link danger">删除</span>
+                  </div>
+                </div>
+
+                <!-- 角色卡片 2 -->
+                <div class="role-card">
+                  <div class="role-name">
+                    <span style="color:var(--info);">👔</span>
+                    部门管理员
+                  </div>
+                  <div class="role-code">编码：DEPT_ADMIN</div>
+                  <div class="role-stats">
+                    <span>用户数</span>
+                    <span class="user-count">12 人</span>
+                  </div>
+                  <div class="role-card-actions">
+                    <span class="action-link">编辑</span>
+                    <span class="action-link">权限配置</span>
+                    <span class="action-link">复制</span>
+                    <span class="action-link danger">删除</span>
+                  </div>
+                </div>
+
+                <!-- 角色卡片 3 -->
+                <div class="role-card">
+                  <div class="role-name">
+                    <span style="color:var(--accent-gold);">👤</span>
+                    普通用户
+                  </div>
+                  <div class="role-code">编码：NORMAL_USER</div>
+                  <div class="role-stats">
+                    <span>用户数</span>
+                    <span class="user-count">256 人</span>
+                  </div>
+                  <div class="role-card-actions">
+                    <span class="action-link">编辑</span>
+                    <span class="action-link">权限配置</span>
+                    <span class="action-link">复制</span>
+                    <span class="action-link danger">删除</span>
+                  </div>
+                </div>
+
+                <!-- 角色卡片 4 -->
+                <div class="role-card">
+                  <div class="role-name">
+                    <span style="color:var(--success);">🏢</span>
+                    企业用户
+                  </div>
+                  <div class="role-code">编码：ENT_USER</div>
+                  <div class="role-stats">
+                    <span>用户数</span>
+                    <span class="user-count">1,268 人</span>
+                  </div>
+                  <div class="role-card-actions">
+                    <span class="action-link">编辑</span>
+                    <span class="action-link">权限配置</span>
+                    <span class="action-link">复制</span>
+                    <span class="action-link danger">删除</span>
+                  </div>
+                </div>
+
+                <!-- 角色卡片 5 -->
+                <div class="role-card">
+                  <div class="role-name">
+                    <span style="color:var(--warning);">📝</span>
+                    内容审核员
+                  </div>
+                  <div class="role-code">编码：CONTENT_AUDITOR</div>
+                  <div class="role-stats">
+                    <span>用户数</span>
+                    <span class="user-count">8 人</span>
+                  </div>
+                  <div class="role-card-actions">
+                    <span class="action-link">编辑</span>
+                    <span class="action-link">权限配置</span>
+                    <span class="action-link">复制</span>
+                    <span class="action-link danger">删除</span>
+                  </div>
+                </div>
+
+                <!-- 角色卡片 6 -->
+                <div class="role-card">
+                  <div class="role-name">
+                    <span style="color:#805ad5;">📊</span>
+                    数据分析员
+                  </div>
+                  <div class="role-code">编码：DATA_ANALYST</div>
+                  <div class="role-stats">
+                    <span>用户数</span>
+                    <span class="user-count">6 人</span>
+                  </div>
+                  <div class="role-card-actions">
+                    <span class="action-link">编辑</span>
+                    <span class="action-link">权限配置</span>
+                    <span class="action-link">复制</span>
+                    <span class="action-link danger">删除</span>
+                  </div>
+                </div>
+
+                <!-- 角色卡片 7 -->
+                <div class="role-card">
+                  <div class="role-name">
+                    <span style="color:#2c7a7b;">🎓</span>
+                    培训管理员
+                  </div>
+                  <div class="role-code">编码：TRAIN_ADMIN</div>
+                  <div class="role-stats">
+                    <span>用户数</span>
+                    <span class="user-count">5 人</span>
+                  </div>
+                  <div class="role-card-actions">
+                    <span class="action-link">编辑</span>
+                    <span class="action-link">权限配置</span>
+                    <span class="action-link">复制</span>
+                    <span class="action-link danger">删除</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右侧：权限配置 -->
+          <div class="split-right">
+            <!-- 角色头部信息 -->
+            <div class="permission-header">
+              <div class="permission-role-name">
+                <span style="color:var(--accent-red);font-size:24px;">👑</span>
+                系统管理员
+                <span class="badge badge-red">超级管理员</span>
+              </div>
+              <div class="permission-role-desc">拥有系统全部功能权限和数据权限，负责系统整体管理与维护。</div>
+              <div class="permission-role-meta">
+                <span>📅 创建时间：2023-01-01</span>
+                <span>👥 用户数：3 人</span>
+                <span>🔑 权限项：128 个</span>
+              </div>
+            </div>
+
+            <!-- 权限树 -->
+            <div class="permission-tree">
+              <!-- 一级：工作台 -->
+              <div class="perm-level-1">
+                <div class="perm-item expanded">
+                  <span class="perm-arrow">›</span>
+                  <div class="checkbox checked"></div>
+                  <span class="perm-icon">⌂</span>
+                  <span class="perm-name">工作台</span>
+                </div>
+                <div class="perm-level-2">
+                  <div class="perm-item expanded">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">📊</span>
+                    <span class="perm-name">首页概览</span>
+                  </div>
+                  <div class="perm-level-3">
+                    <div class="perm-action"><div class="checkbox checked"></div> 查看</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 导出</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 一级：党建基础 -->
+              <div class="perm-level-1">
+                <div class="perm-item expanded">
+                  <span class="perm-arrow">›</span>
+                  <div class="checkbox checked"></div>
+                  <span class="perm-icon">☷</span>
+                  <span class="perm-name">党建基础</span>
+                </div>
+                <div class="perm-level-2">
+                  <div class="perm-item expanded">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">🏢</span>
+                    <span class="perm-name">组织管理</span>
+                  </div>
+                  <div class="perm-level-3">
+                    <div class="perm-action"><div class="checkbox checked"></div> 查看</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 新增</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 编辑</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 删除</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 导出</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 导入</div>
+                  </div>
+
+                  <div class="perm-item expanded">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">☺</span>
+                    <span class="perm-name">党员管理</span>
+                  </div>
+                  <div class="perm-level-3">
+                    <div class="perm-action"><div class="checkbox checked"></div> 查看</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 新增</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 编辑</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 删除</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 导出</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 组织关系转接</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 一级：产业基础 -->
+              <div class="perm-level-1">
+                <div class="perm-item expanded">
+                  <span class="perm-arrow">›</span>
+                  <div class="checkbox checked"></div>
+                  <span class="perm-icon">📊</span>
+                  <span class="perm-name">产业基础</span>
+                </div>
+                <div class="perm-level-2">
+                  <div class="perm-item expanded">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">📈</span>
+                    <span class="perm-name">产业管理</span>
+                  </div>
+                  <div class="perm-level-3">
+                    <div class="perm-action"><div class="checkbox checked"></div> 查看</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 新增</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 编辑</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 删除</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 导出</div>
+                  </div>
+
+                  <div class="perm-item">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">⌂</span>
+                    <span class="perm-name">企业服务</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 一级：党员管理 -->
+              <div class="perm-level-1">
+                <div class="perm-item">
+                  <span class="perm-arrow">›</span>
+                  <div class="checkbox checked"></div>
+                  <span class="perm-icon">👥</span>
+                  <span class="perm-name">党员管理</span>
+                </div>
+              </div>
+
+              <!-- 一级：人才培养 -->
+              <div class="perm-level-1">
+                <div class="perm-item">
+                  <span class="perm-arrow">›</span>
+                  <div class="checkbox checked"></div>
+                  <span class="perm-icon">💎</span>
+                  <span class="perm-name">人才培养</span>
+                </div>
+              </div>
+
+              <!-- 一级：信息发布 -->
+              <div class="perm-level-1">
+                <div class="perm-item expanded">
+                  <span class="perm-arrow">›</span>
+                  <div class="checkbox checked"></div>
+                  <span class="perm-icon">✎</span>
+                  <span class="perm-name">信息发布</span>
+                </div>
+                <div class="perm-level-2">
+                  <div class="perm-item expanded">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">📄</span>
+                    <span class="perm-name">信息发布管理</span>
+                  </div>
+                  <div class="perm-level-3">
+                    <div class="perm-action"><div class="checkbox checked"></div> 查看</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 发布</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 编辑</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 删除</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 审核</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 下架</div>
+                  </div>
+
+                  <div class="perm-item expanded">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">🎉</span>
+                    <span class="perm-name">党建活动发布</span>
+                  </div>
+                  <div class="perm-level-3">
+                    <div class="perm-action"><div class="checkbox checked"></div> 查看</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 发布</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 编辑</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 删除</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 报名管理</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 签到管理</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 一级：智能报告 -->
+              <div class="perm-level-1">
+                <div class="perm-item">
+                  <span class="perm-arrow">›</span>
+                  <div class="checkbox checked"></div>
+                  <span class="perm-icon">✦</span>
+                  <span class="perm-name">智能报告</span>
+                </div>
+              </div>
+
+              <!-- 一级：系统管理 -->
+              <div class="perm-level-1">
+                <div class="perm-item expanded">
+                  <span class="perm-arrow">›</span>
+                  <div class="checkbox checked"></div>
+                  <span class="perm-icon">⚙</span>
+                  <span class="perm-name">系统管理</span>
+                </div>
+                <div class="perm-level-2">
+                  <div class="perm-item expanded">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">👤</span>
+                    <span class="perm-name">账号管理</span>
+                  </div>
+                  <div class="perm-level-3">
+                    <div class="perm-action"><div class="checkbox checked"></div> 查看</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 新增</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 编辑</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 删除</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 重置密码</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 禁用/启用</div>
+                  </div>
+
+                  <div class="perm-item expanded">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">🔐</span>
+                    <span class="perm-name">角色管理</span>
+                  </div>
+                  <div class="perm-level-3">
+                    <div class="perm-action"><div class="checkbox checked"></div> 查看</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 新增</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 编辑</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 删除</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 权限配置</div>
+                  </div>
+
+                  <div class="perm-item expanded">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">📋</span>
+                    <span class="perm-name">菜单管理</span>
+                  </div>
+                  <div class="perm-level-3">
+                    <div class="perm-action"><div class="checkbox checked"></div> 查看</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 新增</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 编辑</div>
+                    <div class="perm-action"><div class="checkbox checked"></div> 删除</div>
+                  </div>
+
+                  <div class="perm-item">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">📝</span>
+                    <span class="perm-name">日志管理</span>
+                  </div>
+
+                  <div class="perm-item">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">🏷</span>
+                    <span class="perm-name">标签管理</span>
+                  </div>
+
+                  <div class="perm-item">
+                    <span class="perm-arrow">›</span>
+                    <div class="checkbox checked"></div>
+                    <span class="perm-icon">📖</span>
+                    <span class="perm-name">字典管理</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 数据权限 -->
+            <div class="data-permission">
+              <div class="permission-section-title">
+                <span>📊</span> 数据权限配置
+              </div>
+              <div class="data-perm-options">
+                <div class="data-perm-option selected">
+                  <div class="checkbox checked"></div>
+                  <span>全部数据</span>
+                </div>
+                <div class="data-perm-option">
+                  <div class="checkbox"></div>
+                  <span>本部门及下级</span>
+                </div>
+                <div class="data-perm-option">
+                  <div class="checkbox"></div>
+                  <span>本部门</span>
+                </div>
+                <div class="data-perm-option">
+                  <div class="checkbox"></div>
+                  <span>仅本人</span>
+                </div>
+                <div class="data-perm-option">
+                  <div class="checkbox"></div>
+                  <span>自定义</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 底部操作栏 -->
+            <div class="action-footer">
+              <button class="btn btn-secondary">重置</button>
+              <button class="btn btn-primary">保存配置</button>
+            </div>
+          </div>
+        </div>
+            </main>
+    </div>
+  </div>
+
+  <script>
+    // 角色卡片选中
+    document.querySelectorAll('.role-card').forEach(card => {
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('.role-card-actions')) return;
+        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // 复选框切换
+    document.querySelectorAll('.checkbox').forEach(cb => {
+      cb.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.classList.toggle('checked');
+      });
+    });
+
+    // 权限树展开/收起
+    document.querySelectorAll('.perm-item .perm-arrow').forEach(arrow => {
+      arrow.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.parentElement.classList.toggle('expanded');
+      });
+    });
+
+    // 数据权限选择
+    document.querySelectorAll('.data-perm-option').forEach(opt => {
+      opt.addEventListener('click', function() {
+        document.querySelectorAll('.data-perm-option').forEach(o => {
+          o.classList.remove('selected');
+          o.querySelector('.checkbox').classList.remove('checked');
+        });
+        this.classList.add('selected');
+        this.querySelector('.checkbox').classList.add('checked');
+      });
+    });
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
+
