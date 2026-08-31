@@ -1,0 +1,1630 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能报告中心 - 党建数字化平台</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: #050d1f;
+    color: #c8d6e5;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+  /* 背景网格 */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0, 150, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 150, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  /* 扫描线效果 */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.4), transparent);
+    animation: scanLine 6s linear infinite;
+    pointer-events: none;
+    z-index: 100;
+  }
+  @keyframes scanLine {
+    0% { top: 0; }
+    100% { top: 100%; }
+  }
+
+  /* ========== 顶部标题栏 ========== */
+  .header {
+    position: relative;
+    height: 80px;
+    background: linear-gradient(180deg, rgba(10, 30, 60, 0.95), rgba(5, 13, 31, 0.8));
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    z-index: 10;
+  }
+  .header::before, .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    width: 200px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  }
+  .header::before { left: 10%; }
+  .header::after { right: 10%; }
+
+  .header-title {
+    font-size: 32px;
+    font-weight: bold;
+    background: linear-gradient(180deg, #fff8dc 0%, #ffd700 50%, #daa520 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 8px;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    position: relative;
+  }
+  .header-title::before, .header-title::after {
+    content: '◆';
+    font-size: 14px;
+    color: #ffd700;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-text-fill-color: #ffd700;
+  }
+  .header-title::before { left: -40px; }
+  .header-title::after { right: -40px; }
+
+  .header-left, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 300px;
+  }
+  .header-right { justify-content: flex-end; }
+
+  .datetime-box {
+    text-align: right;
+    color: #8fa8c8;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .datetime-box .date { font-size: 13px; }
+  .datetime-box .time {
+    font-size: 22px;
+    color: #ffd700;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+  }
+
+  .mode-switch {
+    display: flex;
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .mode-btn {
+    padding: 6px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    background: transparent;
+    color: #8fa8c8;
+    border: none;
+    transition: all 0.3s;
+  }
+  .mode-btn.active {
+    background: linear-gradient(135deg, rgba(200, 30, 30, 0.8), rgba(180, 20, 20, 0.9));
+    color: #ffd700;
+  }
+  .mode-btn:hover { color: #ffd700; }
+
+  .party-badge {
+    width: 50px; height: 50px;
+    background: radial-gradient(circle, #c81e1e, #8b0000);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #ffd700;
+    box-shadow: 0 0 20px rgba(200, 30, 30, 0.5);
+  }
+
+  /* ========== 主体布局 ========== */
+  .main-container {
+    display: grid;
+    grid-template-columns: 380px 1fr 380px;
+    gap: 16px;
+    padding: 16px;
+    position: relative;
+    z-index: 5;
+    height: calc(100vh - 80px);
+  }
+
+  .col-left, .col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .col-center {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ========== 通用面板样式 ========== */
+  .panel {
+    position: relative;
+    background: linear-gradient(180deg, rgba(10, 30, 60, 0.6), rgba(5, 15, 35, 0.8));
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  /* 四角装饰 */
+  .panel::before, .panel::after,
+  .panel .corner-bl, .panel .corner-br {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-color: #ffd700;
+    border-style: solid;
+  }
+  .panel::before {
+    top: -1px; left: -1px;
+    border-width: 2px 0 0 2px;
+  }
+  .panel::after {
+    top: -1px; right: -1px;
+    border-width: 2px 2px 0 0;
+  }
+  .panel .corner-bl {
+    bottom: -1px; left: -1px;
+    border-width: 0 0 2px 2px;
+  }
+  .panel .corner-br {
+    bottom: -1px; right: -1px;
+    border-width: 0 2px 2px 0;
+  }
+  /* 顶部发光线 */
+  .panel > .panel-glow {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  }
+
+  .panel-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffd700;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-title::before {
+    content: '';
+    width: 4px;
+    height: 16px;
+    background: linear-gradient(180deg, #ffd700, #c81e1e);
+    border-radius: 2px;
+  }
+  .panel-title::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, #ffd700, transparent);
+  }
+  .panel-title .title-en {
+    font-size: 11px;
+    color: rgba(143, 168, 200, 0.5);
+    font-weight: normal;
+    margin-left: auto;
+    letter-spacing: 1px;
+  }
+
+  .panel-body {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ========== 左列 - 报告生成统计 ========== */
+  .big-number {
+    text-align: center;
+    padding: 10px 0 16px;
+  }
+  .big-number .label {
+    font-size: 13px;
+    color: #8fa8c8;
+    margin-bottom: 6px;
+  }
+  .big-number .value {
+    font-size: 42px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(180deg, #fff, #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+  .big-number .unit {
+    font-size: 16px;
+    color: #ffd700;
+    margin-left: 4px;
+  }
+
+  .mini-metrics {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .mini-metric {
+    text-align: center;
+    padding: 8px 4px;
+    background: rgba(0, 100, 200, 0.1);
+    border: 1px solid rgba(0, 150, 255, 0.15);
+    border-radius: 3px;
+  }
+  .mini-metric .num {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffd700;
+    font-family: 'Courier New', monospace;
+  }
+  .mini-metric .name {
+    font-size: 11px;
+    color: #8fa8c8;
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+
+  /* 柱状图 */
+  .bar-chart {
+    height: 140px;
+    position: relative;
+    padding-top: 20px;
+  }
+  .bar-chart .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 4px;
+  }
+  .bar-chart .bar {
+    flex: 1;
+    margin: 0 1px;
+    background: linear-gradient(180deg, #00a8ff, #0066cc);
+    border-radius: 2px 2px 0 0;
+    position: relative;
+    min-height: 4px;
+    transition: height 0.5s;
+  }
+  .bar-chart .bar:hover {
+    background: linear-gradient(180deg, #ffd700, #daa520);
+  }
+  .bar-chart .bar:nth-child(5n) {
+    background: linear-gradient(180deg, #ffd700, #daa520);
+  }
+  .bar-chart .y-grid {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+  .bar-chart .y-grid line {
+    stroke: rgba(0, 150, 255, 0.1);
+    stroke-dasharray: 3,3;
+  }
+  .bar-chart .x-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 4px 0;
+    font-size: 10px;
+    color: rgba(143, 168, 200, 0.6);
+  }
+
+  /* ========== 饼图 ========== */
+  .pie-chart-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 100%;
+  }
+  .pie-chart {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .pie-chart::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: #050d1f;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+  }
+  .pie-chart::after {
+    content: '五大类';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    color: #ffd700;
+    font-weight: bold;
+  }
+  .pie-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pie-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .pie-legend-item .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .pie-legend-item .name {
+    color: #8fa8c8;
+    flex: 1;
+  }
+  .pie-legend-item .pct {
+    color: #ffd700;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ========== 面积折线图 ========== */
+  .area-chart {
+    height: 140px;
+    position: relative;
+  }
+  .area-chart svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ========== 中间 KPI 行 ========== */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .kpi-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(10, 30, 60, 0.8), rgba(5, 15, 35, 0.9));
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #c81e1e, #ffd700, #c81e1e);
+  }
+  .kpi-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    border-radius: 50%;
+  }
+  .kpi-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, rgba(200, 30, 30, 0.3), rgba(255, 215, 0, 0.2));
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .kpi-info .kpi-label {
+    font-size: 13px;
+    color: #8fa8c8;
+    margin-bottom: 4px;
+  }
+  .kpi-info .kpi-value {
+    font-size: 30px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(180deg, #fff, #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .kpi-info .kpi-unit {
+    font-size: 13px;
+    color: #ffd700;
+    margin-left: 3px;
+  }
+  .kpi-info .kpi-trend {
+    font-size: 11px;
+    color: #00ff88;
+    margin-top: 2px;
+  }
+  .kpi-info .kpi-trend.down { color: #ff6b6b; }
+
+  /* ========== 报告展示区 ========== */
+  .report-display {
+    flex: 1;
+    position: relative;
+    background: linear-gradient(180deg, rgba(10, 30, 60, 0.5), rgba(5, 15, 35, 0.7));
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .report-display::before, .report-display::after,
+  .report-display .corner-bl, .report-display .corner-br {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: #ffd700;
+    border-style: solid;
+  }
+  .report-display::before {
+    top: -1px; left: -1px;
+    border-width: 3px 0 0 3px;
+  }
+  .report-display::after {
+    top: -1px; right: -1px;
+    border-width: 3px 3px 0 0;
+  }
+  .report-display .corner-bl {
+    bottom: -1px; left: -1px;
+    border-width: 0 0 3px 3px;
+  }
+  .report-display .corner-br {
+    bottom: -1px; right: -1px;
+    border-width: 0 3px 3px 0;
+  }
+
+  .report-header {
+    text-align: center;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed rgba(255, 215, 0, 0.2);
+    margin-bottom: 16px;
+    flex-shrink: 0;
+  }
+  .report-header .report-tag {
+    display: inline-block;
+    padding: 2px 12px;
+    background: linear-gradient(135deg, #c81e1e, #8b0000);
+    color: #ffd700;
+    font-size: 11px;
+    border-radius: 2px;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  .report-header h2 {
+    font-size: 22px;
+    color: #ffd700;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+
+  .report-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .report-content::-webkit-scrollbar {
+    width: 4px;
+  }
+  .report-content::-webkit-scrollbar-track {
+    background: rgba(0, 150, 255, 0.1);
+  }
+  .report-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.4);
+    border-radius: 2px;
+  }
+
+  .report-section {
+    background: rgba(0, 80, 160, 0.1);
+    border: 1px solid rgba(0, 150, 255, 0.15);
+    padding: 12px;
+    border-radius: 4px;
+  }
+  .report-section h3 {
+    font-size: 14px;
+    color: #ffd700;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .report-section h3 .sec-num {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #c81e1e, #8b0000);
+    color: #ffd700;
+    font-size: 11px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sec-data-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .sec-data-card {
+    background: rgba(0, 150, 255, 0.08);
+    padding: 6px;
+    text-align: center;
+    border-radius: 3px;
+  }
+  .sec-data-card .val {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffd700;
+    font-family: 'Courier New', monospace;
+  }
+  .sec-data-card .lbl {
+    font-size: 10px;
+    color: #8fa8c8;
+    margin-top: 2px;
+  }
+
+  .mini-bar-chart {
+    height: 50px;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .mini-bar-chart .mbar {
+    flex: 1;
+    background: linear-gradient(180deg, #00a8ff, #0066cc);
+    border-radius: 2px 2px 0 0;
+    min-height: 4px;
+  }
+
+  .sec-list {
+    list-style: none;
+    font-size: 12px;
+    color: #aabbcc;
+    line-height: 1.8;
+  }
+  .sec-list li {
+    padding-left: 12px;
+    position: relative;
+  }
+  .sec-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: #ffd700;
+  }
+
+  .report-footer {
+    padding-top: 12px;
+    border-top: 1px dashed rgba(255, 215, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #8fa8c8;
+    margin-top: 12px;
+    flex-shrink: 0;
+  }
+  .report-footer .status-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    background: rgba(0, 255, 136, 0.15);
+    color: #00ff88;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+  }
+  .report-footer .ai-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+  }
+
+  /* ========== 热门报告排行 ========== */
+  .hot-reports {
+    flex-shrink: 0;
+    height: 160px;
+  }
+  .hot-reports-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .hot-report-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hot-report-item .rank {
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 150, 255, 0.2);
+    color: #8fa8c8;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .hot-report-item:nth-child(1) .rank { background: linear-gradient(135deg, #ffd700, #daa520); color: #8b0000; }
+  .hot-report-item:nth-child(2) .rank { background: linear-gradient(135deg, #c0c0c0, #a0a0a0); color: #333; }
+  .hot-report-item:nth-child(3) .rank { background: linear-gradient(135deg, #cd7f32, #a06020); color: #fff; }
+
+  .hot-report-item .name {
+    flex: 1;
+    font-size: 12px;
+    color: #c8d6e5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hot-report-item .bar-bg {
+    width: 100px;
+    height: 8px;
+    background: rgba(0, 150, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .hot-report-item .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #c81e1e, #ffd700);
+    border-radius: 4px;
+  }
+  .hot-report-item .count {
+    width: 50px;
+    text-align: right;
+    font-size: 12px;
+    color: #ffd700;
+    font-family: 'Courier New', monospace;
+    flex-shrink: 0;
+  }
+
+  /* ========== 右列 - 质量分析 ========== */
+  .quality-rings {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 16px;
+  }
+  .ring-item {
+    text-align: center;
+  }
+  .ring-chart {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    margin: 0 auto 6px;
+  }
+  .ring-chart svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  .ring-chart .ring-bg {
+    fill: none;
+    stroke: rgba(0, 150, 255, 0.15);
+    stroke-width: 8;
+  }
+  .ring-chart .ring-fill {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+  }
+  .ring-chart .ring-val {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+  }
+  .ring-item .ring-label {
+    font-size: 12px;
+    color: #8fa8c8;
+  }
+
+  .radar-chart {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .radar-chart svg {
+    width: 160px;
+    height: 150px;
+  }
+
+  /* ========== AI 生成效率 ========== */
+  .ai-efficiency .ai-big-num {
+    text-align: center;
+    padding: 8px 0 14px;
+  }
+  .ai-big-num .val {
+    font-size: 36px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(180deg, #00ff88, #00a86b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .ai-big-num .lbl {
+    font-size: 12px;
+    color: #8fa8c8;
+    margin-top: 2px;
+  }
+
+  .compare-bars {
+    height: 80px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 0 20px;
+    margin-bottom: 12px;
+  }
+  .compare-bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .compare-bar-group .bars {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+    height: 60px;
+  }
+  .compare-bar {
+    width: 24px;
+    border-radius: 3px 3px 0 0;
+    position: relative;
+  }
+  .compare-bar.human {
+    background: linear-gradient(180deg, #ff6b6b, #c81e1e);
+  }
+  .compare-bar.ai {
+    background: linear-gradient(180deg, #00ff88, #00a86b);
+  }
+  .compare-bar .bar-val {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .compare-bar-group .bar-name {
+    font-size: 11px;
+    color: #8fa8c8;
+  }
+
+  .save-time {
+    text-align: center;
+    padding: 10px;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.08), rgba(0, 150, 255, 0.08));
+    border: 1px dashed rgba(0, 255, 136, 0.3);
+    border-radius: 4px;
+  }
+  .save-time .st-val {
+    font-size: 22px;
+    font-weight: bold;
+    color: #00ff88;
+    font-family: 'Courier New', monospace;
+  }
+  .save-time .st-lbl {
+    font-size: 11px;
+    color: #8fa8c8;
+    margin-top: 2px;
+  }
+
+  /* ========== 审核动态 ========== */
+  .audit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  .audit-item {
+    padding: 10px;
+    background: rgba(0, 100, 200, 0.08);
+    border-left: 3px solid #00a8ff;
+    border-radius: 0 4px 4px 0;
+    position: relative;
+    animation: slideIn 0.5s ease-out;
+  }
+  .audit-item.pass { border-left-color: #00ff88; }
+  .audit-item.pending { border-left-color: #ffd700; }
+  .audit-item.reject { border-left-color: #ff6b6b; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .audit-item .audit-title {
+    font-size: 12px;
+    color: #c8d6e5;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+  }
+  .audit-item .audit-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #8fa8c8;
+  }
+  .audit-item .audit-status {
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+  }
+  .audit-item.pass .audit-status {
+    background: rgba(0, 255, 136, 0.15);
+    color: #00ff88;
+  }
+  .audit-item.pending .audit-status {
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+  }
+  .audit-item.reject .audit-status {
+    background: rgba(255, 107, 107, 0.15);
+    color: #ff6b6b;
+  }
+
+  /* 滚动动画 */
+  .audit-scroll {
+    animation: scrollUp 30s linear infinite;
+  }
+  @keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+
+  /* ========== 底部装饰 ========== */
+  .footer-deco {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #ffd700, #c81e1e, #ffd700, transparent);
+    z-index: 50;
+  }
+
+  /* 响应式 */
+  @media (max-width: 1400px) {
+    .main-container {
+      grid-template-columns: 320px 1fr 320px;
+    }
+    .kpi-info .kpi-value { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部标题栏 -->
+<div class="header">
+  <div class="header-left">
+    <div class="party-badge">☭</div>
+    <div style="color:#8fa8c8; font-size:13px;">党建数字化平台<br><span style="color:#ffd700; font-size:11px;">Digital Party Building</span></div>
+  </div>
+  <div class="header-title">智能报告中心</div>
+  <div class="header-right">
+    <div class="mode-switch">
+      <button class="mode-btn active">日报模式</button>
+      <button class="mode-btn">月报模式</button>
+      <button class="mode-btn">年报模式</button>
+    </div>
+    <div class="datetime-box">
+      <div class="date" id="currentDate">2026年08月18日 星期二</div>
+      <div class="time" id="currentTime">14:30:28</div>
+    </div>
+  </div>
+</div>
+
+<!-- 主体内容 -->
+<div class="main-container">
+
+  <!-- 左列 -->
+  <div class="col-left">
+
+    <!-- 报告生成统计 -->
+    <div class="panel">
+      <span class="panel-glow"></span>
+      <span class="corner-bl"></span>
+      <span class="corner-br"></span>
+      <div class="panel-title">
+        报告生成统计
+        <span class="title-en">REPORT STATISTICS</span>
+      </div>
+      <div class="panel-body">
+        <div class="big-number">
+          <div class="label">本月生成</div>
+          <div><span class="value">1,256</span><span class="unit">份</span></div>
+        </div>
+        <div class="mini-metrics">
+          <div class="mini-metric">
+            <div class="num">386</div>
+            <div class="name">党建基础</div>
+          </div>
+          <div class="mini-metric">
+            <div class="num">245</div>
+            <div class="name">产业分析</div>
+          </div>
+          <div class="mini-metric">
+            <div class="num">198</div>
+            <div class="name">人才分析</div>
+          </div>
+          <div class="mini-metric">
+            <div class="num">267</div>
+            <div class="name">党建服务</div>
+          </div>
+          <div class="mini-metric">
+            <div class="num">160</div>
+            <div class="name">教育培训</div>
+          </div>
+        </div>
+        <div style="font-size:12px; color:#8fa8c8; margin-bottom:6px;">近30天每日生成量趋势</div>
+        <div class="bar-chart">
+          <svg class="y-grid" viewBox="0 0 300 120" preserveAspectRatio="none">
+            <line x1="0" y1="30" x2="300" y2="30"/>
+            <line x1="0" y1="60" x2="300" y2="60"/>
+            <line x1="0" y1="90" x2="300" y2="90"/>
+          </svg>
+          <div class="chart-bars" id="dailyBars"></div>
+        </div>
+        <div class="x-labels">
+          <span>1日</span><span>10日</span><span>20日</span><span>30日</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 报告类型分布 -->
+    <div class="panel">
+      <span class="panel-glow"></span>
+      <span class="corner-bl"></span>
+      <span class="corner-br"></span>
+      <div class="panel-title">
+        报告类型分布
+        <span class="title-en">TYPE DISTRIBUTION</span>
+      </div>
+      <div class="panel-body">
+        <div class="pie-chart-wrap">
+          <div class="pie-chart" style="background: conic-gradient(
+            #c81e1e 0deg 110deg,
+            #ffd700 110deg 180deg,
+            #00a8ff 180deg 240deg,
+            #00ff88 240deg 310deg,
+            #ff6b9d 310deg 360deg
+          );"></div>
+          <div class="pie-legend">
+            <div class="pie-legend-item">
+              <span class="dot" style="background:#c81e1e;"></span>
+              <span class="name">党建基础报告</span>
+              <span class="pct">30.7%</span>
+            </div>
+            <div class="pie-legend-item">
+              <span class="dot" style="background:#ffd700;"></span>
+              <span class="name">产业分析报告</span>
+              <span class="pct">19.5%</span>
+            </div>
+            <div class="pie-legend-item">
+              <span class="dot" style="background:#00a8ff;"></span>
+              <span class="name">人才分析报告</span>
+              <span class="pct">15.8%</span>
+            </div>
+            <div class="pie-legend-item">
+              <span class="dot" style="background:#00ff88;"></span>
+              <span class="name">党建服务报告</span>
+              <span class="pct">21.3%</span>
+            </div>
+            <div class="pie-legend-item">
+              <span class="dot" style="background:#ff6b9d;"></span>
+              <span class="name">教育培训报告</span>
+              <span class="pct">12.7%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 报告生成趋势 -->
+    <div class="panel">
+      <span class="panel-glow"></span>
+      <span class="corner-bl"></span>
+      <span class="corner-br"></span>
+      <div class="panel-title">
+        报告生成趋势
+        <span class="title-en">GENERATION TREND</span>
+      </div>
+      <div class="panel-body">
+        <div class="area-chart">
+          <svg viewBox="0 0 340 140" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#ffd700;stop-opacity:0.5" />
+                <stop offset="100%" style="stop-color:#ffd700;stop-opacity:0.02" />
+              </linearGradient>
+            </defs>
+            <!-- 网格线 -->
+            <line x1="0" y1="35" x2="340" y2="35" stroke="rgba(0,150,255,0.1)" stroke-dasharray="3,3"/>
+            <line x1="0" y1="70" x2="340" y2="70" stroke="rgba(0,150,255,0.1)" stroke-dasharray="3,3"/>
+            <line x1="0" y1="105" x2="340" y2="105" stroke="rgba(0,150,255,0.1)" stroke-dasharray="3,3"/>
+            <!-- 面积 -->
+            <path d="M0,110 L56,90 L113,70 L170,50 L227,35 L283,20 L340,10 L340,140 L0,140 Z"
+                  fill="url(#areaGrad)"/>
+            <!-- 折线 -->
+            <path d="M0,110 L56,90 L113,70 L170,50 L227,35 L283,20 L340,10"
+                  fill="none" stroke="#ffd700" stroke-width="2"/>
+            <!-- 数据点 -->
+            <circle cx="0" cy="110" r="3" fill="#ffd700"/>
+            <circle cx="56" cy="90" r="3" fill="#ffd700"/>
+            <circle cx="113" cy="70" r="3" fill="#ffd700"/>
+            <circle cx="170" cy="50" r="3" fill="#ffd700"/>
+            <circle cx="227" cy="35" r="3" fill="#ffd700"/>
+            <circle cx="283" cy="20" r="3" fill="#ffd700"/>
+            <circle cx="340" cy="10" r="4" fill="#ffd700" stroke="#fff" stroke-width="1"/>
+          </svg>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:rgba(143,168,200,0.6); padding: 0 4px; margin-top:4px;">
+          <span>3月</span><span>4月</span><span>5月</span><span>6月</span><span>7月</span><span>8月</span>
+        </div>
+        <div style="text-align:center; margin-top:10px; padding-top:10px; border-top:1px dashed rgba(255,215,0,0.15);">
+          <span style="font-size:12px; color:#8fa8c8;">近6个月累计生成</span>
+          <span style="font-size:22px; font-weight:bold; color:#ffd700; margin-left:8px; font-family:'Courier New', monospace;">7,842</span>
+          <span style="font-size:12px; color:#ffd700;">份</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 中间主区 -->
+  <div class="col-center">
+
+    <!-- KPI 行 -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-icon">📊</div>
+        <div class="kpi-info">
+          <div class="kpi-label">累计报告总数</div>
+          <div><span class="kpi-value">28,560</span><span class="kpi-unit">份</span></div>
+          <div class="kpi-trend">↑ 较上月增长 12.5%</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">📈</div>
+        <div class="kpi-info">
+          <div class="kpi-label">本月新增</div>
+          <div><span class="kpi-value">1,256</span><span class="kpi-unit">份</span></div>
+          <div class="kpi-trend">↑ 环比增长 8.3%</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🤖</div>
+        <div class="kpi-info">
+          <div class="kpi-label">智能生成率</div>
+          <div><span class="kpi-value">92.3</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-trend">↑ 较上月提升 3.2%</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">⭐</div>
+        <div class="kpi-info">
+          <div class="kpi-label">报告满意度</div>
+          <div><span class="kpi-value">96.8</span><span class="kpi-unit">%</span></div>
+          <div class="kpi-trend">↑ 较上月提升 1.5%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 报告展示区 -->
+    <div class="report-display">
+      <span class="corner-bl"></span>
+      <span class="corner-br"></span>
+      <div class="report-header">
+        <div class="report-tag">综 合 分 析 报 告</div>
+        <h2>2026年7月党建工作综合分析报告</h2>
+      </div>
+      <div class="report-content">
+        <!-- 一、党组织建设概况 -->
+        <div class="report-section">
+          <h3><span class="sec-num">一</span>党组织建设概况</h3>
+          <div class="sec-data-cards">
+            <div class="sec-data-card">
+              <div class="val">1,256</div>
+              <div class="lbl">基层党组织</div>
+            </div>
+            <div class="sec-data-card">
+              <div class="val">28,650</div>
+              <div class="lbl">党员总数</div>
+            </div>
+            <div class="sec-data-card">
+              <div class="val">98.5%</div>
+              <div class="lbl">组织覆盖率</div>
+            </div>
+          </div>
+          <div class="mini-bar-chart">
+            <div class="mbar" style="height:60%;"></div>
+            <div class="mbar" style="height:75%;"></div>
+            <div class="mbar" style="height:65%;"></div>
+            <div class="mbar" style="height:80%;"></div>
+            <div class="mbar" style="height:70%;"></div>
+            <div class="mbar" style="height:85%;"></div>
+            <div class="mbar" style="height:90%;"></div>
+            <div class="mbar" style="height:95%;"></div>
+          </div>
+        </div>
+
+        <!-- 二、党员发展情况分析 -->
+        <div class="report-section">
+          <h3><span class="sec-num">二</span>党员发展情况分析</h3>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+            <div class="sec-data-card">
+              <div class="val">456</div>
+              <div class="lbl">本月发展</div>
+            </div>
+            <div class="sec-data-card">
+              <div class="val">35岁以下</div>
+              <div class="lbl">占比68%</div>
+            </div>
+          </div>
+          <div class="mini-bar-chart">
+            <div class="mbar" style="height:45%; background:linear-gradient(180deg,#ffd700,#daa520);"></div>
+            <div class="mbar" style="height:70%;"></div>
+            <div class="mbar" style="height:55%; background:linear-gradient(180deg,#ffd700,#daa520);"></div>
+            <div class="mbar" style="height:80%;"></div>
+            <div class="mbar" style="height:65%; background:linear-gradient(180deg,#ffd700,#daa520);"></div>
+            <div class="mbar" style="height:90%;"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:10px; color:rgba(143,168,200,0.6); margin-top:4px;">
+            <span>企业</span><span>机关</span><span>高校</span><span>社区</span><span>农村</span><span>其他</span>
+          </div>
+        </div>
+
+        <!-- 三、产业党建融合成效 -->
+        <div class="report-section">
+          <h3><span class="sec-num">三</span>产业党建融合成效</h3>
+          <ul class="sec-list">
+            <li>产业链党组织覆盖率达 92.5%</li>
+            <li>建立产业党建联盟 28 个</li>
+            <li>推动解决企业难题 156 件</li>
+            <li>党员先锋岗创建 320 个</li>
+            <li>技术攻关项目立项 45 项</li>
+          </ul>
+        </div>
+
+        <!-- 四、人才工作亮点 -->
+        <div class="report-section">
+          <h3><span class="sec-num">四</span>人才工作亮点</h3>
+          <div class="sec-data-cards">
+            <div class="sec-data-card">
+              <div class="val">1,280</div>
+              <div class="lbl">引进人才</div>
+            </div>
+            <div class="sec-data-card">
+              <div class="val">86</div>
+              <div class="lbl">高端人才</div>
+            </div>
+            <div class="sec-data-card">
+              <div class="val">95%</div>
+              <div class="lbl">党员占比</div>
+            </div>
+          </div>
+          <ul class="sec-list" style="margin-top:6px;">
+            <li>人才公寓入住率 98%</li>
+            <li>培训覆盖率 100%</li>
+          </ul>
+        </div>
+      </div>
+      <div class="report-footer">
+        <div>报告生成时间：2026-08-01 09:00:00</div>
+        <div style="display:flex; gap:8px;">
+          <span class="ai-badge">✦ AI智能生成</span>
+          <span class="status-badge">✓ 已审核通过</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 热门报告排行 -->
+    <div class="panel hot-reports">
+      <span class="panel-glow"></span>
+      <span class="corner-bl"></span>
+      <span class="corner-br"></span>
+      <div class="panel-title">
+        本月热门报告 TOP 5
+        <span class="title-en">HOT REPORTS</span>
+      </div>
+      <div class="panel-body">
+        <div class="hot-reports-list">
+          <div class="hot-report-item">
+            <span class="rank">1</span>
+            <span class="name">2026年上半年党建工作综合分析报告</span>
+            <div class="bar-bg"><div class="bar-fill" style="width:95%;"></div></div>
+            <span class="count">3,256</span>
+          </div>
+          <div class="hot-report-item">
+            <span class="rank">2</span>
+            <span class="name">产业党建融合发展专项调研报告</span>
+            <div class="bar-bg"><div class="bar-fill" style="width:82%;"></div></div>
+            <span class="count">2,810</span>
+          </div>
+          <div class="hot-report-item">
+            <span class="rank">3</span>
+            <span class="name">人才队伍建设与发展趋势分析报告</span>
+            <div class="bar-bg"><div class="bar-fill" style="width:70%;"></div></div>
+            <span class="count">2,405</span>
+          </div>
+          <div class="hot-report-item">
+            <span class="rank">4</span>
+            <span class="name">基层党组织标准化建设评估报告</span>
+            <div class="bar-bg"><div class="bar-fill" style="width:58%;"></div></div>
+            <span class="count">1,986</span>
+          </div>
+          <div class="hot-report-item">
+            <span class="rank">5</span>
+            <span class="name">党员教育培训质量效果评估报告</span>
+            <div class="bar-bg"><div class="bar-fill" style="width:45%;"></div></div>
+            <span class="count">1,542</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 右列 -->
+  <div class="col-right">
+
+    <!-- 报告质量评估 -->
+    <div class="panel">
+      <span class="panel-glow"></span>
+      <span class="corner-bl"></span>
+      <span class="corner-br"></span>
+      <div class="panel-title">
+        报告质量评估
+        <span class="title-en">QUALITY ANALYSIS</span>
+      </div>
+      <div class="panel-body">
+        <div class="quality-rings">
+          <div class="ring-item">
+            <div class="ring-chart">
+              <svg viewBox="0 0 80 80">
+                <circle class="ring-bg" cx="40" cy="40" r="32"/>
+                <circle class="ring-fill" cx="40" cy="40" r="32"
+                        stroke="#00ff88"
+                        stroke-dasharray="201"
+                        stroke-dashoffset="3"
+                        style="filter: drop-shadow(0 0 4px rgba(0,255,136,0.5));"/>
+              </svg>
+              <div class="ring-val" style="color:#00ff88;">98.5%</div>
+            </div>
+            <div class="ring-label">合格率</div>
+          </div>
+          <div class="ring-item">
+            <div class="ring-chart">
+              <svg viewBox="0 0 80 80">
+                <circle class="ring-bg" cx="40" cy="40" r="32"/>
+                <circle class="ring-fill" cx="40" cy="40" r="32"
+                        stroke="#ffd700"
+                        stroke-dasharray="201"
+                        stroke-dashoffset="70"
+                        style="filter: drop-shadow(0 0 4px rgba(255,215,0,0.5));"/>
+              </svg>
+              <div class="ring-val" style="color:#ffd700;">65.2%</div>
+            </div>
+            <div class="ring-label">优秀率</div>
+          </div>
+        </div>
+        <div style="font-size:12px; color:#8fa8c8; text-align:center; margin-bottom:8px;">质量指标雷达图</div>
+        <div class="radar-chart">
+          <svg viewBox="0 0 160 150">
+            <!-- 雷达背景多边形 -->
+            <polygon points="80,10 140,45 120,120 40,120 20,45"
+                     fill="none" stroke="rgba(0,150,255,0.15)" stroke-width="1"/>
+            <polygon points="80,30 120,55 105,105 55,105 40,55"
+                     fill="none" stroke="rgba(0,150,255,0.15)" stroke-width="1"/>
+            <polygon points="80,50 100,65 90,90 70,90 60,65"
+                     fill="none" stroke="rgba(0,150,255,0.15)" stroke-width="1"/>
+            <!-- 轴线 -->
+            <line x1="80" y1="10" x2="80" y2="75" stroke="rgba(0,150,255,0.1)"/>
+            <line x1="140" y1="45" x2="80" y2="75" stroke="rgba(0,150,255,0.1)"/>
+            <line x1="120" y1="120" x2="80" y2="75" stroke="rgba(0,150,255,0.1)"/>
+            <line x1="40" y1="120" x2="80" y2="75" stroke="rgba(0,150,255,0.1)"/>
+            <line x1="20" y1="45" x2="80" y2="75" stroke="rgba(0,150,255,0.1)"/>
+            <!-- 数据区域 -->
+            <polygon points="80,15 130,50 110,108 48,112 28,52"
+                     fill="rgba(255,215,0,0.2)" stroke="#ffd700" stroke-width="1.5"
+                     style="filter: drop-shadow(0 0 4px rgba(255,215,0,0.4));"/>
+            <!-- 数据点 -->
+            <circle cx="80" cy="15" r="3" fill="#ffd700"/>
+            <circle cx="130" cy="50" r="3" fill="#ffd700"/>
+            <circle cx="110" cy="108" r="3" fill="#ffd700"/>
+            <circle cx="48" cy="112" r="3" fill="#ffd700"/>
+            <circle cx="28" cy="52" r="3" fill="#ffd700"/>
+            <!-- 标签 -->
+            <text x="80" y="5" text-anchor="middle" fill="#8fa8c8" font-size="10">数据准确性</text>
+            <text x="148" y="48" text-anchor="start" fill="#8fa8c8" font-size="10">逻辑完整性</text>
+            <text x="125" y="132" text-anchor="middle" fill="#8fa8c8" font-size="10">格式规范性</text>
+            <text x="35" y="132" text-anchor="middle" fill="#8fa8c8" font-size="10">时效性</text>
+            <text x="12" y="48" text-anchor="end" fill="#8fa8c8" font-size="10">参考价值</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI 智能生成效率 -->
+    <div class="panel ai-efficiency">
+      <span class="panel-glow"></span>
+      <span class="corner-bl"></span>
+      <span class="corner-br"></span>
+      <div class="panel-title">
+        AI 智能生成效率
+        <span class="title-en">AI EFFICIENCY</span>
+      </div>
+      <div class="panel-body">
+        <div class="ai-big-num">
+          <div class="val">2.3<span style="font-size:18px;">分钟</span></div>
+          <div class="lbl">平均生成时间 / 每份报告</div>
+        </div>
+        <div style="font-size:12px; color:#8fa8c8; text-align:center; margin-bottom:6px;">人工 vs AI 生成时间对比</div>
+        <div class="compare-bars">
+          <div class="compare-bar-group">
+            <div class="bars">
+              <div class="compare-bar human" style="height:100%;">
+                <span class="bar-val">120分</span>
+              </div>
+              <div class="compare-bar ai" style="height:4%;">
+                <span class="bar-val">2.3分</span>
+              </div>
+            </div>
+            <div class="bar-name">综合报告</div>
+          </div>
+          <div class="compare-bar-group">
+            <div class="bars">
+              <div class="compare-bar human" style="height:75%;">
+                <span class="bar-val">90分</span>
+              </div>
+              <div class="compare-bar ai" style="height:3%;">
+                <span class="bar-val">1.8分</span>
+              </div>
+            </div>
+            <div class="bar-name">专题报告</div>
+          </div>
+          <div class="compare-bar-group">
+            <div class="bars">
+              <div class="compare-bar human" style="height:50%;">
+                <span class="bar-val">60分</span>
+              </div>
+              <div class="compare-bar ai" style="height:2%;">
+                <span class="bar-val">1.2分</span>
+              </div>
+            </div>
+            <div class="bar-name">简要报告</div>
+          </div>
+        </div>
+        <div class="save-time">
+          <div class="st-val">12,580<span style="font-size:14px;">小时</span></div>
+          <div class="st-lbl">AI累计节省人工时间</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 最新审核动态 -->
+    <div class="panel">
+      <span class="panel-glow"></span>
+      <span class="corner-bl"></span>
+      <span class="corner-br"></span>
+      <div class="panel-title">
+        最新审核动态
+        <span class="title-en">AUDIT UPDATES</span>
+      </div>
+      <div class="panel-body" style="overflow:hidden;">
+        <div class="audit-list audit-scroll">
+          <div class="audit-item pass">
+            <div class="audit-title">2026年7月基层党建工作月报</div>
+            <div class="audit-meta">
+              <span>张建国 · 5分钟前</span>
+              <span class="audit-status">已通过</span>
+            </div>
+          </div>
+          <div class="audit-item pending">
+            <div class="audit-title">产业党建融合发展季度分析报告</div>
+            <div class="audit-meta">
+              <span>李明华 · 12分钟前</span>
+              <span class="audit-status">待审核</span>
+            </div>
+          </div>
+          <div class="audit-item pass">
+            <div class="audit-title">人才工作专项调研报告</div>
+            <div class="audit-meta">
+              <span>王志强 · 25分钟前</span>
+              <span class="audit-status">已通过</span>
+            </div>
+          </div>
+          <div class="audit-item reject">
+            <div class="audit-title">党员教育培训效果评估报告</div>
+            <div class="audit-meta">
+              <span>赵晓燕 · 38分钟前</span>
+              <span class="audit-status">已驳回</span>
+            </div>
+          </div>
+          <div class="audit-item pass">
+            <div class="audit-title">社区党建创新工作案例分析</div>
+            <div class="audit-meta">
+              <span>陈美玲 · 52分钟前</span>
+              <span class="audit-status">已通过</span>
+            </div>
+          </div>
+          <div class="audit-item pending">
+            <div class="audit-title">两新组织党建覆盖情况报告</div>
+            <div class="audit-meta">
+              <span>刘大伟 · 1小时前</span>
+              <span class="audit-status">待审核</span>
+            </div>
+          </div>
+          <!-- 重复一遍以实现无缝滚动 -->
+          <div class="audit-item pass">
+            <div class="audit-title">2026年7月基层党建工作月报</div>
+            <div class="audit-meta">
+              <span>张建国 · 5分钟前</span>
+              <span class="audit-status">已通过</span>
+            </div>
+          </div>
+          <div class="audit-item pending">
+            <div class="audit-title">产业党建融合发展季度分析报告</div>
+            <div class="audit-meta">
+              <span>李明华 · 12分钟前</span>
+              <span class="audit-status">待审核</span>
+            </div>
+          </div>
+          <div class="audit-item pass">
+            <div class="audit-title">人才工作专项调研报告</div>
+            <div class="audit-meta">
+              <span>王志强 · 25分钟前</span>
+              <span class="audit-status">已通过</span>
+            </div>
+          </div>
+          <div class="audit-item reject">
+            <div class="audit-title">党员教育培训效果评估报告</div>
+            <div class="audit-meta">
+              <span>赵晓燕 · 38分钟前</span>
+              <span class="audit-status">已驳回</span>
+            </div>
+          </div>
+          <div class="audit-item pass">
+            <div class="audit-title">社区党建创新工作案例分析</div>
+            <div class="audit-meta">
+              <span>陈美玲 · 52分钟前</span>
+              <span class="audit-status">已通过</span>
+            </div>
+          </div>
+          <div class="audit-item pending">
+            <div class="audit-title">两新组织党建覆盖情况报告</div>
+            <div class="audit-meta">
+              <span>刘大伟 · 1小时前</span>
+              <span class="audit-status">待审核</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- 底部装饰线 -->
+<div class="footer-deco"></div>
+
+<script>
+  // 时间更新
+  function updateTime() {
+    const now = new Date();
+    const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    const h = String(now.getHours()).padStart(2, '0');
+    const mi = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('currentDate').textContent =
+      `${y}年${m}月${d}日 ${days[now.getDay()]}`;
+    document.getElementById('currentTime').textContent = `${h}:${mi}:${s}`;
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  // 生成30天柱状图数据
+  const barsContainer = document.getElementById('dailyBars');
+  const barCount = 30;
+  for (let i = 0; i < barCount; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    const height = 20 + Math.random() * 80;
+    bar.style.height = height + '%';
+    bar.title = `第${i+1}天: ${Math.floor(20 + height * 0.5)}份`;
+    barsContainer.appendChild(bar);
+  }
+</script>
+
+<script src="bigscreen.js"></script>
+  <script src="common.js"></script>
+</body>
+</html>
+
