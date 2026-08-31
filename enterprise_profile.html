@@ -1,0 +1,2772 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企业画像详情 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ============================================
+       页面特有样式
+       ============================================ */
+    
+    /* 企业信息头部 */
+    .enterprise-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .enterprise-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-red-deep), var(--color-gold-primary), var(--color-red-deep));
+    }
+    
+    .enterprise-header-content {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    
+    .enterprise-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--color-blue-medium), var(--color-blue-deep));
+      border: 2px solid var(--border-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-gold-primary);
+    }
+    
+    .enterprise-info-main {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .enterprise-name {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .enterprise-code {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      margin-bottom: 10px;
+      font-family: 'Consolas', monospace;
+    }
+    
+    .enterprise-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .enterprise-metrics {
+      display: flex;
+      gap: 30px;
+      padding: 0 30px;
+      border-left: 1px solid var(--border-light);
+      border-right: 1px solid var(--border-light);
+    }
+    
+    .enterprise-metric {
+      text-align: center;
+      min-width: 80px;
+    }
+    
+    .enterprise-metric-value {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--color-gold-primary);
+      font-family: 'DIN', 'Arial', sans-serif;
+    }
+    
+    .enterprise-metric-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+    
+    .enterprise-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    
+    .enterprise-actions-row {
+      display: flex;
+      gap: 8px;
+    }
+    
+    /* Tab 内容区 */
+    .tab-panel {
+      display: none;
+    }
+    
+    .tab-panel.active {
+      display: block;
+    }
+    
+    /* 信息列表 */
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .info-label {
+      width: 100px;
+      flex-shrink: 0;
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      line-height: 1.5;
+    }
+    
+    .info-value {
+      flex: 1;
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    
+    /* 证照图片占位 */
+    .license-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    
+    .license-item {
+      aspect-ratio: 3/2;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px dashed var(--border-gold);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+    
+    .license-item:hover {
+      border-color: var(--color-gold-primary);
+      background: rgba(212, 175, 55, 0.05);
+    }
+    
+    .license-icon {
+      width: 40px;
+      height: 40px;
+      color: var(--color-gold-primary);
+      opacity: 0.6;
+    }
+    
+    .license-name {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+    
+    /* 班子成员列表 */
+    .team-list {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+    
+    .team-member {
+      text-align: center;
+      padding: 16px 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      transition: var(--transition-base);
+      cursor: pointer;
+    }
+    
+    .team-member:hover {
+      border-color: var(--border-gold);
+      background: rgba(212, 175, 55, 0.04);
+      transform: translateY(-2px);
+    }
+    
+    .team-member .avatar {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 10px;
+      font-size: 18px;
+    }
+    
+    .team-member-name {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .team-member-role {
+      font-size: var(--font-size-sm);
+      color: var(--color-gold-primary);
+    }
+    
+    /* 分析图表区域 */
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr 1fr;
+      gap: 20px;
+    }
+    
+    .chart-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    
+    .chart-title {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    
+    /* 饼图 SVG */
+    .pie-chart {
+      width: 100%;
+      height: 160px;
+    }
+    
+    /* 服务记录卡片 */
+    .service-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: var(--transition-base);
+      cursor: pointer;
+    }
+    
+    .service-card:hover {
+      border-color: var(--border-gold);
+      background: rgba(212, 175, 55, 0.04);
+    }
+    
+    .service-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .service-type {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .service-time {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+    }
+    
+    .service-content {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    
+    .service-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-sm);
+    }
+    
+    .service-person {
+      color: var(--text-tertiary);
+    }
+    
+    .service-satisfaction {
+      color: var(--color-gold-primary);
+    }
+    
+    /* 诉求记录 */
+    .appeal-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+    
+    .appeal-item:last-child {
+      border-bottom: none;
+    }
+    
+    .appeal-item:hover {
+      background: rgba(212, 175, 55, 0.04);
+    }
+    
+    .appeal-indicator {
+      width: 4px;
+      border-radius: 2px;
+      background: var(--color-gold-primary);
+      flex-shrink: 0;
+    }
+    
+    .appeal-content {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .appeal-title {
+      font-size: var(--font-size-base);
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    
+    .appeal-desc {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .appeal-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    
+    .appeal-date {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+    }
+    
+    /* 政策匹配卡片 */
+    .policy-item {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+    
+    .policy-item:last-child {
+      border-bottom: none;
+    }
+    
+    .policy-item:hover {
+      background: rgba(212, 175, 55, 0.04);
+    }
+    
+    .policy-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    
+    .policy-title {
+      font-size: var(--font-size-base);
+      color: var(--text-primary);
+      font-weight: 500;
+      flex: 1;
+    }
+    
+    .policy-desc {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    
+    .policy-meta {
+      display: flex;
+      gap: 16px;
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+    }
+    
+    /* 经营数据指标 */
+    .biz-metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .biz-metric-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.1), transparent 70%);
+    }
+    
+    .biz-metric-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(196, 30, 58, 0.2), rgba(212, 175, 55, 0.2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+    
+    .biz-metric-value {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'DIN', 'Arial', sans-serif;
+      margin-bottom: 4px;
+    }
+    
+    .biz-metric-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+    }
+    
+    .biz-metric-trend {
+      margin-top: 8px;
+      font-size: var(--font-size-sm);
+    }
+    
+    /* 排名展示 */
+    .rank-display {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 16px 0;
+    }
+    
+    .rank-item {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .rank-number {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--color-gold-primary);
+      font-family: 'DIN', 'Arial', sans-serif;
+      line-height: 1;
+    }
+    
+    .rank-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      margin-top: 6px;
+    }
+    
+    .rank-divider {
+      width: 1px;
+      height: 50px;
+      background: var(--border-light);
+    }
+    
+    /* 人才类别卡片 */
+    .talent-stat-card {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+    }
+    
+    .talent-stat-value {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--color-gold-primary);
+      font-family: 'DIN', 'Arial', sans-serif;
+    }
+    
+    .talent-stat-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      margin-top: 6px;
+    }
+    
+    .talent-stat-sub {
+      font-size: 11px;
+      color: var(--status-success);
+      margin-top: 4px;
+    }
+    
+    /* 柱状图容器 */
+    .bar-chart {
+      width: 100%;
+      height: 200px;
+    }
+    
+    /* 学历分布列表 */
+    .edu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .edu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .edu-name {
+      width: 60px;
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    
+    .edu-bar {
+      flex: 1;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .edu-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-red-primary), var(--color-gold-primary));
+      border-radius: 4px;
+    }
+    
+    .edu-value {
+      width: 50px;
+      text-align: right;
+      font-size: var(--font-size-sm);
+      color: var(--color-gold-primary);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    /* 折线图 */
+    .line-chart {
+      width: 100%;
+      height: 300px;
+    }
+    
+    /* 状态进度 */
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+    
+    .progress-fill.success {
+      background: var(--status-success);
+    }
+    
+    .progress-fill.warning {
+      background: var(--status-warning);
+    }
+    
+    .progress-fill.danger {
+      background: var(--status-danger);
+    }
+    
+    /* 企业信息栏装饰 */
+    .decoration-line {
+      position: absolute;
+      width: 100px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--color-gold-primary), transparent);
+    }
+    
+    .decoration-line.bottom-left {
+      bottom: 0;
+      left: 0;
+    }
+    
+    .decoration-line.bottom-right {
+      bottom: 0;
+      right: 0;
+      transform: scaleX(-1);
+    }
+    
+    /* 图例 */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+      justify-content: center;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    
+    /* 表格操作列 */
+    .action-link {
+      color: var(--color-blue-bright);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      margin-right: 12px;
+      transition: var(--transition-base);
+    }
+    
+    .action-link:hover {
+      color: var(--color-gold-primary);
+    }
+    
+    .action-link:last-child {
+      margin-right: 0;
+    }
+    
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-tertiary);
+    }
+    
+    /* 满意度星星 */
+    .stars {
+      color: var(--color-gold-primary);
+      letter-spacing: 2px;
+    }
+    
+    /* 产业排名列表 */
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .rank-list-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .rank-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    
+    .rank-badge.gold {
+      background: linear-gradient(135deg, #f4d03f, #d4af37);
+      color: #0a1628;
+    }
+    
+    .rank-badge.silver {
+      background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+      color: #0a1628;
+    }
+    
+    .rank-badge.bronze {
+      background: linear-gradient(135deg, #e67e22, #d35400);
+      color: #fff;
+    }
+    
+    .rank-badge.normal {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-secondary);
+    }
+    
+    .rank-name {
+      flex: 1;
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+    
+    .rank-value {
+      font-size: var(--font-size-sm);
+      color: var(--color-gold-primary);
+      font-weight: 600;
+    }
+
+    /* GIS 迷你地图 */
+    .gis-map-mini {
+      position: relative;
+      width: 100%;
+      height: 280px;
+      overflow: hidden;
+      border-radius: 0 0 var(--card-radius) var(--card-radius);
+    }
+
+    .gis-map-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0a1628 0%, #0f2847 50%, #0a1628 100%);
+    }
+
+    .gis-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59, 130, 246, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.06) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    .gis-roads {
+      position: absolute;
+      inset: 0;
+    }
+
+    .gis-road {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .gis-road-h {
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .gis-road-v {
+      top: 0;
+      bottom: 0;
+      width: 3px;
+    }
+
+    .gis-buildings {
+      position: absolute;
+      inset: 0;
+    }
+
+    .gis-building {
+      position: absolute;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 2px;
+    }
+
+    /* GIS 标记点 */
+    .gis-marker {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      z-index: 10;
+    }
+
+    .gis-marker-pin {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      border: 2px solid #fff;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+      position: relative;
+      z-index: 2;
+    }
+
+    .gis-marker-pin::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    .gis-marker-pulse {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.3);
+      animation: gisPulse 2s ease-out infinite;
+    }
+
+    @keyframes gisPulse {
+      0% {
+        transform: translateX(-50%) scale(0.5);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-50%) scale(2);
+        opacity: 0;
+      }
+    }
+
+    .gis-marker-label {
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translate(-50%, -100%);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 6px;
+      padding: 6px 10px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .gis-marker-label::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .gis-marker-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .gis-marker-addr {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    /* 地图底部信息条 */
+    .gis-map-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(10, 22, 40, 0.95), transparent);
+      padding: 30px 16px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .gis-coord {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .coord-icon {
+      font-size: 14px;
+    }
+
+    .gis-address {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-align: right;
+      max-width: 60%;
+    }
+
+    /* GIS 详情弹窗 */
+    .gis-map-detail {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gis-search-bar {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+      background: rgba(10, 22, 40, 0.95);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .gis-search-input {
+      flex: 1;
+      position: relative;
+    }
+
+    .gis-search-input input {
+      width: 100%;
+      height: 34px;
+      padding: 0 12px 0 36px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .gis-search-input input:focus {
+      border-color: var(--border-gold);
+    }
+
+    .gis-search-input .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--text-tertiary);
+    }
+
+    .gis-map-area {
+      position: relative;
+      height: 380px;
+      overflow: hidden;
+    }
+
+    .gis-zoom-control {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .gis-zoom-btn {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .gis-zoom-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .gis-zoom-divider {
+      height: 1px;
+      background: var(--border-light);
+    }
+
+    .gis-compass {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 36px;
+      height: 36px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .compass-n {
+      position: absolute;
+      top: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: var(--color-red-primary);
+      font-weight: 600;
+    }
+
+    .compass-needle {
+      width: 2px;
+      height: 18px;
+      background: linear-gradient(to bottom, var(--color-red-primary) 50%, var(--text-tertiary) 50%);
+      border-radius: 1px;
+    }
+
+    .gis-scale-bar {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      z-index: 10;
+    }
+
+    .scale-line {
+      width: 60px;
+      height: 3px;
+      background: #fff;
+      border-radius: 2px;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .scale-text {
+      font-size: 10px;
+      color: #fff;
+      margin-top: 4px;
+      display: block;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .gis-detail-footer {
+      padding: 14px 20px;
+      background: rgba(10, 22, 40, 0.95);
+      border-top: 1px solid var(--border-light);
+    }
+
+    .gis-detail-info {
+      display: flex;
+      gap: 40px;
+    }
+
+    .gis-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .gis-detail-label {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+    }
+
+    .gis-detail-value {
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon" title="消息通知">
+            🔔
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon" title="待办事项">
+            📋
+            <span class="badge">3</span>
+          </div>
+          <div class="header-icon" title="帮助中心">
+            ❓
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <span class="breadcrumb-item"><a href="#">产业基础</a></span>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-item"><a href="#">企业数据管理</a></span>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-item active">企业画像</span>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+        <!-- 顶部企业信息栏 -->
+        <div class="enterprise-header">
+          <div class="corner-decoration corner-tl"></div>
+          <div class="corner-decoration corner-tr"></div>
+          <div class="corner-decoration corner-bl"></div>
+          <div class="corner-decoration corner-br"></div>
+          <div class="enterprise-header-content">
+            <!-- 左侧：Logo + 名称 + 标签 -->
+            <div class="enterprise-info-main">
+              <div class="flex items-center gap-16 mb-12">
+                <div style="flex:1; min-width:0;">
+                  <div class="enterprise-name">
+                    华创科技发展有限公司
+                  </div>
+                  <div class="enterprise-code">统一社会信用代码：91310000MA1K3XXXXX</div>
+                  <div class="enterprise-tags">
+                    <span class="tag tag-gold">高新技术企业</span>
+                    <span class="tag tag-blue">规上企业</span>
+                    <span class="tag tag-green">专精特新</span>
+                    <span class="tag tag-orange">上市后备企业</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 中间：关键指标 -->
+            <div class="enterprise-metrics">
+              <div class="enterprise-metric">
+                <div class="enterprise-metric-value">2015<span style="font-size:14px;">年</span></div>
+                <div class="enterprise-metric-label">成立时间</div>
+              </div>
+              <div class="enterprise-metric">
+                <div class="enterprise-metric-value">328<span style="font-size:14px;">人</span></div>
+                <div class="enterprise-metric-label">员工人数</div>
+              </div>
+              <div class="enterprise-metric">
+                <div class="enterprise-metric-value">56<span style="font-size:14px;">人</span></div>
+                <div class="enterprise-metric-label">党员人数</div>
+              </div>
+            </div>
+
+            <!-- 右侧：操作按钮 -->
+            <div class="enterprise-actions">
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 切换 -->
+        <div class="card">
+          <div class="card-body" style="padding-bottom: 0;">
+            <div class="tabs" id="mainTabs">
+              <div class="tab-item active" data-tab="basic">基本信息</div>
+              <div class="tab-item" data-tab="party">党建信息</div>
+              <div class="tab-item" data-tab="business">经营数据</div>
+              <div class="tab-item" data-tab="talent">人才信息</div>
+              <div class="tab-item" data-tab="service">服务记录</div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <!-- Tab 1: 基本信息 -->
+            <div class="tab-panel active" id="tab-basic">
+              <div class="grid grid-2 mb-20">
+                <!-- 企业工商信息 -->
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">企业工商信息</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="info-list">
+                      <div class="info-item">
+                        <span class="info-label">法定代表人</span>
+                        <span class="info-value">王建华</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">注册地址</span>
+                        <span class="info-value">上海市浦东新区张江高科技园区科苑路88号</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">经营范围</span>
+                        <span class="info-value">从事人工智能、大数据、云计算领域内的技术开发、技术咨询、技术服务、技术转让；计算机系统集成；软件开发；数据处理服务；企业管理咨询。</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">行业分类</span>
+                        <span class="info-value">信息传输、软件和信息技术服务业 / 软件和信息技术服务业</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">企业规模</span>
+                        <span class="info-value"><span class="tag tag-blue">大型企业</span></span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">经营状态</span>
+                        <span class="info-value"><span class="status-dot success"></span>存续（在营、开业、在册）</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 企业联系信息 -->
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">企业联系信息</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="info-list">
+                      <div class="info-item">
+                        <span class="info-label">联系人</span>
+                        <span class="info-value">李明（行政总监）</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">联系电话</span>
+                        <span class="info-value">021-5888XXXX</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">手机号码</span>
+                        <span class="info-value">138-XXXX-8899</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">电子邮箱</span>
+                        <span class="info-value">contact@huachuang-tech.com</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">官方网站</span>
+                        <span class="info-value" style="color: var(--color-blue-bright);">www.huachuang-tech.com</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">办公地址</span>
+                        <span class="info-value">上海市浦东新区张江高科技园区博云路2号浦软大厦15层</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 企业证照 -->
+              <div class="card mb-20">
+                <div class="card-header">
+                  <div class="card-title">企业证照</div>
+                  <button class="btn btn-outline btn-sm">+ 上传证照</button>
+                </div>
+                <div class="card-body">
+                  <div class="license-grid">
+                    <div class="license-item">
+                      <div class="license-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <rect x="3" y="3" width="18" height="18" rx="2"/>
+                          <path d="M9 9h6M9 13h6M9 17h4"/>
+                        </svg>
+                      </div>
+                      <span class="license-name">营业执照</span>
+                    </div>
+                    <div class="license-item">
+                      <div class="license-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <rect x="3" y="3" width="18" height="18" rx="2"/>
+                          <path d="M9 9h6M9 13h6M9 17h4"/>
+                        </svg>
+                      </div>
+                      <span class="license-name">组织机构代码证</span>
+                    </div>
+                    <div class="license-item">
+                      <div class="license-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <rect x="3" y="3" width="18" height="18" rx="2"/>
+                          <path d="M9 9h6M9 13h6M9 17h4"/>
+                        </svg>
+                      </div>
+                      <span class="license-name">税务登记证</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 位置分布（GIS点位） -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">位置分布</div>
+                  <div class="flex gap-8">
+                    <button class="btn btn-outline btn-sm" onclick="openProfileGisModal()">📍 查看详情</button>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                  <div class="gis-map-mini">
+                    <!-- 模拟地图背景 -->
+                    <div class="gis-map-bg">
+                      <div class="gis-grid"></div>
+                      <div class="gis-roads">
+                        <div class="gis-road gis-road-h" style="top: 30%;"></div>
+                        <div class="gis-road gis-road-h" style="top: 65%;"></div>
+                        <div class="gis-road gis-road-v" style="left: 25%;"></div>
+                        <div class="gis-road gis-road-v" style="left: 70%;"></div>
+                      </div>
+                      <div class="gis-buildings">
+                        <div class="gis-building" style="left: 15%; top: 15%; width: 60px; height: 40px;"></div>
+                        <div class="gis-building" style="left: 35%; top: 12%; width: 80px; height: 50px;"></div>
+                        <div class="gis-building" style="left: 55%; top: 20%; width: 50px; height: 35px;"></div>
+                        <div class="gis-building" style="left: 75%; top: 10%; width: 70px; height: 45px;"></div>
+                        <div class="gis-building" style="left: 10%; top: 40%; width: 55px; height: 38px;"></div>
+                        <div class="gis-building" style="left: 30%; top: 45%; width: 90px; height: 55px;"></div>
+                        <div class="gis-building" style="left: 60%; top: 42%; width: 65px; height: 42px;"></div>
+                        <div class="gis-building" style="left: 78%; top: 48%; width: 50px; height: 36px;"></div>
+                        <div class="gis-building" style="left: 20%; top: 72%; width: 70px; height: 45px;"></div>
+                        <div class="gis-building" style="left: 45%; top: 75%; width: 80px; height: 50px;"></div>
+                        <div class="gis-building" style="left: 70%; top: 70%; width: 60px; height: 40px;"></div>
+                      </div>
+                      <!-- 企业点位标记 -->
+                      <div class="gis-marker" style="left: 48%; top: 48%;">
+                        <div class="gis-marker-pin"></div>
+                        <div class="gis-marker-pulse"></div>
+                        <div class="gis-marker-label">
+                          <div class="gis-marker-title">华创科技</div>
+                          <div class="gis-marker-addr">浦软大厦15层</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 底部信息条 -->
+                    <div class="gis-map-footer">
+                      <div class="gis-coord">
+                        <span class="coord-icon">📍</span>
+                        <span class="coord-text">东经 121.6023° / 北纬 31.2057°</span>
+                      </div>
+                      <div class="gis-address">上海市浦东新区张江高科技园区博云路2号浦软大厦15层</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: 党建信息 -->
+            <div class="tab-panel" id="tab-party">
+              <!-- 党组织信息 -->
+              <div class="card mb-20">
+                <div class="card-header">
+                  <div class="card-title">党组织信息</div>
+                  <span class="tag tag-green"><span class="status-dot success" style="margin-right:4px;"></span>组织正常</span>
+                </div>
+                <div class="card-body">
+                  <div class="grid grid-3">
+                    <div class="info-list">
+                      <div class="info-item">
+                        <span class="info-label">党组织名称</span>
+                        <span class="info-value">中共华创科技发展有限公司委员会</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">党组织书记</span>
+                        <span class="info-value">王建华</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">成立时间</span>
+                        <span class="info-value">2012年06月</span>
+                      </div>
+                    </div>
+                    <div class="info-list">
+                      <div class="info-item">
+                        <span class="info-label">党员人数</span>
+                        <span class="info-value">56人（正式党员52人，预备党员4人）</span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">党组织类型</span>
+                        <span class="info-value"><span class="tag tag-primary">基层党委</span></span>
+                      </div>
+                      <div class="info-item">
+                        <span class="info-label">组织状态</span>
+                        <span class="info-value"><span class="status-dot success"></span>正常运转</span>
+                      </div>
+                    </div>
+                    <div class="info-list">
+                      <div class="info-item">
+                        <span class="info-label">下辖支部</span>
+                        <span class="info-value">3个党支部</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 班子成员 -->
+              <div class="card mb-20">
+                <div class="card-header">
+                  <div class="card-title">班子成员</div>
+                </div>
+                <div class="card-body">
+                  <div class="team-list">
+                    <div class="team-member">
+                      <div class="team-member-name">王建华</div>
+                      <div class="team-member-role">党委书记</div>
+                    </div>
+                    <div class="team-member">
+                      <div class="team-member-name">李国强</div>
+                      <div class="team-member-role">党委副书记</div>
+                    </div>
+                    <div class="team-member">
+                      <div class="team-member-name">张丽华</div>
+                      <div class="team-member-role">组织委员</div>
+                    </div>
+                    <div class="team-member">
+                      <div class="team-member-name">刘晓明</div>
+                      <div class="team-member-role">宣传委员</div>
+                    </div>
+                    <div class="team-member">
+                      <div class="team-member-name">陈志强</div>
+                      <div class="team-member-role">纪检委员</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 党员结构分析 -->
+              <div class="card mb-20">
+                <div class="card-header">
+                  <div class="card-title">党员结构分析</div>
+                </div>
+                <div class="card-body">
+                  <div class="analysis-grid">
+                    <!-- 性别比例饼图 -->
+                    <div class="chart-card">
+                      <div class="chart-title">性别比例</div>
+                      <svg class="pie-chart" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="30"/>
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="#c41e3a" stroke-width="30"
+                                stroke-dasharray="263.9 175.9" stroke-dashoffset="0"
+                                transform="rotate(-90 100 100)"/>
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="#d4af37" stroke-width="30"
+                                stroke-dasharray="175.9 263.9" stroke-dashoffset="-263.9"
+                                transform="rotate(-90 100 100)"/>
+                        <text x="100" y="95" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">56</text>
+                        <text x="100" y="115" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="11">党员总数</text>
+                      </svg>
+                      <div class="legend">
+                        <div class="legend-item">
+                          <span class="legend-dot" style="background:#c41e3a;"></span>
+                          男党员 36人 (64%)
+                        </div>
+                        <div class="legend-item">
+                          <span class="legend-dot" style="background:#d4af37;"></span>
+                          女党员 20人 (36%)
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 年龄分布柱状图 -->
+                    <div class="chart-card">
+                      <div class="chart-title">年龄分布</div>
+                      <svg class="bar-chart" viewBox="0 0 400 200">
+                        <!-- 网格线 -->
+                        <line x1="50" y1="20" x2="50" y2="170" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                        <line x1="50" y1="170" x2="380" y2="170" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                        <line x1="50" y1="132" x2="380" y2="132" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                        <line x1="50" y1="95" x2="380" y2="95" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                        <line x1="50" y1="57" x2="380" y2="57" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                        <line x1="50" y1="20" x2="380" y2="20" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                        
+                        <!-- Y轴标签 -->
+                        <text x="45" y="173" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="10">0</text>
+                        <text x="45" y="135" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="10">5</text>
+                        <text x="45" y="98" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="10">10</text>
+                        <text x="45" y="60" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="10">15</text>
+                        <text x="45" y="23" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="10">20</text>
+                        
+                        <!-- 柱子 -->
+                        <rect x="70" y="70" width="40" height="100" rx="4" fill="url(#barGradient1)"/>
+                        <rect x="135" y="35" width="40" height="135" rx="4" fill="url(#barGradient1)"/>
+                        <rect x="200" y="85" width="40" height="85" rx="4" fill="url(#barGradient1)"/>
+                        <rect x="265" y="125" width="40" height="45" rx="4" fill="url(#barGradient1)"/>
+                        <rect x="330" y="150" width="40" height="20" rx="4" fill="url(#barGradient1)"/>
+                        
+                        <!-- 数值标签 -->
+                        <text x="90" y="65" text-anchor="middle" fill="#d4af37" font-size="11" font-weight="600">13</text>
+                        <text x="155" y="30" text-anchor="middle" fill="#d4af37" font-size="11" font-weight="600">18</text>
+                        <text x="220" y="80" text-anchor="middle" fill="#d4af37" font-size="11" font-weight="600">11</text>
+                        <text x="285" y="120" text-anchor="middle" fill="#d4af37" font-size="11" font-weight="600">8</text>
+                        <text x="350" y="145" text-anchor="middle" fill="#d4af37" font-size="11" font-weight="600">6</text>
+                        
+                        <!-- X轴标签 -->
+                        <text x="90" y="188" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10">25岁以下</text>
+                        <text x="155" y="188" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10">26-35岁</text>
+                        <text x="220" y="188" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10">36-45岁</text>
+                        <text x="285" y="188" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10">46-55岁</text>
+                        <text x="350" y="188" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10">56岁以上</text>
+                        
+                        <defs>
+                          <linearGradient id="barGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#d4af37"/>
+                            <stop offset="100%" style="stop-color:#c41e3a"/>
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                    </div>
+
+                    <!-- 学历分布 -->
+                    <div class="chart-card">
+                      <div class="chart-title">学历分布</div>
+                      <div class="edu-list">
+                        <div class="edu-item">
+                          <span class="edu-name">博士</span>
+                          <div class="edu-bar">
+                            <div class="edu-bar-fill" style="width: 18%;"></div>
+                          </div>
+                          <span class="edu-value">10人</span>
+                        </div>
+                        <div class="edu-item">
+                          <span class="edu-name">硕士</span>
+                          <div class="edu-bar">
+                            <div class="edu-bar-fill" style="width: 42%;"></div>
+                          </div>
+                          <span class="edu-value">24人</span>
+                        </div>
+                        <div class="edu-item">
+                          <span class="edu-name">本科</span>
+                          <div class="edu-bar">
+                            <div class="edu-bar-fill" style="width: 32%;"></div>
+                          </div>
+                          <span class="edu-value">18人</span>
+                        </div>
+                        <div class="edu-item">
+                          <span class="edu-name">大专</span>
+                          <div class="edu-bar">
+                            <div class="edu-bar-fill" style="width: 12%;"></div>
+                          </div>
+                          <span class="edu-value">4人</span>
+                        </div>
+                        <div class="edu-item">
+                          <span class="edu-name">其他</span>
+                          <div class="edu-bar">
+                            <div class="edu-bar-fill" style="width: 0%;"></div>
+                          </div>
+                          <span class="edu-value">0人</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 活动参与统计 -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">活动参与统计</div>
+                  <span style="font-size:12px; color: var(--text-tertiary);">近6个月</span>
+                </div>
+                <div class="card-body">
+                  <svg class="line-chart" viewBox="0 0 800 300">
+                    <!-- 背景网格 -->
+                    <line x1="60" y1="40" x2="60" y2="250" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                    <line x1="60" y1="250" x2="760" y2="250" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    <line x1="60" y1="200" x2="760" y2="200" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                    <line x1="60" y1="150" x2="760" y2="150" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                    <line x1="60" y1="100" x2="760" y2="100" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                    <line x1="60" y1="50" x2="760" y2="50" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                    
+                    <!-- Y轴标签 -->
+                    <text x="50" y="253" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="11">0</text>
+                    <text x="50" y="203" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="11">5</text>
+                    <text x="50" y="153" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="11">10</text>
+                    <text x="50" y="103" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="11">15</text>
+                    <text x="50" y="53" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="11">20</text>
+                    
+                    <!-- X轴标签 -->
+                    <text x="120" y="275" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12">3月</text>
+                    <text x="240" y="275" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12">4月</text>
+                    <text x="360" y="275" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12">5月</text>
+                    <text x="480" y="275" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12">6月</text>
+                    <text x="600" y="275" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12">7月</text>
+                    <text x="720" y="275" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12">8月</text>
+                    
+                    <!-- 活动参与次数折线 -->
+                    <defs>
+                      <linearGradient id="lineArea1" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#c41e3a;stop-opacity:0.3"/>
+                        <stop offset="100%" style="stop-color:#c41e3a;stop-opacity:0"/>
+                      </linearGradient>
+                    </defs>
+                    
+                    <!-- 面积填充 -->
+                    <path d="M120,180 L240,150 L360,170 L480,120 L600,90 L720,70 L720,250 L120,250 Z" 
+                          fill="url(#lineArea1)"/>
+                    
+                    <!-- 折线 -->
+                    <path d="M120,180 L240,150 L360,170 L480,120 L600,90 L720,70" 
+                          fill="none" stroke="#c41e3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    <!-- 数据点 -->
+                    <circle cx="120" cy="180" r="5" fill="#c41e3a" stroke="#fff" stroke-width="2"/>
+                    <circle cx="240" cy="150" r="5" fill="#c41e3a" stroke="#fff" stroke-width="2"/>
+                    <circle cx="360" cy="170" r="5" fill="#c41e3a" stroke="#fff" stroke-width="2"/>
+                    <circle cx="480" cy="120" r="5" fill="#c41e3a" stroke="#fff" stroke-width="2"/>
+                    <circle cx="600" cy="90" r="5" fill="#c41e3a" stroke="#fff" stroke-width="2"/>
+                    <circle cx="720" cy="70" r="6" fill="#c41e3a" stroke="#fff" stroke-width="2"/>
+                    
+                    <!-- 数值标签 -->
+                    <text x="120" y="168" text-anchor="middle" fill="#fff" font-size="11">7</text>
+                    <text x="240" y="138" text-anchor="middle" fill="#fff" font-size="11">10</text>
+                    <text x="360" y="158" text-anchor="middle" fill="#fff" font-size="11">8</text>
+                    <text x="480" y="108" text-anchor="middle" fill="#fff" font-size="11">13</text>
+                    <text x="600" y="78" text-anchor="middle" fill="#fff" font-size="11">16</text>
+                    <text x="720" y="58" text-anchor="middle" fill="#d4af37" font-size="12" font-weight="600">18</text>
+                    
+                    <!-- 图例 -->
+                    <g transform="translate(650, 20)">
+                      <line x1="0" y1="0" x2="20" y2="0" stroke="#c41e3a" stroke-width="2.5"/>
+                      <circle cx="10" cy="0" r="4" fill="#c41e3a"/>
+                      <text x="28" y="4" fill="rgba(255,255,255,0.6)" font-size="11">活动参与次数</text>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: 经营数据 -->
+            <div class="tab-panel" id="tab-business">
+              <!-- 产值信息 -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">产值信息</div>
+                  <button class="btn btn-primary btn-sm" onclick="openOutputModal()">+ 上传产值</button>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                  <table class="table" id="outputTable">
+                    <thead>
+                      <tr>
+                        <th>统计年度</th>
+                        <th>年产值（亿元）</th>
+                        <th>同比增长</th>
+                        <th>更新时间</th>
+                        <th style="width: 120px;">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>2024年度</td>
+                        <td style="font-weight: 600; color: var(--color-gold-primary);">2.8</td>
+                        <td><span style="color: #2ecc71;">↑ 15.2%</span></td>
+                        <td>2025-01-15 10:30</td>
+                        <td>
+                          <button class="btn-link">编辑</button>
+                          <button class="btn-link btn-link-danger">删除</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>2023年度</td>
+                        <td style="font-weight: 600; color: var(--text-primary);">2.43</td>
+                        <td><span style="color: #2ecc71;">↑ 12.6%</span></td>
+                        <td>2024-01-20 14:20</td>
+                        <td>
+                          <button class="btn-link">编辑</button>
+                          <button class="btn-link btn-link-danger">删除</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>2022年度</td>
+                        <td style="font-weight: 600; color: var(--text-primary);">2.16</td>
+                        <td><span style="color: #2ecc71;">↑ 8.3%</span></td>
+                        <td>2023-02-10 09:15</td>
+                        <td>
+                          <button class="btn-link">编辑</button>
+                          <button class="btn-link btn-link-danger">删除</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>2021年度</td>
+                        <td style="font-weight: 600; color: var(--text-primary);">1.99</td>
+                        <td><span style="color: #ef4444;">↓ 2.1%</span></td>
+                        <td>2022-03-05 16:45</td>
+                        <td>
+                          <button class="btn-link">编辑</button>
+                          <button class="btn-link btn-link-danger">删除</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 4: 人才信息 -->
+            <div class="tab-panel" id="tab-talent">
+              <!-- 人才核心指标 -->
+              <div class="grid grid-4 mb-20">
+                <div class="talent-stat-card">
+                  <div class="talent-stat-value">328</div>
+                  <div class="talent-stat-label">员工总数</div>
+                  <div class="talent-stat-sub">较上月 +5人</div>
+                </div>
+                <div class="talent-stat-card">
+                  <div class="talent-stat-value" style="color: #c41e3a;">3</div>
+                  <div class="talent-stat-label">A类人才</div>
+                  <div class="talent-stat-sub" style="color: #c41e3a;">顶尖人才</div>
+                </div>
+                <div class="talent-stat-card">
+                  <div class="talent-stat-value" style="color: #d4af37;">8</div>
+                  <div class="talent-stat-label">B类人才</div>
+                  <div class="talent-stat-sub" style="color: #d4af37;">领军人才</div>
+                </div>
+                <div class="talent-stat-card">
+                  <div class="talent-stat-value" style="color: #3b82f6;">25</div>
+                  <div class="talent-stat-label">C类人才</div>
+                  <div class="talent-stat-sub" style="color: #3b82f6;">青年拔尖</div>
+                </div>
+              </div>
+
+              <!-- 人才列表 -->
+              <div class="card mb-20">
+                <div class="card-header">
+                  <div class="card-title">人才列表</div>
+                  <div class="flex gap-8">
+                    <button class="btn btn-outline btn-sm">筛选</button>
+                    <button class="btn btn-secondary btn-sm">+ 新增人才</button>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>年龄</th>
+                        <th>人才类别</th>
+                        <th>职称</th>
+                        <th>学历</th>
+                        <th>所属部门</th>
+                        <th style="width: 100px;">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>张建华</td>
+                        <td>男</td>
+                        <td>48</td>
+                        <td><span class="tag tag-red">A类</span></td>
+                        <td>正高级工程师</td>
+                        <td>博士</td>
+                        <td>技术研发中心</td>
+                        <td>
+                          <button class="btn-link">查看</button>
+                          <button class="btn-link">编辑</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>李明远</td>
+                        <td>男</td>
+                        <td>42</td>
+                        <td><span class="tag tag-gold">B类</span></td>
+                        <td>正高级工程师</td>
+                        <td>博士</td>
+                        <td>人工智能研究院</td>
+                        <td>
+                          <button class="btn-link">查看</button>
+                          <button class="btn-link">编辑</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>王晓燕</td>
+                        <td>女</td>
+                        <td>38</td>
+                        <td><span class="tag tag-gold">B类</span></td>
+                        <td>副高级工程师</td>
+                        <td>博士</td>
+                        <td>芯片设计部</td>
+                        <td>
+                          <button class="btn-link">查看</button>
+                          <button class="btn-link">编辑</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>陈志强</td>
+                        <td>男</td>
+                        <td>35</td>
+                        <td><span class="tag tag-blue">C类</span></td>
+                        <td>副高级工程师</td>
+                        <td>硕士</td>
+                        <td>软件工程部</td>
+                        <td>
+                          <button class="btn-link">查看</button>
+                          <button class="btn-link">编辑</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>刘思琪</td>
+                        <td>女</td>
+                        <td>32</td>
+                        <td><span class="tag tag-blue">C类</span></td>
+                        <td>工程师</td>
+                        <td>博士</td>
+                        <td>大数据部</td>
+                        <td>
+                          <button class="btn-link">查看</button>
+                          <button class="btn-link">编辑</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- 人才构成 -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">人才构成</div>
+                </div>
+                <div class="card-body">
+                  <div class="grid grid-2 gap-20">
+                    <div>
+                      <div class="chart-title mb-12">职称分布</div>
+                      <svg class="pie-chart" viewBox="0 0 200 200" style="height: 180px;">
+                        <circle cx="100" cy="100" r="65" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="26"/>
+                        <circle cx="100" cy="100" r="65" fill="none" stroke="#c41e3a" stroke-width="26"
+                                stroke-dasharray="81.7 326.7" stroke-dashoffset="0"
+                                transform="rotate(-90 100 100)"/>
+                        <circle cx="100" cy="100" r="65" fill="none" stroke="#d4af37" stroke-width="26"
+                                stroke-dasharray="136.1 272.3" stroke-dashoffset="-81.7"
+                                transform="rotate(-90 100 100)"/>
+                        <circle cx="100" cy="100" r="65" fill="none" stroke="#3b82f6" stroke-width="26"
+                                stroke-dasharray="163.4 244.9" stroke-dashoffset="-217.8"
+                                transform="rotate(-90 100 100)"/>
+                        <circle cx="100" cy="100" r="65" fill="none" stroke="#2ecc71" stroke-width="26"
+                                stroke-dasharray="122.5 285.8" stroke-dashoffset="-381.2"
+                                transform="rotate(-90 100 100)"/>
+                        <text x="100" y="95" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">328</text>
+                        <text x="100" y="112" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10">员工总数</text>
+                      </svg>
+                      <div class="legend">
+                        <div class="legend-item"><span class="legend-dot" style="background:#c41e3a;"></span>正高级 15%</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#d4af37;"></span>副高级 25%</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span>中级 30%</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#2ecc71;"></span>初级 22%</div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="chart-title mb-12">学历分布</div>
+                      <div class="edu-list">
+                        <div class="edu-item">
+                          <span class="edu-name">博士</span>
+                          <div class="edu-bar"><div class="edu-bar-fill" style="width: 15%;"></div></div>
+                          <span class="edu-value">48人</span>
+                        </div>
+                            <span class="edu-value">40人</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 4: 人才信息 -->
+            <div class="tab-panel" id="tab-talent">
+              <!-- 人才统计卡片 -->
+              <div class="grid grid-4 mb-20">
+                <div class="talent-stat-card">
+                  <div class="talent-stat-value">86</div>
+                  <div class="talent-stat-label">人才总数</div>
+                  <div class="talent-stat-sub">较上月 +5人</div>
+                </div>
+                <div class="talent-stat-card">
+                  <div class="talent-stat-value" style="color: #c41e3a;">3</div>
+                  <div class="talent-stat-label">A类人才</div>
+                  <div class="talent-stat-sub" style="color: #c41e3a;">顶尖人才</div>
+                </div>
+                <div class="talent-stat-card">
+                  <div class="talent-stat-value" style="color: #d4af37;">8</div>
+                  <div class="talent-stat-label">B类人才</div>
+                  <div class="talent-stat-sub" style="color: #d4af37;">领军人才</div>
+                </div>
+                <div class="talent-stat-card">
+                  <div class="talent-stat-value" style="color: #3b82f6;">25</div>
+                  <div class="talent-stat-label">C类人才</div>
+                  <div class="talent-stat-sub" style="color: #3b82f6;">青年拔尖</div>
+                </div>
+              </div>
+
+              <!-- 人才列表 -->
+              <div class="card mb-20">
+                <div class="card-header">
+                  <div class="card-title">人才列表</div>
+                  <div class="flex gap-8">
+                    <button class="btn btn-outline btn-sm">筛选</button>
+                    <button class="btn btn-secondary btn-sm">+ 新增人才</button>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>姓名</th>
+                        <th>人才类别</th>
+                        <th>学历</th>
+                        <th>职称</th>
+                        <th>入职时间</th>
+                        <th>所属部门</th>
+                        <th>操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div class="flex items-center gap-8">
+                            <span>王建华</span>
+                          </div>
+                        </td>
+                        <td><span class="tag tag-primary">A类</span></td>
+                        <td>博士研究生</td>
+                        <td>正高级工程师</td>
+                        <td>2010-03-15</td>
+                        <td>技术研发中心</td>
+                        <td>
+                          <span class="action-link">查看</span>
+                          <span class="action-link">编辑</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="flex items-center gap-8">
+                            <span>李国强</span>
+                          </div>
+                        </td>
+                        <td><span class="tag tag-gold">B类</span></td>
+                        <td>博士研究生</td>
+                        <td>正高级工程师</td>
+                        <td>2012-07-01</td>
+                        <td>人工智能研究院</td>
+                        <td>
+                          <span class="action-link">查看</span>
+                          <span class="action-link">编辑</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="flex items-center gap-8">
+                            <span>张丽华</span>
+                          </div>
+                        </td>
+                        <td><span class="tag tag-blue">B类</span></td>
+                        <td>硕士研究生</td>
+                        <td>高级工程师</td>
+                        <td>2014-05-20</td>
+                        <td>大数据事业部</td>
+                        <td>
+                          <span class="action-link">查看</span>
+                          <span class="action-link">编辑</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="flex items-center gap-8">
+                            <span>刘晓明</span>
+                          </div>
+                        </td>
+                        <td><span class="tag tag-blue">C类</span></td>
+                        <td>硕士研究生</td>
+                        <td>高级工程师</td>
+                        <td>2016-09-01</td>
+                        <td>云计算事业部</td>
+                        <td>
+                          <span class="action-link">查看</span>
+                          <span class="action-link">编辑</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="flex items-center gap-8">
+                            <span>陈志强</span>
+                          </div>
+                        </td>
+                        <td><span class="tag tag-blue">C类</span></td>
+                        <td>博士研究生</td>
+                        <td>副研究员</td>
+                        <td>2018-04-10</td>
+                        <td>前沿技术实验室</td>
+                        <td>
+                          <span class="action-link">查看</span>
+                          <span class="action-link">编辑</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="flex items-center gap-8">
+                            <span>赵雅琴</span>
+                          </div>
+                        </td>
+                        <td><span class="tag tag-green">D类</span></td>
+                        <td>硕士研究生</td>
+                        <td>工程师</td>
+                        <td>2019-07-15</td>
+                        <td>产品研发部</td>
+                        <td>
+                          <span class="action-link">查看</span>
+                          <span class="action-link">编辑</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="flex items-center gap-8">
+                            <span>孙伟东</span>
+                          </div>
+                        </td>
+                        <td><span class="tag tag-green">D类</span></td>
+                        <td>本科</td>
+                        <td>工程师</td>
+                        <td>2020-03-01</td>
+                        <td>解决方案部</td>
+                        <td>
+                          <span class="action-link">查看</span>
+                          <span class="action-link">编辑</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="flex items-center gap-8">
+                            <span>周美玲</span>
+                          </div>
+                        </td>
+                        <td><span class="tag tag-gray">E类</span></td>
+                        <td>本科</td>
+                        <td>助理工程师</td>
+                        <td>2021-06-20</td>
+                        <td>质量保障部</td>
+                        <td>
+                          <span class="action-link">查看</span>
+                          <span class="action-link">编辑</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card-footer">
+                  <div class="pagination">
+                    <div class="pagination-item">‹</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">4</div>
+                    <div class="pagination-item">...</div>
+                    <div class="pagination-item">11</div>
+                    <div class="pagination-item">›</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 人才结构分析 -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">人才结构分析（A-G类）</div>
+                </div>
+                <div class="card-body">
+                  <svg style="width: 100%; height: 280px;" viewBox="0 0 900 280">
+                    <!-- 网格线 -->
+                    <line x1="70" y1="30" x2="70" y2="230" stroke="rgba(255,255,255,0.05)"/>
+                    <line x1="70" y1="230" x2="850" y2="230" stroke="rgba(255,255,255,0.1)"/>
+                    <line x1="70" y1="180" x2="850" y2="180" stroke="rgba(255,255,255,0.03)"/>
+                    <line x1="70" y1="130" x2="850" y2="130" stroke="rgba(255,255,255,0.03)"/>
+                    <line x1="70" y1="80" x2="850" y2="80" stroke="rgba(255,255,255,0.03)"/>
+                    <line x1="70" y1="30" x2="850" y2="30" stroke="rgba(255,255,255,0.03)"/>
+                    
+                    <!-- Y轴 -->
+                    <text x="60" y="233" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="11">0</text>
+                    <text x="60" y="183" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="11">10</text>
+                    <text x="60" y="133" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="11">20</text>
+                    <text x="60" y="83" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="11">30</text>
+                    <text x="60" y="33" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="11">40</text>
+                    
+                    <!-- A类 -->
+                    <rect x="100" y="215" width="60" height="15" rx="4" fill="#8b0000"/>
+                    <text x="130" y="208" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">3</text>
+                    <text x="130" y="255" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">A类</text>
+                    <text x="130" y="272" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10">顶尖人才</text>
+                    
+                    <!-- B类 -->
+                    <rect x="200" y="190" width="60" height="40" rx="4" fill="#c41e3a"/>
+                    <text x="230" y="183" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">8</text>
+                    <text x="230" y="255" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">B类</text>
+                    <text x="230" y="272" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10">领军人才</text>
+                    
+                    <!-- C类 -->
+                    <rect x="300" y="105" width="60" height="125" rx="4" fill="#d4af37"/>
+                    <text x="330" y="98" text-anchor="middle" fill="#d4af37" font-size="12" font-weight="600">25</text>
+                    <text x="330" y="255" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">C类</text>
+                    <text x="330" y="272" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10">青年拔尖</text>
+                    
+                    <!-- D类 -->
+                    <rect x="400" y="55" width="60" height="175" rx="4" fill="#3b82f6"/>
+                    <text x="430" y="48" text-anchor="middle" fill="#3b82f6" font-size="12" font-weight="600">35</text>
+                    <text x="430" y="255" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">D类</text>
+                    <text x="430" y="272" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10">优秀人才</text>
+                    
+                    <!-- E类 -->
+                    <rect x="500" y="130" width="60" height="100" rx="4" fill="#2ecc71"/>
+                    <text x="530" y="123" text-anchor="middle" fill="#2ecc71" font-size="12" font-weight="600">20</text>
+                    <text x="530" y="255" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">E类</text>
+                    <text x="530" y="272" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10">骨干人才</text>
+                    
+                    <!-- F类 -->
+                    <rect x="600" y="175" width="60" height="55" rx="4" fill="#f39c12"/>
+                    <text x="630" y="168" text-anchor="middle" fill="#f39c12" font-size="12" font-weight="600">11</text>
+                    <text x="630" y="255" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">F类</text>
+                    <text x="630" y="272" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10">储备人才</text>
+                    
+                    <!-- G类 -->
+                    <rect x="700" y="215" width="60" height="15" rx="4" fill="rgba(255,255,255,0.2)"/>
+                    <text x="730" y="208" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">3</text>
+                    <text x="730" y="255" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">G类</text>
+                    <text x="730" y="272" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10">实习人才</text>
+                    
+                    <!-- 单位 -->
+                    <text x="80" y="18" fill="rgba(255,255,255,0.4)" font-size="11">单位：人</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 5: 服务记录 -->
+            <div class="tab-panel" id="tab-service">
+              <div class="grid grid-2 mb-20">
+                <!-- 党建服务记录 -->
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">党建服务记录</div>
+                    <button class="btn btn-outline btn-sm">查看全部</button>
+                  </div>
+                  <div class="card-body">
+                    <div class="service-card">
+                      <div class="service-card-header">
+                        <span class="service-type">党员发展指导</span>
+                        <span class="service-time">2024-08-15</span>
+                      </div>
+                      <div class="service-content">园区党建指导员张红旗同志到企业进行党员发展工作指导，帮助规范入党积极分子培养流程，审核发展对象材料。</div>
+                      <div class="service-footer">
+                        <span class="service-person">服务人员：张红旗</span>
+                        <span class="service-satisfaction"><span class="stars">★★★★★</span> 非常满意</span>
+                      </div>
+                    </div>
+                    <div class="service-card">
+                      <div class="service-card-header">
+                        <span class="service-type">党建阵地建设咨询</span>
+                        <span class="service-time">2024-07-22</span>
+                      </div>
+                      <div class="service-content">就企业党员活动室标准化建设提供咨询服务，协助规划阵地布局、制度上墙、党旗悬挂等具体方案。</div>
+                      <div class="service-footer">
+                        <span class="service-person">服务人员：李明远</span>
+                        <span class="service-satisfaction"><span class="stars">★★★★★</span> 非常满意</span>
+                      </div>
+                    </div>
+                    <div class="service-card">
+                      <div class="service-card-header">
+                        <span class="service-type">主题党课宣讲</span>
+                        <span class="service-time">2024-06-30</span>
+                      </div>
+                      <div class="service-content">邀请区委党校教授为企业党员开展"学习贯彻习近平新时代中国特色社会主义思想"主题党课宣讲活动。</div>
+                      <div class="service-footer">
+                        <span class="service-person">服务人员：王教授</span>
+                        <span class="service-satisfaction"><span class="stars">★★★★☆</span> 满意</span>
+                      </div>
+                    </div>
+                    <div class="service-card">
+                      <div class="service-card-header">
+                        <span class="service-type">组织关系转接服务</span>
+                        <span class="service-time">2024-05-18</span>
+                      </div>
+                      <div class="service-content">协助企业办理5名新入职员工的党组织关系转接手续，指导线上转接流程。</div>
+                      <div class="service-footer">
+                        <span class="service-person">服务人员：赵晓燕</span>
+                        <span class="service-satisfaction"><span class="stars">★★★★★</span> 非常满意</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 企业诉求记录 -->
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">企业诉求记录</div>
+                    <button class="btn btn-secondary btn-sm">+ 提交诉求</button>
+                  </div>
+                  <div class="card-body" style="padding: 0;">
+                    <div class="appeal-item">
+                      <div class="appeal-indicator" style="background: var(--status-success);"></div>
+                      <div class="appeal-content">
+                        <div class="appeal-title">关于人才公寓申请的咨询</div>
+                        <div class="appeal-desc">企业新引进3名高层次人才，希望了解人才公寓申请条件、流程及可申请的房源情况，需要相关部门给予指导。</div>
+                      </div>
+                      <div class="appeal-meta">
+                        <span class="appeal-date">2024-08-10</span>
+                        <span class="tag tag-green">已办结</span>
+                      </div>
+                    </div>
+                    <div class="appeal-item">
+                      <div class="appeal-indicator" style="background: var(--status-warning);"></div>
+                      <div class="appeal-content">
+                        <div class="appeal-title">申请研发费用加计扣除政策辅导</div>
+                        <div class="appeal-desc">企业2024年度研发投入较大，希望获得研发费用加计扣除政策的专业辅导，确保准确申报，充分享受政策红利。</div>
+                      </div>
+                      <div class="appeal-meta">
+                        <span class="appeal-date">2024-08-05</span>
+                        <span class="tag tag-orange">处理中</span>
+                      </div>
+                    </div>
+                    <div class="appeal-item">
+                      <div class="appeal-indicator" style="background: var(--status-info);"></div>
+                      <div class="appeal-content">
+                        <div class="appeal-title">希望协调员工子女入学问题</div>
+                        <div class="appeal-desc">企业有8名员工子女今年秋季面临入学问题，希望园区管委会能协调对接周边优质教育资源，帮助解决员工后顾之忧。</div>
+                      </div>
+                      <div class="appeal-meta">
+                        <span class="appeal-date">2024-07-28</span>
+                        <span class="tag tag-blue">待处理</span>
+                      </div>
+                    </div>
+                    <div class="appeal-item">
+                      <div class="appeal-indicator" style="background: var(--status-success);"></div>
+                      <div class="appeal-content">
+                        <div class="appeal-title">高新技术企业复审指导</div>
+                        <div class="appeal-desc">企业高新技术企业资质即将到期，申请复审指导服务，需要科技部门专家对申报材料进行预审和辅导。</div>
+                      </div>
+                      <div class="appeal-meta">
+                        <span class="appeal-date">2024-06-15</span>
+                        <span class="tag tag-green">已办结</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 政策匹配 -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">匹配惠企政策</div>
+                  <div class="flex items-center gap-8">
+                    <span class="tag tag-gold">已匹配 12 项</span>
+                    <button class="btn btn-outline btn-sm">查看全部</button>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                  <div class="policy-item">
+                    <div class="policy-header">
+                      <span class="policy-title">上海市高新技术企业认定奖励政策</span>
+                      <span class="tag tag-gold">高匹配度</span>
+                    </div>
+                    <div class="policy-desc">对首次认定为高新技术企业的，给予20万元一次性奖励；对重新认定通过的，给予10万元奖励。</div>
+                    <div class="policy-meta">
+                      <span>📅 2024-01-01 发布</span>
+                      <span>🏛️ 上海市科学技术委员会</span>
+                      <span style="color: var(--status-success);">✓ 符合条件</span>
+                    </div>
+                  </div>
+                  <div class="policy-item">
+                    <div class="policy-header">
+                      <span class="policy-title">浦东新区研发费用加计扣除补贴</span>
+                      <span class="tag tag-gold">高匹配度</span>
+                    </div>
+                    <div class="policy-desc">对企业研发费用按实际发生额的10%给予补贴，单家企业年度补贴最高不超过200万元。</div>
+                    <div class="policy-meta">
+                      <span>📅 2024-02-15 发布</span>
+                      <span>🏛️ 浦东新区科技和经济委员会</span>
+                      <span style="color: var(--status-success);">✓ 符合条件</span>
+                    </div>
+                  </div>
+                  <div class="policy-item">
+                    <div class="policy-header">
+                      <span class="policy-title">张江科学城人才安居政策</span>
+                      <span class="tag tag-blue">中匹配度</span>
+                    </div>
+                    <div class="policy-desc">对符合条件的各类人才提供人才公寓、租房补贴、购房补贴等安居保障，A类人才最高可享200万购房补贴。</div>
+                    <div class="policy-meta">
+                      <span>📅 2024-03-01 发布</span>
+                      <span>🏛️ 张江科学城建设管理办公室</span>
+                      <span style="color: var(--status-warning);">△ 部分符合</span>
+                    </div>
+                  </div>
+                  <div class="policy-item">
+                    <div class="policy-header">
+                      <span class="policy-title">专精特新中小企业培育计划</span>
+                      <span class="tag tag-gold">高匹配度</span>
+                    </div>
+                    <div class="policy-desc">对认定为市级专精特新中小企业的，给予50万元一次性奖励；对认定为国家级专精特新"小巨人"的，给予100万元奖励。</div>
+                    <div class="policy-meta">
+                      <span>📅 2024-01-20 发布</span>
+                      <span>🏛️ 上海市经济和信息化委员会</span>
+                      <span style="color: var(--status-success);">✓ 符合条件</span>
+                    </div>
+                  </div>
+                  <div class="policy-item">
+                    <div class="policy-header">
+                      <span class="policy-title">软件企业增值税即征即退政策</span>
+                      <span class="tag tag-blue">中匹配度</span>
+                    </div>
+                    <div class="policy-desc">增值税一般纳税人销售其自行开发生产的软件产品，按13%税率征收增值税后，对其增值税实际税负超过3%的部分实行即征即退。</div>
+                    <div class="policy-meta">
+                      <span>📅 2023-12-01 发布</span>
+                      <span>🏛️ 财政部 国家税务总局</span>
+                      <span style="color: var(--status-warning);">△ 部分符合</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- 上传产值弹窗 -->
+      <div class="modal-mask" id="outputModal" onclick="if(event.target===this)closeOutputModal()">
+        <div class="modal-dialog" style="width: 480px; max-width: 90vw;">
+          <div class="modal-header">
+            <h3 class="modal-title">📊 上传产值数据</h3>
+            <button type="button" class="modal-close" onclick="event.stopPropagation();closeOutputModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">统计年度 <span class="required">*</span></label>
+              <select class="form-select" id="outputYear">
+                <option value="">请选择年度</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">年产值（亿元） <span class="required">*</span></label>
+              <input type="number" class="form-input" id="outputValue" placeholder="请输入年产值数值" step="0.01" min="0">
+              <div class="form-hint">请输入以亿元为单位的产值数据，支持两位小数</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default" onclick="closeOutputModal()">取消</button>
+            <button class="btn btn-primary" onclick="submitOutputData()">提交</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GIS位置详情弹窗 -->
+      <div class="modal-mask" id="gisDetailModal" onclick="if(event.target===this)closeProfileGisModal()">
+        <div class="modal-dialog" style="width: 800px; max-width: 90vw;">
+          <div class="modal-header">
+            <h3 class="modal-title">📍 GIS位置详情</h3>
+            <button type="button" class="modal-close" onclick="event.stopPropagation();closeProfileGisModal()">&times;</button>
+          </div>
+          <div class="modal-body" style="padding: 0;">
+            <div class="gis-map-detail">
+              <!-- 搜索栏 -->
+              <div class="gis-search-bar">
+                <div class="gis-search-input">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" value="上海市浦东新区张江高科技园区博云路2号浦软大厦" readonly>
+                </div>
+                <button class="btn btn-primary btn-sm">搜索</button>
+              </div>
+              <!-- 地图区域 -->
+              <div class="gis-map-area">
+                <div class="gis-map-bg" style="position: absolute; inset: 0;">
+                  <div class="gis-grid"></div>
+                  <div class="gis-roads">
+                    <div class="gis-road gis-road-h" style="top: 20%;"></div>
+                    <div class="gis-road gis-road-h" style="top: 45%;"></div>
+                    <div class="gis-road gis-road-h" style="top: 70%;"></div>
+                    <div class="gis-road gis-road-v" style="left: 20%;"></div>
+                    <div class="gis-road gis-road-v" style="left: 50%;"></div>
+                    <div class="gis-road gis-road-v" style="left: 75%;"></div>
+                  </div>
+                  <div class="gis-buildings">
+                    <div class="gis-building" style="left: 8%; top: 8%; width: 80px; height: 55px;"></div>
+                    <div class="gis-building" style="left: 28%; top: 5%; width: 100px; height: 65px;"></div>
+                    <div class="gis-building" style="left: 55%; top: 10%; width: 70px; height: 48px;"></div>
+                    <div class="gis-building" style="left: 78%; top: 5%; width: 90px; height: 60px;"></div>
+                    <div class="gis-building" style="left: 5%; top: 30%; width: 65px; height: 45px;"></div>
+                    <div class="gis-building" style="left: 25%; top: 28%; width: 110px; height: 70px;"></div>
+                    <div class="gis-building" style="left: 58%; top: 32%; width: 80px; height: 52px;"></div>
+                    <div class="gis-building" style="left: 80%; top: 28%; width: 60px; height: 42px;"></div>
+                    <div class="gis-building" style="left: 10%; top: 55%; width: 90px; height: 60px;"></div>
+                    <div class="gis-building" style="left: 32%; top: 52%; width: 120px; height: 75px;"></div>
+                    <div class="gis-building" style="left: 60%; top: 58%; width: 85px; height: 55px;"></div>
+                    <div class="gis-building" style="left: 78%; top: 55%; width: 75px; height: 50px;"></div>
+                    <div class="gis-building" style="left: 15%; top: 78%; width: 70px; height: 48px;"></div>
+                    <div class="gis-building" style="left: 35%; top: 80%; width: 95px; height: 62px;"></div>
+                    <div class="gis-building" style="left: 58%; top: 78%; width: 80px; height: 52px;"></div>
+                    <div class="gis-building" style="left: 78%; top: 82%; width: 70px; height: 45px;"></div>
+                  </div>
+                  <!-- 标记点 -->
+                  <div class="gis-marker" style="left: 50%; top: 50%;">
+                    <div class="gis-marker-pin" style="width: 36px; height: 36px;"></div>
+                    <div class="gis-marker-pulse" style="width: 50px; height: 50px; top: 12px;"></div>
+                    <div class="gis-marker-label" style="top: -8px;">
+                      <div class="gis-marker-title" style="font-size: 13px;">华创科技发展有限公司</div>
+                      <div class="gis-marker-addr">浦软大厦15层</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 缩放控件 -->
+                <div class="gis-zoom-control">
+                  <button class="gis-zoom-btn">+</button>
+                  <div class="gis-zoom-divider"></div>
+                  <button class="gis-zoom-btn">−</button>
+                </div>
+                <!-- 指南针 -->
+                <div class="gis-compass">
+                  <div class="compass-n">N</div>
+                  <div class="compass-needle"></div>
+                </div>
+                <!-- 比例尺 -->
+                <div class="gis-scale-bar">
+                  <div class="scale-line"></div>
+                  <span class="scale-text">500m</span>
+                </div>
+              </div>
+              <!-- 底部信息 -->
+              <div class="gis-detail-footer">
+                <div class="gis-detail-info">
+                  <div class="gis-detail-item">
+                    <span class="gis-detail-label">办公地址</span>
+                    <span class="gis-detail-value">上海市浦东新区张江高科技园区博云路2号浦软大厦15层</span>
+                  </div>
+                  <div class="gis-detail-item">
+                    <span class="gis-detail-label">经纬度</span>
+                    <span class="gis-detail-value">东经 121.602345° / 北纬 31.205789°</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab 切换功能
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', function() {
+        const tabName = this.getAttribute('data-tab');
+        
+        // 移除所有 active
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        
+        // 添加当前 active
+        this.classList.add('active');
+        document.getElementById('tab-' + tabName).classList.add('active');
+      });
+    });
+
+    // 菜单展开/收起
+    document.querySelectorAll('.menu-title').forEach(title => {
+      title.addEventListener('click', function() {
+        const group = this.closest('.menu-group');
+        group.classList.toggle('expanded');
+      });
+    });
+
+    // GIS位置详情弹窗
+    function openProfileGisModal() {
+      document.getElementById('gisDetailModal').classList.add('show');
+    }
+
+    function closeProfileGisModal() {
+      document.getElementById('gisDetailModal').classList.remove('show');
+    }
+
+    // 上传产值弹窗
+    function openOutputModal() {
+      populateYearOptions();
+      document.getElementById('outputModal').classList.add('show');
+    }
+
+    function closeOutputModal() {
+      document.getElementById('outputModal').classList.remove('show');
+      document.getElementById('outputYear').value = '';
+      document.getElementById('outputValue').value = '';
+    }
+
+    // 获取已有数据的年份列表
+    function getExistingYears() {
+      const rows = document.querySelectorAll('#outputTable tbody tr');
+      const years = [];
+      rows.forEach(row => {
+        const yearText = row.cells[0].textContent;
+        const year = parseInt(yearText);
+        if (!isNaN(year)) years.push(year);
+      });
+      return years;
+    }
+
+    // 填充年份下拉选项（排除已有数据的年份）
+    function populateYearOptions() {
+      const select = document.getElementById('outputYear');
+      const existingYears = getExistingYears();
+      const currentYear = new Date().getFullYear();
+      
+      // 清空现有选项，保留默认项
+      select.innerHTML = '<option value="">请选择年度</option>';
+      
+      // 生成从2018年到当前年份的选项
+      for (let year = currentYear; year >= 2018; year--) {
+        if (!existingYears.includes(year)) {
+          const option = document.createElement('option');
+          option.value = year;
+          option.textContent = year + '年度';
+          select.appendChild(option);
+        }
+      }
+    }
+
+    // 提交产值数据
+    function submitOutputData() {
+      const yearSelect = document.getElementById('outputYear');
+      const valueInput = document.getElementById('outputValue');
+      const year = yearSelect.value;
+      const value = parseFloat(valueInput.value);
+
+      if (!year) {
+        alert('请选择统计年度');
+        yearSelect.focus();
+        return;
+      }
+
+      if (isNaN(value) || value < 0) {
+        alert('请输入有效的产值数据');
+        valueInput.focus();
+        return;
+      }
+
+      // 获取当前时间作为更新时间
+      const now = new Date();
+      const updateTime = now.getFullYear() + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        String(now.getDate()).padStart(2, '0') + ' ' +
+        String(now.getHours()).padStart(2, '0') + ':' +
+        String(now.getMinutes()).padStart(2, '0');
+
+      // 计算同比增长（与上一年数据对比）
+      let yoyText = '-';
+      const existingYears = getExistingYears();
+      const prevYear = parseInt(year) - 1;
+      
+      if (existingYears.includes(prevYear)) {
+        const rows = document.querySelectorAll('#outputTable tbody tr');
+        let prevValue = null;
+        rows.forEach(row => {
+          const yearText = row.cells[0].textContent;
+          const y = parseInt(yearText);
+          if (y === prevYear) {
+            prevValue = parseFloat(row.cells[1].textContent);
+          }
+        });
+        if (prevValue !== null && prevValue > 0) {
+          const yoy = ((value - prevValue) / prevValue * 100).toFixed(1);
+          const isUp = yoy >= 0;
+          yoyText = '<span style="color: ' + (isUp ? '#2ecc71' : '#ef4444') + ';">' + 
+                    (isUp ? '↑ ' : '↓ ') + Math.abs(yoy) + '%</span>';
+        }
+      }
+
+      // 插入新行到表格顶部
+      const tbody = document.querySelector('#outputTable tbody');
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>${year}年度</td>
+        <td style="font-weight: 600; color: var(--color-gold-primary);">${value}</td>
+        <td>${yoyText}</td>
+        <td>${updateTime}</td>
+        <td>
+          <button class="btn-link">编辑</button>
+          <button class="btn-link btn-link-danger">删除</button>
+        </td>
+      `;
+      tbody.insertBefore(newRow, tbody.firstChild);
+
+      // 更新上一年的同比增长（如果上一年存在且之前为"-"）
+      const rows = tbody.querySelectorAll('tr');
+      if (rows.length >= 2) {
+        const prevRow = rows[1];
+        const prevYearText = prevRow.cells[0].textContent;
+        const prevYearNum = parseInt(prevYearText);
+        const nextYearNum = prevYearNum + 1;
+        
+        // 如果上一年的同比是"-"，且它有上上年数据，则计算
+        const prevPrevYear = prevYearNum - 1;
+        if (existingYears.includes(prevPrevYear)) {
+          let prevPrevValue = null;
+          rows.forEach(row => {
+            const y = parseInt(row.cells[0].textContent);
+            if (y === prevPrevYear) {
+              prevPrevValue = parseFloat(row.cells[1].textContent);
+            }
+          });
+          const prevValue = parseFloat(prevRow.cells[1].textContent);
+          if (prevPrevValue !== null && prevPrevValue > 0 && prevRow.cells[2].textContent === '-') {
+            const yoy = ((prevValue - prevPrevValue) / prevPrevValue * 100).toFixed(1);
+            const isUp = yoy >= 0;
+            prevRow.cells[2].innerHTML = '<span style="color: ' + (isUp ? '#2ecc71' : '#ef4444') + ';">' + 
+              (isUp ? '↑ ' : '↓ ') + Math.abs(yoy) + '%</span>';
+          }
+        }
+      }
+
+      closeOutputModal();
+      alert('产值数据上传成功！');
+    }
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
+
