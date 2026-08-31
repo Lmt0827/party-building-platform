@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人才数据分析 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* 页面特有样式 */
+    .talent-bar .bar-group .bar {
+      width: 36px;
+    }
+
+    .talent-bar .bar-group:nth-child(1) .bar { height: 30px; background: linear-gradient(180deg, #f0c14b, #d4a017); }
+    .talent-bar .bar-group:nth-child(2) .bar { height: 55px; background: linear-gradient(180deg, #f87171, #ef4444); }
+    .talent-bar .bar-group:nth-child(3) .bar { height: 90px; background: linear-gradient(180deg, #60a5fa, #3b82f6); }
+    .talent-bar .bar-group:nth-child(4) .bar { height: 130px; background: linear-gradient(180deg, #34d399, #10b981); }
+    .talent-bar .bar-group:nth-child(5) .bar { height: 165px; background: linear-gradient(180deg, #a78bfa, #8b5cf6); }
+    .talent-bar .bar-group:nth-child(6) .bar { height: 185px; background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+    .talent-bar .bar-group:nth-child(7) .bar { height: 200px; background: linear-gradient(180deg, #f472b6, #ec4899); }
+
+    .rank-table-region {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rank-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .rank-1 { background: linear-gradient(135deg, #f0c14b, #d4a017); color: #7a1414; }
+    .rank-2 { background: linear-gradient(135deg, #e2e8f0, #a0aec0); color: #2d3748; }
+    .rank-3 { background: linear-gradient(135deg, #cd7f32, #b8860b); }
+    .rank-other { background: rgba(42, 107, 176, 0.3); color: var(--gray-400); }
+
+    .high-level-col {
+      min-width: 140px;
+    }
+
+    .high-level-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .high-level-wrap .progress {
+      flex: 1;
+      min-width: 60px;
+    }
+
+    .high-level-wrap .progress-value {
+      font-size: 12px;
+      color: var(--gold-500);
+      font-weight: 600;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .growth-rate {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .growth-rate.up {
+      color: var(--success);
+    }
+
+    .growth-rate.down {
+      color: var(--danger);
+    }
+
+    /* 人才类别列表 */
+    .talent-category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0 10px;
+    }
+
+    .cat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .cat-item:hover {
+      background: rgba(240, 193, 75, 0.06);
+    }
+
+    .cat-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .cat-label {
+      flex: 1;
+      font-size: 13px;
+      color: var(--gray-300);
+    }
+
+    .cat-num {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-100);
+      min-width: 55px;
+      text-align: right;
+    }
+
+    .cat-percent {
+      font-size: 12px;
+      color: var(--gold-500);
+      min-width: 50px;
+      text-align: right;
+    }
+
+    /* 增长趋势多系列图例 */
+    .growth-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      margin-bottom: 12px;
+    }
+
+    .growth-legend .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--gray-300);
+    }
+
+    .growth-legend .legend-dot {
+      width: 12px;
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    .growth-legend .legend-main {
+      color: var(--gray-100);
+      font-weight: 600;
+    }
+
+    .growth-legend .legend-main .legend-dot {
+      height: 6px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html" class="active">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="index.html">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">人才培养</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">人才分析</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+        <!-- 筛选栏 -->
+        <div class="filter-bar">
+          <div class="filter-item">
+            <span class="filter-label">时间范围：</span>
+            <select class="filter-select">
+              <option>2024年度</option>
+              <option>2023年度</option>
+              <option>近一年</option>
+              <option>近半年</option>
+              <option>近三个月</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <span class="filter-label">人才类别：</span>
+            <select class="filter-select">
+              <option>全部类别</option>
+              <option>A类（顶尖人才）</option>
+              <option>B类（国家级领军）</option>
+              <option>C类（省级领军）</option>
+              <option>D类（市级领军）</option>
+              <option>E类（高级人才）</option>
+              <option>F类（中级人才）</option>
+              <option>G类（基础人才）</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <span class="filter-label">产业领域：</span>
+            <select class="filter-select">
+              <option>全部产业</option>
+              <option>先进制造业</option>
+              <option>现代服务业</option>
+              <option>高新技术产业</option>
+              <option>生物医药</option>
+              <option>数字经济</option>
+              <option>现代农业</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <span class="filter-label">学历层次：</span>
+            <select class="filter-select">
+              <option>全部</option>
+              <option>博士研究生</option>
+              <option>硕士研究生</option>
+              <option>本科</option>
+              <option>大专及以下</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button class="btn btn-secondary">重置</button>
+            <button class="btn btn-primary">查询</button>
+            <button class="btn btn-gold">⬇ 导出报告</button>
+          </div>
+        </div>
+
+        <!-- KPI 卡片 -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">人才总数</div>
+            <div class="kpi-value gold">15,860</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +12.3%</span>
+            </div>
+          </div>
+          <div class="kpi-card gold">
+            <div class="kpi-label">A类人才（顶尖）</div>
+            <div class="kpi-value">86</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +18.5%</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">B类人才（国家级）</div>
+            <div class="kpi-value red">342</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +15.2%</span>
+            </div>
+          </div>
+          <div class="kpi-card blue">
+            <div class="kpi-label">C类人才（省级）</div>
+            <div class="kpi-value">1,256</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +10.8%</span>
+            </div>
+          </div>
+          <div class="kpi-card gold">
+            <div class="kpi-label">博士占比</div>
+            <div class="kpi-value gold">8.5%</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +1.2%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 上排图表：2列 -->
+        <div class="chart-row cols-2">
+          <!-- A-G类人才分布 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">人才类别分布（A-G类）</div>
+              <span class="card-extra">结构占比分析</span>
+            </div>
+            <div class="chart-container" style="display: flex; flex-direction: column; justify-content: center;">
+              <div class="css-chart-pie" style="width: 220px; height: 220px; margin: 0 auto;">
+                <svg class="pie-svg" viewBox="0 0 100 100">
+                  <!-- A类 86人 = 0.54% = 1.95° -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#f0c14b" stroke-width="12"
+                    stroke-dasharray="1.95 224.65" stroke-dashoffset="0" />
+                  <!-- B类 342人 = 2.16% = 7.77° offset=1.95 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#ef4444" stroke-width="12"
+                    stroke-dasharray="7.77 218.83" stroke-dashoffset="-1.95" />
+                  <!-- C类 1256人 = 7.92% = 28.5°  offset=9.72 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#3b82f6" stroke-width="12"
+                    stroke-dasharray="28.5 198.1" stroke-dashoffset="-9.72" />
+                  <!-- D类 2890人 = 18.22% = 65.6°  offset=38.22 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#10b981" stroke-width="12"
+                    stroke-dasharray="65.6 161" stroke-dashoffset="-38.22" />
+                  <!-- E类 4520人 = 28.5% = 102.6°  offset=103.82 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#8b5cf6" stroke-width="12"
+                    stroke-dasharray="102.6 124" stroke-dashoffset="-103.82" />
+                  <!-- F类 5180人 = 32.66% = 117.6°  offset=206.42 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#f59e0b" stroke-width="12"
+                    stroke-dasharray="117.6 109" stroke-dashoffset="-206.42" />
+                  <!-- G类 1586人 = 10.0% = 36°  offset=324.02 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#ec4899" stroke-width="12"
+                    stroke-dasharray="36 190.6" stroke-dashoffset="-324.02" />
+                </svg>
+                <div class="pie-center">
+                  <div class="pie-center-value" style="font-size: 22px;">15,860</div>
+                  <div class="pie-center-label">人才总数</div>
+                </div>
+              </div>
+              <div class="talent-category-list" style="margin-top: 20px;">
+                <div class="cat-item">
+                  <span class="cat-dot" style="background:#f0c14b;"></span>
+                  <span class="cat-label">A类 顶尖人才</span>
+                  <span class="cat-num">86</span>
+                  <span class="cat-percent">0.54%</span>
+                </div>
+                <div class="cat-item">
+                  <span class="cat-dot" style="background:#ef4444;"></span>
+                  <span class="cat-label">B类 国家级领军</span>
+                  <span class="cat-num">342</span>
+                  <span class="cat-percent">2.16%</span>
+                </div>
+                <div class="cat-item">
+                  <span class="cat-dot" style="background:#3b82f6;"></span>
+                  <span class="cat-label">C类 省级领军</span>
+                  <span class="cat-num">1,256</span>
+                  <span class="cat-percent">7.92%</span>
+                </div>
+                <div class="cat-item">
+                  <span class="cat-dot" style="background:#10b981;"></span>
+                  <span class="cat-label">D类 市级领军</span>
+                  <span class="cat-num">2,890</span>
+                  <span class="cat-percent">18.22%</span>
+                </div>
+                <div class="cat-item">
+                  <span class="cat-dot" style="background:#8b5cf6;"></span>
+                  <span class="cat-label">E类 高级人才</span>
+                  <span class="cat-num">4,520</span>
+                  <span class="cat-percent">28.50%</span>
+                </div>
+                <div class="cat-item">
+                  <span class="cat-dot" style="background:#f59e0b;"></span>
+                  <span class="cat-label">F类 中级人才</span>
+                  <span class="cat-num">5,180</span>
+                  <span class="cat-percent">32.66%</span>
+                </div>
+                <div class="cat-item">
+                  <span class="cat-dot" style="background:#ec4899;"></span>
+                  <span class="cat-label">G类 基础人才</span>
+                  <span class="cat-num">1,586</span>
+                  <span class="cat-percent">10.00%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 学历分布环形图 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">人才学历分布</div>
+              <span class="card-extra">结构占比分析</span>
+            </div>
+            <div class="chart-container" style="display: flex; flex-direction: column; justify-content: center;">
+              <div class="css-chart-pie" style="width: 220px; height: 220px;">
+                <svg class="pie-svg" viewBox="0 0 100 100">
+                  <!-- 博士 8.5% = 30.6° -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#f0c14b" stroke-width="12"
+                    stroke-dasharray="30.6 221" stroke-dashoffset="0" />
+                  <!-- 硕士 23.8% = 85.7°  offset=30.6 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#ef4444" stroke-width="12"
+                    stroke-dasharray="85.7 165.9" stroke-dashoffset="-30.6" />
+                  <!-- 本科 45.2% = 162.7°  offset=116.3 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#3b82f6" stroke-width="12"
+                    stroke-dasharray="162.7 88.9" stroke-dashoffset="-116.3" />
+                  <!-- 大专 15.6% = 56.2°  offset=279 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#10b981" stroke-width="12"
+                    stroke-dasharray="56.2 195.4" stroke-dashoffset="-279" />
+                  <!-- 大专以下 6.9% = 24.8° -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#64748b" stroke-width="12"
+                    stroke-dasharray="24.8 226.8" stroke-dashoffset="-335.2" />
+                </svg>
+                <div class="pie-center">
+                  <div class="pie-center-value" style="font-size: 22px;">15,860</div>
+                  <div class="pie-center-label">人才总数</div>
+                </div>
+              </div>
+              <div class="pie-legend" style="margin-top: 24px;">
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#f0c14b;"></span>
+                  <span>博士研究生 8.5%</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#ef4444;"></span>
+                  <span>硕士研究生 23.8%</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#3b82f6;"></span>
+                  <span>本科 45.2%</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#10b981;"></span>
+                  <span>大专 15.6%</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#64748b;"></span>
+                  <span>大专以下 6.9%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 下排图表：2列 -->
+        <div class="chart-row cols-2">
+          <!-- 人才增长趋势折线图 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">人才增长趋势</div>
+              <span class="card-extra">近5年各类人才引进变化</span>
+            </div>
+            <div class="chart-container">
+              <div class="css-chart-line">
+                <div class="growth-legend">
+                  <div class="legend-item legend-main">
+                    <span class="legend-dot" style="background:#ef4444;"></span>
+                    <span>引进总数</span>
+                  </div>
+                  <div class="legend-item legend-main">
+                    <span class="legend-dot" style="background:#f0c14b;"></span>
+                    <span>高层次人才</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#f0c14b;"></span>
+                    <span>A类</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#ef4444;"></span>
+                    <span>B类</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#3b82f6;"></span>
+                    <span>C类</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#10b981;"></span>
+                    <span>D类</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#8b5cf6;"></span>
+                    <span>E类</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#f59e0b;"></span>
+                    <span>F类</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#ec4899;"></span>
+                    <span>G类</span>
+                  </div>
+                </div>
+                <div class="chart-grid">
+                  <div class="grid-line" data-value="4000"></div>
+                  <div class="grid-line" data-value="3000"></div>
+                  <div class="grid-line" data-value="2000"></div>
+                  <div class="grid-line" data-value="1000"></div>
+                  <div class="grid-line" data-value="0"></div>
+                </div>
+                <div class="chart-xaxis">
+                  <span class="xaxis-label">2020</span>
+                  <span class="xaxis-label">2021</span>
+                  <span class="xaxis-label">2022</span>
+                  <span class="xaxis-label">2023</span>
+                  <span class="xaxis-label">2024</span>
+                </div>
+                <svg class="chart-svg" viewBox="0 0 400 200" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="totalGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#ef4444" stop-opacity="0.25" />
+                      <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <!-- 面积填充：引进总数 -->
+                  <polygon points="0,150 100,125 200,90 300,50 400,10 400,200 0,200" fill="url(#totalGrad)" />
+                  
+                  <!-- G类 (粉色) -->
+                  <polyline fill="none" stroke="#ec4899" stroke-width="1.5"
+                    points="0,193.5 100,191.55 200,189.45 300,187.3 400,186" />
+                  <!-- F类 (琥珀色) -->
+                  <polyline fill="none" stroke="#f59e0b" stroke-width="1.5"
+                    points="0,184 100,176.5 200,166 300,155 400,146" />
+                  <!-- E类 (紫色) -->
+                  <polyline fill="none" stroke="#8b5cf6" stroke-width="1.5"
+                    points="0,186 100,178.5 200,168 300,155.5 400,143" />
+                  <!-- D类 (绿色) -->
+                  <polyline fill="none" stroke="#10b981" stroke-width="1.5"
+                    points="0,192.5 100,188 200,181.5 300,174 400,165.5" />
+                  <!-- C类 (蓝色) -->
+                  <polyline fill="none" stroke="#3b82f6" stroke-width="1.5"
+                    points="0,196 100,193.75 200,190.5 300,186.5 400,181.5" />
+                  <!-- B类 (红色) -->
+                  <polyline fill="none" stroke="#ef4444" stroke-width="1.5"
+                    points="0,198.4 100,197.4 200,195.75 300,193.6 400,190.9" />
+                  <!-- A类 (金色) -->
+                  <polyline fill="none" stroke="#f0c14b" stroke-width="1.5"
+                    points="0,199.6 100,199.3 200,198.8 300,198.1 400,197.1" />
+                  
+                  <!-- 高层次人才 (金色粗线) -->
+                  <polyline fill="none" stroke="#f0c14b" stroke-width="3"
+                    points="0,198 100,196.7 200,194.55 300,191.7 400,188" />
+                  <circle cx="0" cy="198" r="3.5" fill="#f0c14b" />
+                  <circle cx="100" cy="196.7" r="3.5" fill="#f0c14b" />
+                  <circle cx="200" cy="194.55" r="3.5" fill="#f0c14b" />
+                  <circle cx="300" cy="191.7" r="3.5" fill="#f0c14b" />
+                  <circle cx="400" cy="188" r="3.5" fill="#f0c14b" />
+                  
+                  <!-- 引进总数 (红色粗线 - 最上层) -->
+                  <polyline fill="none" stroke="#ef4444" stroke-width="3"
+                    points="0,150 100,125 200,90 300,50 400,10" />
+                  <circle cx="0" cy="150" r="5" fill="#ef4444" />
+                  <circle cx="100" cy="125" r="5" fill="#ef4444" />
+                  <circle cx="200" cy="90" r="5" fill="#ef4444" />
+                  <circle cx="300" cy="50" r="5" fill="#ef4444" />
+                  <circle cx="400" cy="10" r="5" fill="#ef4444" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- 各产业人才堆叠柱状图 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">各产业人才分布</div>
+              <span class="card-extra">按人才类别堆叠</span>
+            </div>
+            <div class="chart-container">
+              <div class="css-chart-stacked" style="padding: 10px 20px 0;">
+                <div class="stack-group">
+                  <div class="stack-bar" style="height: 180px;">
+                    <div class="stack-segment" style="height: 25%; background: #f0c14b;"></div>
+                    <div class="stack-segment" style="height: 30%; background: #ef4444;"></div>
+                    <div class="stack-segment" style="height: 45%; background: #3b82f6;"></div>
+                  </div>
+                  <span class="stack-label">先进制造</span>
+                </div>
+                <div class="stack-group">
+                  <div class="stack-bar" style="height: 160px;">
+                    <div class="stack-segment" style="height: 18%; background: #f0c14b;"></div>
+                    <div class="stack-segment" style="height: 28%; background: #ef4444;"></div>
+                    <div class="stack-segment" style="height: 54%; background: #3b82f6;"></div>
+                  </div>
+                  <span class="stack-label">现代服务</span>
+                </div>
+                <div class="stack-group">
+                  <div class="stack-bar" style="height: 200px;">
+                    <div class="stack-segment" style="height: 30%; background: #f0c14b;"></div>
+                    <div class="stack-segment" style="height: 35%; background: #ef4444;"></div>
+                    <div class="stack-segment" style="height: 35%; background: #3b82f6;"></div>
+                  </div>
+                  <span class="stack-label">高新技术</span>
+                </div>
+                <div class="stack-group">
+                  <div class="stack-bar" style="height: 140px;">
+                    <div class="stack-segment" style="height: 22%; background: #f0c14b;"></div>
+                    <div class="stack-segment" style="height: 32%; background: #ef4444;"></div>
+                    <div class="stack-segment" style="height: 46%; background: #3b82f6;"></div>
+                  </div>
+                  <span class="stack-label">生物医药</span>
+                </div>
+                <div class="stack-group">
+                  <div class="stack-bar" style="height: 170px;">
+                    <div class="stack-segment" style="height: 28%; background: #f0c14b;"></div>
+                    <div class="stack-segment" style="height: 33%; background: #ef4444;"></div>
+                    <div class="stack-segment" style="height: 39%; background: #3b82f6;"></div>
+                  </div>
+                  <span class="stack-label">数字经济</span>
+                </div>
+                <div class="stack-group">
+                  <div class="stack-bar" style="height: 100px;">
+                    <div class="stack-segment" style="height: 15%; background: #f0c14b;"></div>
+                    <div class="stack-segment" style="height: 25%; background: #ef4444;"></div>
+                    <div class="stack-segment" style="height: 60%; background: #3b82f6;"></div>
+                  </div>
+                  <span class="stack-label">现代农业</span>
+                </div>
+              </div>
+              <div class="pie-legend" style="margin-top: 16px;">
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#f0c14b;"></span>
+                  <span>A/B类（高层次）</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#ef4444;"></span>
+                  <span>C/D类（领军人才）</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#3b82f6;"></span>
+                  <span>E/F/G类（其他人才）</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部表格：企业人才分布Top10 -->
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="table-toolbar-title">各企业人才分布 TOP10</div>
+            <div class="table-toolbar-actions">
+              <button class="btn btn-secondary">⬇ 导出Excel</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">排名</th>
+                  <th>企业名称</th>
+                  <th>人才总数</th>
+                  <th>A类</th>
+                  <th>B类</th>
+                  <th>C类</th>
+                  <th class="high-level-col">高层次占比</th>
+                  <th>同比增速</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="rank-badge rank-1">1</span></td>
+                  <td>
+                    <div class="rank-table-region">
+                      <span class="text-gold font-bold">华为技术有限公司</span>
+                    </div>
+                  </td>
+                  <td class="text-gold font-bold">1,280</td>
+                  <td>18</td>
+                  <td>56</td>
+                  <td>186</td>
+                  <td class="high-level-col">
+                    <div class="high-level-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 13.6%;"></div>
+                      </div>
+                      <span class="progress-value">13.6%</span>
+                    </div>
+                  </td>
+                  <td><span class="growth-rate up">+18.5%</span></td>
+                  <td><button class="btn-link">详情</button></td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge rank-2">2</span></td>
+                  <td>
+                    <div class="rank-table-region">
+                      <span class="text-gold font-bold">阿里巴巴集团</span>
+                    </div>
+                  </td>
+                  <td class="text-gold font-bold">1,120</td>
+                  <td>12</td>
+                  <td>48</td>
+                  <td>165</td>
+                  <td class="high-level-col">
+                    <div class="high-level-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 12.5%;"></div>
+                      </div>
+                      <span class="progress-value">12.5%</span>
+                    </div>
+                  </td>
+                  <td><span class="growth-rate up">+15.2%</span></td>
+                  <td><button class="btn-link">详情</button></td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge rank-3">3</span></td>
+                  <td>
+                    <div class="rank-table-region">
+                      <span class="text-gold font-bold">腾讯科技（深圳）</span>
+                    </div>
+                  </td>
+                  <td class="text-gold font-bold">980</td>
+                  <td>10</td>
+                  <td>42</td>
+                  <td>142</td>
+                  <td class="high-level-col">
+                    <div class="high-level-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 11.2%;"></div>
+                      </div>
+                      <span class="progress-value">11.2%</span>
+                    </div>
+                  </td>
+                  <td><span class="growth-rate up">+16.8%</span></td>
+                  <td><button class="btn-link">详情</button></td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge rank-other">4</span></td>
+                  <td>北京字节跳动科技</td>
+                  <td class="font-bold">850</td>
+                  <td>8</td>
+                  <td>35</td>
+                  <td>120</td>
+                  <td class="high-level-col">
+                    <div class="high-level-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 10.1%;"></div>
+                      </div>
+                      <span class="progress-value">10.1%</span>
+                    </div>
+                  </td>
+                  <td><span class="growth-rate up">+22.3%</span></td>
+                  <td><button class="btn-link">详情</button></td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge rank-other">5</span></td>
+                  <td>比亚迪股份有限公司</td>
+                  <td class="font-bold">720</td>
+                  <td>5</td>
+                  <td>28</td>
+                  <td>98</td>
+                  <td class="high-level-col">
+                    <div class="high-level-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 9.2%;"></div>
+                      </div>
+                      <span class="progress-value">9.2%</span>
+                    </div>
+                  </td>
+                  <td><span class="growth-rate up">+19.6%</span></td>
+                  <td><button class="btn-link">详情</button></td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge rank-other">6</span></td>
+                  <td>宁德时代新能源</td>
+                  <td class="font-bold">620</td>
+                  <td>4</td>
+                  <td>22</td>
+                  <td>82</td>
+                  <td class="high-level-col">
+                    <div class="high-level-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 8.4%;"></div>
+                      </div>
+                      <span class="progress-value">8.4%</span>
+                    </div>
+                  </td>
+                  <td><span class="growth-rate up">+25.1%</span></td>
+                  <td><button class="btn-link">详情</button></td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge rank-other">7</span></td>
+                  <td>中芯国际集成电路</td>
+                  <td class="font-bold">540</td>
+                  <td>6</td>
+                  <td>20</td>
+                  <td>75</td>
+                  <td class="high-level-col">
+                    <div class="high-level-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 9.6%;"></div>
+                      </div>
+                      <span class="progress-value">9.6%</span>
+                    </div>
+                  </td>
+                  <td><span class="growth-rate up">+12.8%</span></td>
+                  <td><button class="btn-link">详情</button></td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge rank-other">8</span></td>
+                  <td>深圳市大疆创新</td>
+                  <td class="font-bold">460</td>
+                  <td>3</td>
+                  <td>16</td>
+                  <td>62</td>
+                  <td class="high-level-col">
+                    <div class="high-level-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 8.3%;"></div>
+                      </div>
+                      <span class="progress-value">8.3%</span>
+                    </div>
+                  </td>
+                  <td><span class="growth-rate up">+14.2%</span></td>
+                  <td><button class="btn-link">详情</button></td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge rank-other">9</span></td>
+                  <td>顺丰科技有限公司</td>
+                  <td class="font-bold">380</td>
+                  <td>2</td>
+                  <td>12</td>
+                  <td>50</td>
+                  <td class="high-level-col">
+                    <div class="high-level-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 7.4%;"></div>
+                      </div>
+                      <span class="progress-value">7.4%</span>
+                    </div>
+                  </td>
+                  <td><span class="growth-rate up">+9.5%</span></td>
+                  <td><button class="btn-link">详情</button></td>
+                </tr>
+                <tr>
+                  <td><span class="rank-badge rank-other">10</span></td>
+                  <td>深圳迈瑞生物医疗</td>
+                  <td class="font-bold">320</td>
+                  <td>3</td>
+                  <td>14</td>
+                  <td>45</td>
+                  <td class="high-level-col">
+                    <div class="high-level-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 8.1%;"></div>
+                      </div>
+                      <span class="progress-value">8.1%</span>
+                    </div>
+                  </td>
+                  <td><span class="growth-rate up">+11.7%</span></td>
+                  <td><button class="btn-link">详情</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <div class="pagination-info">共 48 家企业，当前第 1 / 5 页</div>
+            <div class="pagination-nav">
+              <button class="page-btn" disabled>上一页</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <button class="page-btn">4</button>
+              <button class="page-btn">5</button>
+              <button class="page-btn" disabled>下一页</button>
+            </div>
+            <div class="page-size">
+              <span>每页</span>
+              <select>
+                <option>10</option>
+                <option>20</option>
+                <option>50</option>
+              </select>
+              <span>条</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      </main>
+    </div>
+  </div>
+<script src="common.js"></script>
+</body>
+</html>
+
