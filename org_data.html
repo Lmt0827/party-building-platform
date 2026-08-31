@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>组织数据管理 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* 白色内容区覆盖样式 */
+    .main-wrapper {
+      background: #f5f7fa;
+    }
+    .header {
+      background: #fff;
+      border-bottom: 1px solid #e4e7ed;
+    }
+    .header-search input {
+      background: #f5f7fa;
+      border: 1px solid #dcdfe6;
+      color: #303133;
+    }
+    .header-search input::placeholder {
+      color: #909399;
+    }
+    .header-search input:focus {
+      border-color: #c41e3a;
+      background: #fff;
+    }
+    .header-search .search-icon {
+      color: #909399;
+    }
+    .header-icon {
+      color: #606266;
+    }
+    .header-icon:hover {
+      color: #c41e3a;
+      background: rgba(196, 30, 58, 0.05);
+    }
+    .header-username {
+      color: #303133;
+    }
+    .breadcrumb {
+      background: #fff;
+      border-bottom: 1px solid #e4e7ed;
+    }
+    .breadcrumb-item {
+      color: #606266;
+    }
+    .breadcrumb-item a {
+      color: #606266;
+    }
+    .breadcrumb-item a:hover {
+      color: #c41e3a;
+    }
+    .breadcrumb-item.active {
+      color: #c41e3a;
+    }
+    .breadcrumb-separator {
+      color: #c0c4cc;
+    }
+    .main-content {
+      background: #f5f7fa;
+    }
+
+    /* 白色主题卡片 */
+    .card {
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+    .card::before {
+      background: linear-gradient(90deg, transparent, #c41e3a, transparent);
+      opacity: 0.8;
+    }
+    .card-header {
+      border-bottom: 1px solid #ebeef5;
+    }
+    .card-title {
+      color: #303133;
+    }
+    .card-title::before {
+      background: linear-gradient(180deg, #d4af37, #c41e3a);
+    }
+    .card-body {
+      color: #606266;
+    }
+
+    /* 页面标题 */
+    .page-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #303133;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .page-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+      border-radius: 2px;
+    }
+
+    /* 统计卡片行 - 4列 */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 8px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .stat-card:hover {
+      box-shadow: 0 4px 20px rgba(196, 30, 58, 0.1);
+      transform: translateY(-2px);
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+    }
+    .stat-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .stat-icon.red {
+      background: linear-gradient(135deg, #e63946, #c41e3a);
+      box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+    }
+    .stat-icon.gold {
+      background: linear-gradient(135deg, #f4d03f, #d4af37);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+    .stat-icon.blue {
+      background: linear-gradient(135deg, #5dade2, #2a5a8a);
+      box-shadow: 0 4px 12px rgba(42, 90, 138, 0.3);
+    }
+    .stat-icon.green {
+      background: linear-gradient(135deg, #58d68d, #2ecc71);
+      box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+    }
+    .stat-info {
+      flex: 1;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: #909399;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #303133;
+      font-family: 'DIN', 'Arial', sans-serif;
+      line-height: 1.2;
+    }
+    .stat-value .unit {
+      font-size: 14px;
+      color: #909399;
+      font-weight: 400;
+      margin-left: 4px;
+    }
+    .stat-trend {
+      font-size: 12px;
+      color: #909399;
+      margin-top: 4px;
+    }
+    .stat-trend .up { color: #2ecc71; }
+    .stat-trend .down { color: #e74c3c; }
+
+    /* 主体两栏布局 */
+    .main-layout {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    /* 左侧组织架构树 */
+    .org-chart-panel {
+      width: 320px;
+      flex-shrink: 0;
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .org-chart-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #ebeef5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .org-chart-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #303133;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .org-chart-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+      border-radius: 2px;
+    }
+    .expand-all-btn {
+      font-size: 12px;
+      color: #c41e3a;
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: rgba(196, 30, 58, 0.06);
+      transition: all 0.2s;
+    }
+    .expand-all-btn:hover {
+      background: rgba(196, 30, 58, 0.12);
+    }
+    .add-org-btn {
+      font-size: 12px;
+      color: #fff;
+      cursor: pointer;
+      padding: 4px 12px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #c41e3a, #d4af37);
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .add-org-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(196, 30, 58, 0.3);
+    }
+    .org-chart-body {
+      padding: 8px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* 树形结构 */
+    .org-tree {
+      font-size: 13px;
+      color: #303133;
+    }
+    .org-tree .tree-node {
+      position: relative;
+      display: block;
+      width: 100%;
+    }
+    .org-tree .tree-node-header {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      position: relative;
+      gap: 6px;
+      border-left: 3px solid transparent;
+    }
+    .org-tree .tree-node-header:hover {
+      background: #f0f5ff;
+    }
+    .org-tree .tree-node-header.selected {
+      background: linear-gradient(90deg, rgba(196,30,58,0.08) 0%, rgba(196,30,58,0.02) 100%);
+      border-left-color: #c41e3a;
+      color: #c41e3a;
+      font-weight: 600;
+    }
+    /* 一级节点特殊样式 */
+    .org-tree > .tree-node > .tree-node-header {
+      background: linear-gradient(90deg, rgba(24, 77, 142, 0.06) 0%, transparent 100%);
+      border-left-color: #184d8e;
+      font-weight: 600;
+      color: #184d8e;
+      margin-bottom: 2px;
+    }
+    .org-tree > .tree-node > .tree-node-header:hover {
+      background: linear-gradient(90deg, rgba(24, 77, 142, 0.12) 0%, transparent 100%);
+    }
+    .org-tree > .tree-node > .tree-node-header.selected {
+      background: linear-gradient(90deg, rgba(196,30,58,0.1) 0%, rgba(196,30,58,0.02) 100%);
+      border-left-color: #c41e3a;
+      color: #c41e3a;
+    }
+    .tree-toggle {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      font-size: 10px;
+      color: #909399;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+      text-align: center;
+      line-height: 14px;
+    }
+    .tree-toggle.expanded {
+      transform: rotate(90deg);
+      color: #184d8e;
+    }
+    .tree-toggle.empty {
+      visibility: hidden;
+    }
+    .node-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .node-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .node-badge {
+      flex-shrink: 0;
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: #f0f2f5;
+      color: #606266;
+      font-weight: normal;
+    }
+    .node-badge.red {
+      background: rgba(196, 30, 58, 0.1);
+      color: #c41e3a;
+    }
+    .org-tree .tree-children {
+      display: block;
+      overflow: hidden;
+      max-height: 0;
+      padding-left: 20px;
+      position: relative;
+      transition: max-height 0.3s ease;
+    }
+    .org-tree .tree-children.expanded {
+      max-height: 3000px;
+    }
+    /* 树形连接线 - 垂直主线 */
+    .org-tree .tree-children::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: -10px;
+      bottom: 12px;
+      width: 1px;
+      background: #d0d7de;
+    }
+    /* 每个子节点的水平连接线 */
+    .org-tree .tree-children > .tree-node > .tree-node-header::before {
+      content: '';
+      position: absolute;
+      left: -14px;
+      top: 50%;
+      width: 12px;
+      height: 1px;
+      background: #d0d7de;
+    }
+    /* 最后一个子节点：垂直线截止 */
+    .org-tree .tree-children > .tree-node:last-child > .tree-node-header::after {
+      content: '';
+      position: absolute;
+      left: -14px;
+      top: 50%;
+      bottom: -12px;
+      width: 1px;
+      background: #fff;
+    }
+    /* 右侧详情区 */
+    .detail-panel {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 基本信息卡片 */
+    .info-card {
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .info-card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid #ebeef5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .info-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #303133;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-card-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+      border-radius: 2px;
+    }
+    .info-card-body {
+      padding: 18px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px 24px;
+    }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .info-label {
+      font-size: 12px;
+      color: #909399;
+    }
+    .info-value {
+      font-size: 14px;
+      color: #303133;
+      font-weight: 500;
+    }
+    .info-value.tag-green { color: #2ecc71; }
+    .info-value.tag-orange { color: #e67e22; }
+
+    /* 党员统计卡片 */
+    .member-stats-card {
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .member-stats-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid #ebeef5;
+    }
+    .member-stats-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #303133;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .member-stats-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+      border-radius: 2px;
+    }
+    .member-stats-body {
+      padding: 18px;
+    }
+    .member-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .member-stat-item {
+      text-align: center;
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 6px;
+    }
+    .member-stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #c41e3a;
+      font-family: 'DIN', 'Arial', sans-serif;
+      line-height: 1.2;
+    }
+    .member-stat-value.gold { color: #d4af37; }
+    .member-stat-value.blue { color: #2a5a8a; }
+    .member-stat-value.green { color: #2ecc71; }
+    .member-stat-label {
+      font-size: 12px;
+      color: #909399;
+      margin-top: 4px;
+    }
+
+    /* 年龄分布进度条 */
+    .age-distribution {
+      margin-top: 8px;
+    }
+    .age-title {
+      font-size: 13px;
+      color: #606266;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    .age-bar-item {
+      margin-bottom: 10px;
+    }
+    .age-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #606266;
+      margin-bottom: 4px;
+    }
+    .age-bar-track {
+      height: 8px;
+      background: #f0f2f5;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .age-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+    .age-bar-fill.red { background: linear-gradient(90deg, #e63946, #c41e3a); }
+    .age-bar-fill.gold { background: linear-gradient(90deg, #f4d03f, #d4af37); }
+    .age-bar-fill.blue { background: linear-gradient(90deg, #5dade2, #2a5a8a); }
+    .age-bar-fill.green { background: linear-gradient(90deg, #58d68d, #2ecc71); }
+
+    /* 组织动态/活动列表 */
+    .activity-card {
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .activity-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid #ebeef5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .activity-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #303133;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .activity-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+      border-radius: 2px;
+    }
+    .activity-more {
+      font-size: 12px;
+      color: #c41e3a;
+      cursor: pointer;
+    }
+    .activity-more:hover {
+      text-decoration: underline;
+    }
+    .activity-body {
+      padding: 10px 18px;
+    }
+    .activity-list-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f2f5;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .activity-list-item:last-child {
+      border-bottom: none;
+    }
+    .activity-list-item:hover {
+      background: #fafbfc;
+      margin: 0 -18px;
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+    .activity-item-date {
+      width: 50px;
+      text-align: center;
+      flex-shrink: 0;
+      margin-right: 14px;
+    }
+    .activity-date-day {
+      font-size: 20px;
+      font-weight: 700;
+      color: #c41e3a;
+      line-height: 1;
+      font-family: 'DIN', 'Arial', sans-serif;
+    }
+    .activity-date-month {
+      font-size: 11px;
+      color: #909399;
+      margin-top: 2px;
+    }
+    .activity-item-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .activity-item-title {
+      font-size: 14px;
+      color: #303133;
+      font-weight: 500;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .activity-item-desc {
+      font-size: 12px;
+      color: #909399;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .activity-item-tag {
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+    .mini-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      border-radius: 3px;
+      line-height: 1.4;
+    }
+    .mini-tag.red {
+      background: rgba(196, 30, 58, 0.1);
+      color: #c41e3a;
+    }
+    .mini-tag.blue {
+      background: rgba(42, 90, 138, 0.1);
+      color: #2a5a8a;
+    }
+    .mini-tag.green {
+      background: rgba(46, 204, 113, 0.1);
+      color: #2ecc71;
+    }
+    .mini-tag.gold {
+      background: rgba(212, 175, 55, 0.15);
+      color: #b8941f;
+    }
+
+    /* 弹窗样式 */
+    .modal-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    .modal-mask.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-dialog {
+      background: #fff;
+      border-radius: 8px;
+      width: 600px;
+      max-width: 90vw;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(20px);
+      transition: transform 0.3s;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+    .modal-mask.show .modal-dialog {
+      transform: translateY(0);
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #ebeef5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #303133;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+      border-radius: 2px;
+    }
+    .modal-close {
+      font-size: 20px;
+      color: #909399;
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .modal-close:hover {
+      background: #f5f7fa;
+      color: #c41e3a;
+    }
+    .modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      color: #606266;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .form-label .required {
+      color: #f56c6c;
+      margin-right: 2px;
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #303133;
+      background: #fff;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: #c41e3a;
+    }
+    .form-textarea {
+      height: 80px;
+      padding: 8px 12px;
+      resize: vertical;
+      font-family: inherit;
+    }
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+    .modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid #ebeef5;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .btn {
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #c41e3a, #d4af37);
+      color: #fff;
+      border: none;
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+    }
+    .btn-default {
+      background: #fff;
+      color: #606266;
+      border-color: #dcdfe6;
+    }
+    .btn-default:hover {
+      color: #c41e3a;
+      border-color: #c41e3a;
+    }
+    .btn-sm {
+      padding: 4px 12px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html" class="active">组织数据管理</a></li>
+            <li><a href="org_analysis.html">党建数据分析</a></li>
+            <li><a href="org_committee.html">工委管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            🔔
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">⚙</div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="#">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">党建基础</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">组织数据管理</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+        <!-- 页面标题 -->
+        <div class="page-title">组织数据管理</div>
+
+        <!-- 统计卡片行 -->
+        <div class="stat-row">
+          <div class="stat-card" onclick="window.location.href='org_committee.html'">
+            <div class="stat-icon red">🏛</div>
+            <div class="stat-info">
+              <div class="stat-label">党组织总数</div>
+              <div class="stat-value">1,286<span class="unit">个</span></div>
+              <div class="stat-trend"><span class="up">↑ 3.6%</span> 较上年同期</div>
+            </div>
+          </div>
+          <div class="stat-card" onclick="window.location.href='member.html'">
+            <div class="stat-icon gold">👥</div>
+            <div class="stat-info">
+              <div class="stat-label">党员总数</div>
+              <div class="stat-value">28,560<span class="unit">人</span></div>
+              <div class="stat-trend"><span class="up">↑ 4.2%</span> 较上年同期</div>
+            </div>
+          </div>
+          <div class="stat-card" onclick="window.location.href='org_committee.html'">
+            <div class="stat-icon blue">🏢</div>
+            <div class="stat-info">
+              <div class="stat-label">党工委数</div>
+              <div class="stat-value">42<span class="unit">个</span></div>
+              <div class="stat-trend"><span class="up">↑ 2.4%</span> 较上年同期</div>
+            </div>
+          </div>
+          <div class="stat-card" onclick="window.location.href='org_committee.html'">
+            <div class="stat-icon green">📋</div>
+            <div class="stat-info">
+              <div class="stat-label">党支部数</div>
+              <div class="stat-value">968<span class="unit">个</span></div>
+              <div class="stat-trend"><span class="up">↑ 5.1%</span> 较上年同期</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 主体两栏布局 -->
+        <div class="main-layout">
+          <!-- 左侧：组织架构树 -->
+          <div class="org-chart-panel">
+            <div class="org-chart-header">
+              <div class="org-chart-title">组织架构</div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="add-org-btn" onclick="openAddOrgModal()">+ 添加党组织</div>
+                <div class="expand-all-btn" onclick="toggleExpandAll(this)">展开全部</div>
+              </div>
+            </div>
+            <div class="org-chart-body">
+              <div class="org-tree" id="orgTree">
+                <!-- 高新区党工委 -->
+                <div class="tree-node">
+                  <div class="tree-node-header selected" onclick="toggleNode(this)">
+                    <span class="tree-toggle expanded">▶</span>
+                    <span class="node-icon">🏛</span>
+                    <span class="node-name">高新区党工委</span>
+                    <span class="node-badge red">186</span>
+                  </div>
+                  <div class="tree-children expanded">
+                    <!-- 机关党委 -->
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle expanded">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">机关党委</span>
+                        <span class="node-badge">28</span>
+                      </div>
+                      <div class="tree-children expanded">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">机关第一党支部</span><span class="node-badge">12</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">机关第二党支部</span><span class="node-badge">9</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">机关第三党支部</span><span class="node-badge">7</span></div></div>
+                      </div>
+                    </div>
+                    <!-- 科技园区党委 -->
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">科技园区党委</span>
+                        <span class="node-badge">45</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">软件企业党支部</span><span class="node-badge">32</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">硬件企业党支部</span><span class="node-badge">13</span></div></div>
+                      </div>
+                    </div>
+                    <!-- 创业园党总支 -->
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">创业园党总支</span>
+                        <span class="node-badge">22</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">创业一队党支部</span><span class="node-badge">8</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">创业二队党支部</span><span class="node-badge">7</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">创业三队党支部</span><span class="node-badge">7</span></div></div>
+                      </div>
+                    </div>
+                    <!-- 生物医药党委 -->
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">生物医药党委</span>
+                        <span class="node-badge">36</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">药业公司党支部</span><span class="node-badge">18</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">医疗器械党支部</span><span class="node-badge">11</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">研发中心党支部</span><span class="node-badge">7</span></div></div>
+                      </div>
+                    </div>
+                    <!-- 新材料党总支 -->
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">新材料党总支</span>
+                        <span class="node-badge">18</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">新材一支部</span><span class="node-badge">10</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">新材二支部</span><span class="node-badge">8</span></div></div>
+                      </div>
+                    </div>
+                    <!-- 物流园党支部（叶子） -->
+                    <div class="tree-node">
+                      <div class="tree-node-header">
+                        <span class="tree-toggle empty">▶</span>
+                        <span class="node-icon">📌</span>
+                        <span class="node-name">物流园党支部</span>
+                        <span class="node-badge">37</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 经开区党工委 -->
+                <div class="tree-node">
+                  <div class="tree-node-header" onclick="toggleNode(this)">
+                    <span class="tree-toggle">▶</span>
+                    <span class="node-icon">🏛</span>
+                    <span class="node-name">经开区党工委</span>
+                    <span class="node-badge red">168</span>
+                  </div>
+                  <div class="tree-children">
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">经开区机关党委</span>
+                        <span class="node-badge">24</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">行政一支部</span><span class="node-badge">10</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">行政二支部</span><span class="node-badge">8</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">综合执法支部</span><span class="node-badge">6</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">智能制造党委</span>
+                        <span class="node-badge">52</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">智能装备党支部</span><span class="node-badge">28</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">数控车间党支部</span><span class="node-badge">24</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">电子信息党总支</span>
+                        <span class="node-badge">45</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">芯片企业党支部</span><span class="node-badge">20</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">显示面板党支部</span><span class="node-badge">15</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">通信设备党支部</span><span class="node-badge">10</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">新能源产业园党委</span>
+                        <span class="node-badge">47</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">光伏企业党支部</span><span class="node-badge">25</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">储能企业党支部</span><span class="node-badge">22</span></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 城东街道党工委 -->
+                <div class="tree-node">
+                  <div class="tree-node-header" onclick="toggleNode(this)">
+                    <span class="tree-toggle">▶</span>
+                    <span class="node-icon">🏛</span>
+                    <span class="node-name">城东街道党工委</span>
+                    <span class="node-badge red">142</span>
+                  </div>
+                  <div class="tree-children">
+                    <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">街道机关党支部</span><span class="node-badge">18</span></div></div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">春园社区党委</span>
+                        <span class="node-badge">35</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">春园一支部</span><span class="node-badge">15</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">春园二支部</span><span class="node-badge">12</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">春园三支部</span><span class="node-badge">8</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">夏荷社区党总支</span>
+                        <span class="node-badge">28</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">夏荷一支部</span><span class="node-badge">15</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">夏荷二支部</span><span class="node-badge">13</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">秋枫社区党总支</span>
+                        <span class="node-badge">32</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">秋枫一支部</span><span class="node-badge">18</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">秋枫二支部</span><span class="node-badge">14</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">冬梅社区党支部</span><span class="node-badge">29</span></div></div>
+                  </div>
+                </div>
+
+                <!-- 城西街道党工委 -->
+                <div class="tree-node">
+                  <div class="tree-node-header" onclick="toggleNode(this)">
+                    <span class="tree-toggle">▶</span>
+                    <span class="node-icon">🏛</span>
+                    <span class="node-name">城西街道党工委</span>
+                    <span class="node-badge red">134</span>
+                  </div>
+                  <div class="tree-children">
+                    <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">街道机关党支部</span><span class="node-badge">16</span></div></div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">西凤社区党委</span>
+                        <span class="node-badge">42</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">西凤一支部</span><span class="node-badge">22</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">西凤二支部</span><span class="node-badge">20</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">西园社区党总支</span>
+                        <span class="node-badge">38</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">西园一支部</span><span class="node-badge">20</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">西园二支部</span><span class="node-badge">18</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">西岭社区党支部</span><span class="node-badge">38</span></div></div>
+                  </div>
+                </div>
+
+                <!-- 城南街道党工委 -->
+                <div class="tree-node">
+                  <div class="tree-node-header" onclick="toggleNode(this)">
+                    <span class="tree-toggle">▶</span>
+                    <span class="node-icon">🏛</span>
+                    <span class="node-name">城南街道党工委</span>
+                    <span class="node-badge red">115</span>
+                  </div>
+                  <div class="tree-children">
+                    <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">街道机关党支部</span><span class="node-badge">14</span></div></div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">南湖社区党委</span>
+                        <span class="node-badge">45</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">南湖一支部</span><span class="node-badge">24</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">南湖二支部</span><span class="node-badge">21</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">南苑社区党总支</span>
+                        <span class="node-badge">30</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">南苑一支部</span><span class="node-badge">16</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">南苑二支部</span><span class="node-badge">14</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">南郊社区党支部</span><span class="node-badge">26</span></div></div>
+                  </div>
+                </div>
+
+                <!-- 城北街道党工委 -->
+                <div class="tree-node">
+                  <div class="tree-node-header" onclick="toggleNode(this)">
+                    <span class="tree-toggle">▶</span>
+                    <span class="node-icon">🏛</span>
+                    <span class="node-name">城北街道党工委</span>
+                    <span class="node-badge red">103</span>
+                  </div>
+                  <div class="tree-children">
+                    <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">街道机关党支部</span><span class="node-badge">12</span></div></div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">北苑社区党委</span>
+                        <span class="node-badge">38</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">北苑一支部</span><span class="node-badge">20</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">北苑二支部</span><span class="node-badge">18</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">北辰社区党总支</span>
+                        <span class="node-badge">32</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">北辰一支部</span><span class="node-badge">17</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">北辰二支部</span><span class="node-badge">15</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">北关社区党支部</span><span class="node-badge">21</span></div></div>
+                  </div>
+                </div>
+
+                <!-- 商贸园党工委 -->
+                <div class="tree-node">
+                  <div class="tree-node-header" onclick="toggleNode(this)">
+                    <span class="tree-toggle">▶</span>
+                    <span class="node-icon">🏛</span>
+                    <span class="node-name">商贸园党工委</span>
+                    <span class="node-badge red">89</span>
+                  </div>
+                  <div class="tree-children">
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">商圈综合党委</span>
+                        <span class="node-badge">35</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">百货商圈党支部</span><span class="node-badge">18</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">餐饮街区党支部</span><span class="node-badge">17</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">批发市场党总支</span>
+                        <span class="node-badge">28</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">农贸批发党支部</span><span class="node-badge">15</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">建材市场党支部</span><span class="node-badge">13</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">物流行业党支部</span><span class="node-badge">26</span></div></div>
+                  </div>
+                </div>
+
+                <!-- 科教园区党工委 -->
+                <div class="tree-node">
+                  <div class="tree-node-header" onclick="toggleNode(this)">
+                    <span class="tree-toggle">▶</span>
+                    <span class="node-icon">🏛</span>
+                    <span class="node-name">科教园区党工委</span>
+                    <span class="node-badge red">75</span>
+                  </div>
+                  <div class="tree-children">
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">大学城党委</span>
+                        <span class="node-badge">32</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">理工大学党支部</span><span class="node-badge">18</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">师范学院党支部</span><span class="node-badge">14</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node">
+                      <div class="tree-node-header" onclick="toggleNode(this)">
+                        <span class="tree-toggle">▶</span>
+                        <span class="node-icon">📋</span>
+                        <span class="node-name">科研院所党总支</span>
+                        <span class="node-badge">25</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">计算所党支部</span><span class="node-badge">13</span></div></div>
+                        <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">材料所党支部</span><span class="node-badge">12</span></div></div>
+                      </div>
+                    </div>
+                    <div class="tree-node"><div class="tree-node-header"><span class="tree-toggle empty">▶</span><span class="node-icon">📌</span><span class="node-name">职教中心党支部</span><span class="node-badge">18</span></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 右侧：组织详情 -->
+          <div class="detail-panel">
+            <!-- 基本信息卡片 -->
+            <div class="info-card">
+              <div class="info-card-header">
+                <div class="info-card-title" id="detailTitle">基本信息 - 高新区党工委</div>
+                <button class="btn btn-primary btn-sm" onclick="goToDetail()">查看详情 →</button>
+              </div>
+              <div class="info-card-body">
+                <div class="info-grid">
+                  <div class="info-item">
+                    <span class="info-label">组织名称</span>
+                    <span class="info-value" id="infoName">高新区党工委</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">组织类型</span>
+                    <span class="info-value" id="infoType">党工委</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">书记</span>
+                    <span class="info-value" id="infoSecretary">李建国</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">成立时间</span>
+                    <span class="info-value" id="infoFoundDate">2003-06-15</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">委员数</span>
+                    <span class="info-value" id="infoCommitteeCount">15 人</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">下属组织数</span>
+                    <span class="info-value" id="infoSubOrgCount">186 个</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">党员总数</span>
+                    <span class="info-value" id="infoMemberCount">3,256 人</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">组织状态</span>
+                    <span class="info-value tag-green" id="infoStatus">正常</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">联系电话</span>
+                    <span class="info-value" id="infoPhone">0571-88886666</span>
+                  </div>
+                  <div class="info-item" style="grid-column: span 2;">
+                    <span class="info-label">办公地址</span>
+                    <span class="info-value" id="infoAddress">高新区科技大道88号高新大厦18楼</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 党员统计卡片 -->
+            <div class="member-stats-card">
+              <div class="member-stats-header">
+                <div class="member-stats-title">党员统计</div>
+              </div>
+              <div class="member-stats-body">
+                <div class="member-stats-row">
+                  <div class="member-stat-item">
+                    <div class="member-stat-value" id="statTotal">3,256</div>
+                    <div class="member-stat-label">总人数</div>
+                  </div>
+                  <div class="member-stat-item">
+                    <div class="member-stat-value blue" id="statMale">2,156</div>
+                    <div class="member-stat-label">男党员</div>
+                  </div>
+                  <div class="member-stat-item">
+                    <div class="member-stat-value gold" id="statFemale">1,100</div>
+                    <div class="member-stat-label">女党员</div>
+                  </div>
+                  <div class="member-stat-item">
+                    <div class="member-stat-value green" id="statRatio">66.2%</div>
+                    <div class="member-stat-label">男性占比</div>
+                  </div>
+                </div>
+
+                <div class="age-distribution">
+                  <div class="age-title">年龄分布</div>
+                  <div class="age-bar-item">
+                    <div class="age-bar-label">
+                      <span>35岁以下</span>
+                      <span id="age1Count">856 人 · 26.3%</span>
+                    </div>
+                    <div class="age-bar-track">
+                      <div class="age-bar-fill red" id="age1Bar" style="width: 26.3%"></div>
+                    </div>
+                  </div>
+                  <div class="age-bar-item">
+                    <div class="age-bar-label">
+                      <span>36-45岁</span>
+                      <span id="age2Count">1,024 人 · 31.4%</span>
+                    </div>
+                    <div class="age-bar-track">
+                      <div class="age-bar-fill gold" id="age2Bar" style="width: 31.4%"></div>
+                    </div>
+                  </div>
+                  <div class="age-bar-item">
+                    <div class="age-bar-label">
+                      <span>46-55岁</span>
+                      <span id="age3Count">786 人 · 24.1%</span>
+                    </div>
+                    <div class="age-bar-track">
+                      <div class="age-bar-fill blue" id="age3Bar" style="width: 24.1%"></div>
+                    </div>
+                  </div>
+                  <div class="age-bar-item">
+                    <div class="age-bar-label">
+                      <span>56岁以上</span>
+                      <span id="age4Count">590 人 · 18.1%</span>
+                    </div>
+                    <div class="age-bar-track">
+                      <div class="age-bar-fill green" id="age4Bar" style="width: 18.1%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 组织动态/活动列表 -->
+            <div class="activity-card">
+              <div class="activity-header">
+                <div class="activity-title">组织动态</div>
+                <span class="activity-more">查看更多 →</span>
+              </div>
+              <div class="activity-body">
+                <div class="activity-list-item">
+                  <div class="activity-item-date">
+                    <div class="activity-date-day">15</div>
+                    <div class="activity-date-month">08月</div>
+                  </div>
+                  <div class="activity-item-content">
+                    <div class="activity-item-title">高新区党工委召开2024年上半年党建工作总结会</div>
+                    <div class="activity-item-desc">总结上半年党建工作成效，部署下半年重点任务...</div>
+                  </div>
+                  <div class="activity-item-tag">
+                    <span class="mini-tag red">重要会议</span>
+                  </div>
+                </div>
+                <div class="activity-list-item">
+                  <div class="activity-item-date">
+                    <div class="activity-date-day">10</div>
+                    <div class="activity-date-month">08月</div>
+                  </div>
+                  <div class="activity-item-content">
+                    <div class="activity-item-title">"不忘初心、牢记使命"主题教育专题学习</div>
+                    <div class="activity-item-desc">组织全体党员开展主题教育集中学习研讨活动...</div>
+                  </div>
+                  <div class="activity-item-tag">
+                    <span class="mini-tag blue">学习教育</span>
+                  </div>
+                </div>
+                <div class="activity-list-item">
+                  <div class="activity-item-date">
+                    <div class="activity-date-day">05</div>
+                    <div class="activity-date-month">08月</div>
+                  </div>
+                  <div class="activity-item-content">
+                    <div class="activity-item-title">机关党委组织党员志愿服务进社区活动</div>
+                    <div class="activity-item-desc">50余名党员志愿者深入社区开展便民服务...</div>
+                  </div>
+                  <div class="activity-item-tag">
+                    <span class="mini-tag green">志愿服务</span>
+                  </div>
+                </div>
+                <div class="activity-list-item">
+                  <div class="activity-item-date">
+                    <div class="activity-date-day">28</div>
+                    <div class="activity-date-month">07月</div>
+                  </div>
+                  <div class="activity-item-content">
+                    <div class="activity-item-title">庆祝建党103周年暨"七一"表彰大会隆重举行</div>
+                    <div class="activity-item-desc">表彰先进基层党组织、优秀共产党员和优秀党务工作者...</div>
+                  </div>
+                  <div class="activity-item-tag">
+                    <span class="mini-tag gold">表彰大会</span>
+                  </div>
+                </div>
+                <div class="activity-list-item">
+                  <div class="activity-item-date">
+                    <div class="activity-date-day">15</div>
+                    <div class="activity-date-month">07月</div>
+                  </div>
+                  <div class="activity-item-content">
+                    <div class="activity-item-title">生物医药党委开展产业链党建调研</div>
+                    <div class="activity-item-desc">深入企业调研党建工作开展情况及存在问题...</div>
+                  </div>
+                  <div class="activity-item-tag">
+                    <span class="mini-tag blue">调研活动</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- 新增党组织弹窗 -->
+      <div class="modal-mask" id="addOrgModal">
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3 class="modal-title">添加党组织</h3>
+            <button type="button" class="modal-close" onclick="event.stopPropagation();closeAddOrgModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="addOrgForm">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>组织名称</label>
+                <input type="text" class="form-input" id="orgName" placeholder="请输入党组织名称" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span>组织类型</label>
+                  <select class="form-select" id="orgType">
+                    <option value="">请选择组织类型</option>
+                    <option value="党工委">党工委</option>
+                    <option value="党委">党委</option>
+                    <option value="党总支">党总支</option>
+                    <option value="党支部">党支部</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span>上级组织</label>
+                  <select class="form-select" id="parentOrg">
+                    <option value="">请选择上级组织</option>
+                    <option value="高新区党工委">高新区党工委</option>
+                    <option value="经开区党工委">经开区党工委</option>
+                    <option value="城东街道党工委">城东街道党工委</option>
+                    <option value="机关党委">机关党委</option>
+                    <option value="科技园区党委">科技园区党委</option>
+                    <option value="创业园党总支">创业园党总支</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span>书记</label>
+                  <input type="text" class="form-input" id="orgSecretary" placeholder="请输入书记姓名" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">副书记</label>
+                  <input type="text" class="form-input" id="deputySecretary" placeholder="请输入副书记姓名" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">委员数</label>
+                  <input type="number" class="form-input" id="committeeCount" placeholder="请输入委员人数" min="0" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">党员数</label>
+                  <input type="number" class="form-input" id="memberCount" placeholder="请输入党员人数" min="0" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span>成立时间</label>
+                  <input type="date" class="form-input" id="establishDate" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">组织状态</label>
+                  <select class="form-select" id="orgStatus">
+                    <option value="正常">正常</option>
+                    <option value="筹建中">筹建中</option>
+                    <option value="撤销">撤销</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">联系电话</label>
+                <input type="text" class="form-input" id="orgPhone" placeholder="请输入联系电话" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">办公地址</label>
+                <input type="text" class="form-input" id="orgAddress" placeholder="请输入办公地址" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">备注</label>
+                <textarea class="form-textarea" id="orgRemark" placeholder="请输入备注信息"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="event.stopPropagation();closeAddOrgModal()">取消</button>
+            <button type="button" class="btn btn-primary" onclick="event.stopPropagation();submitAddOrg()">确认提交</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // 当前选中的节点名称
+    var currentSelectedNode = '高新区党工委';
+    var currentRoot = '高新区党工委';
+
+    // 组织详情数据
+    var orgDetailData = {
+      '高新区党工委': {
+        type: '党工委', secretary: '李建国', foundDate: '2003-06-15',
+        committeeCount: '15 人', subOrgCount: '186 个', memberCount: '3,256 人',
+        status: '正常', statusClass: 'tag-green',
+        phone: '0571-88886666', address: '高新区科技大道88号高新大厦18楼',
+        gis: { lng: '120.1551', lat: '30.2741', x: 50, y: 45 },
+        stats: { total: '3,256', male: '2,156', female: '1,100', ratio: '66.2%' },
+        ages: [
+          { label: '35岁以下', count: '856 人 · 26.3%', percent: 26.3, color: 'red' },
+          { label: '36-45岁', count: '1,024 人 · 31.4%', percent: 31.4, color: 'gold' },
+          { label: '46-55岁', count: '786 人 · 24.1%', percent: 24.1, color: 'blue' },
+          { label: '56岁以上', count: '590 人 · 18.1%', percent: 18.1, color: 'green' }
+        ]
+      },
+      '机关党委': {
+        type: '党委', secretary: '王海涛', foundDate: '2005-03-10',
+        committeeCount: '9 人', subOrgCount: '28 个', memberCount: '520 人',
+        status: '正常', statusClass: 'tag-green',
+        phone: '0571-88881234', address: '高新区科技大道88号高新大厦8楼',
+        stats: { total: '520', male: '348', female: '172', ratio: '66.9%' },
+        ages: [
+          { label: '35岁以下', count: '125 人 · 24.0%', percent: 24.0, color: 'red' },
+          { label: '36-45岁', count: '180 人 · 34.6%', percent: 34.6, color: 'gold' },
+          { label: '46-55岁', count: '140 人 · 26.9%', percent: 26.9, color: 'blue' },
+          { label: '56岁以上', count: '75 人 · 14.4%', percent: 14.4, color: 'green' }
+        ]
+      },
+      '科技园区党委': {
+        type: '党委', secretary: '张明远', foundDate: '2008-09-25',
+        committeeCount: '11 人', subOrgCount: '35 个', memberCount: '680 人',
+        status: '正常', statusClass: 'tag-green',
+        phone: '0571-88885678', address: '高新区科创路168号科技创业中心',
+        stats: { total: '680', male: '462', female: '218', ratio: '67.9%' },
+        ages: [
+          { label: '35岁以下', count: '268 人 · 39.4%', percent: 39.4, color: 'red' },
+          { label: '36-45岁', count: '245 人 · 36.0%', percent: 36.0, color: 'gold' },
+          { label: '46-55岁', count: '120 人 · 17.6%', percent: 17.6, color: 'blue' },
+          { label: '56岁以上', count: '47 人 · 6.9%', percent: 6.9, color: 'green' }
+        ]
+      },
+      '创业园党总支': {
+        type: '党总支', secretary: '刘晓峰', foundDate: '2012-06-18',
+        committeeCount: '7 人', subOrgCount: '22 个', memberCount: '420 人',
+        status: '正常', statusClass: 'tag-green',
+        phone: '0571-88889012', address: '高新区创业路99号创业大厦',
+        stats: { total: '420', male: '295', female: '125', ratio: '70.2%' },
+        ages: [
+          { label: '35岁以下', count: '185 人 · 44.0%', percent: 44.0, color: 'red' },
+          { label: '36-45岁', count: '140 人 · 33.3%', percent: 33.3, color: 'gold' },
+          { label: '46-55岁', count: '65 人 · 15.5%', percent: 15.5, color: 'blue' },
+          { label: '56岁以上', count: '30 人 · 7.1%', percent: 7.1, color: 'green' }
+        ]
+      },
+      '生物医药党委': {
+        type: '党委', secretary: '陈丽华', foundDate: '2010-11-08',
+        committeeCount: '9 人', subOrgCount: '32 个', memberCount: '580 人',
+        status: '正常', statusClass: 'tag-green',
+        phone: '0571-88883456', address: '高新区生物医药产业园健康大道1号',
+        stats: { total: '580', male: '320', female: '260', ratio: '55.2%' },
+        ages: [
+          { label: '35岁以下', count: '210 人 · 36.2%', percent: 36.2, color: 'red' },
+          { label: '36-45岁', count: '200 人 · 34.5%', percent: 34.5, color: 'gold' },
+          { label: '46-55岁', count: '115 人 · 19.8%', percent: 19.8, color: 'blue' },
+          { label: '56岁以上', count: '55 人 · 9.5%', percent: 9.5, color: 'green' }
+        ]
+      },
+      '新材料党总支': {
+        type: '党总支', secretary: '赵文斌', foundDate: '2014-04-22',
+        committeeCount: '7 人', subOrgCount: '25 个', memberCount: '450 人',
+        status: '正常', statusClass: 'tag-green',
+        phone: '0571-88887890', address: '高新区新材料产业园科研路66号',
+        stats: { total: '450', male: '310', female: '140', ratio: '68.9%' },
+        ages: [
+          { label: '35岁以下', count: '150 人 · 33.3%', percent: 33.3, color: 'red' },
+          { label: '36-45岁', count: '165 人 · 36.7%', percent: 36.7, color: 'gold' },
+          { label: '46-55岁', count: '90 人 · 20.0%', percent: 20.0, color: 'blue' },
+          { label: '56岁以上', count: '45 人 · 10.0%', percent: 10.0, color: 'green' }
+        ]
+      },
+      '物流园党支部': {
+        type: '党支部', secretary: '孙志强', foundDate: '2016-08-15',
+        committeeCount: '5 人', subOrgCount: '18 个', memberCount: '320 人',
+        status: '正常', statusClass: 'tag-green',
+        phone: '0571-88882345', address: '高新区物流园物流大道100号',
+        stats: { total: '320', male: '252', female: '68', ratio: '78.8%' },
+        ages: [
+          { label: '35岁以下', count: '98 人 · 30.6%', percent: 30.6, color: 'red' },
+          { label: '36-45岁', count: '112 人 · 35.0%', percent: 35.0, color: 'gold' },
+          { label: '46-55岁', count: '72 人 · 22.5%', percent: 22.5, color: 'blue' },
+          { label: '56岁以上', count: '38 人 · 11.9%', percent: 11.9, color: 'green' }
+        ]
+      }
+    };
+
+    // 党支部数据
+    var branchData = {
+      '第一党支部': { type: '党支部', secretary: '周建国', foundDate: '2006-03-15', committeeCount: '3 人', subOrgCount: '0 个', memberCount: '32 人', status: '正常', statusClass: 'tag-green', phone: '0571-88880001', address: '高新区科技大道88号', stats: { total: '32', male: '22', female: '10', ratio: '68.8%' }, ages: [{ label: '35岁以下', count: '10 人 · 31.3%', percent: 31.3, color: 'red' }, { label: '36-45岁', count: '12 人 · 37.5%', percent: 37.5, color: 'gold' }, { label: '46-55岁', count: '7 人 · 21.9%', percent: 21.9, color: 'blue' }, { label: '56岁以上', count: '3 人 · 9.4%', percent: 9.4, color: 'green' }] },
+      '第二党支部': { type: '党支部', secretary: '吴明华', foundDate: '2006-05-20', committeeCount: '3 人', subOrgCount: '0 个', memberCount: '28 人', status: '正常', statusClass: 'tag-green', phone: '0571-88880002', address: '高新区科技大道88号', stats: { total: '28', male: '18', female: '10', ratio: '64.3%' }, ages: [{ label: '35岁以下', count: '8 人 · 28.6%', percent: 28.6, color: 'red' }, { label: '36-45岁', count: '10 人 · 35.7%', percent: 35.7, color: 'gold' }, { label: '46-55岁', count: '6 人 · 21.4%', percent: 21.4, color: 'blue' }, { label: '56岁以上', count: '4 人 · 14.3%', percent: 14.3, color: 'green' }] },
+      '第三党支部': { type: '党支部', secretary: '郑晓东', foundDate: '2007-02-10', committeeCount: '3 人', subOrgCount: '0 个', memberCount: '25 人', status: '正常', statusClass: 'tag-green', phone: '0571-88880003', address: '高新区科技大道88号', stats: { total: '25', male: '16', female: '9', ratio: '64.0%' }, ages: [{ label: '35岁以下', count: '7 人 · 28.0%', percent: 28.0, color: 'red' }, { label: '36-45岁', count: '9 人 · 36.0%', percent: 36.0, color: 'gold' }, { label: '46-55岁', count: '6 人 · 24.0%', percent: 24.0, color: 'blue' }, { label: '56岁以上', count: '3 人 · 12.0%', percent: 12.0, color: 'green' }] },
+      '第四党支部': { type: '党支部', secretary: '冯丽娟', foundDate: '2008-04-18', committeeCount: '3 人', subOrgCount: '0 个', memberCount: '30 人', status: '正常', statusClass: 'tag-green', phone: '0571-88880004', address: '高新区科技大道88号', stats: { total: '30', male: '19', female: '11', ratio: '63.3%' }, ages: [{ label: '35岁以下', count: '10 人 · 33.3%', percent: 33.3, color: 'red' }, { label: '36-45岁', count: '10 人 · 33.3%', percent: 33.3, color: 'gold' }, { label: '46-55岁', count: '7 人 · 23.3%', percent: 23.3, color: 'blue' }, { label: '56岁以上', count: '3 人 · 10.0%', percent: 10.0, color: 'green' }] },
+      '第五党支部': { type: '党支部', secretary: '何伟民', foundDate: '2009-08-05', committeeCount: '3 人', subOrgCount: '0 个', memberCount: '22 人', status: '正常', statusClass: 'tag-green', phone: '0571-88880005', address: '高新区科技大道88号', stats: { total: '22', male: '15', female: '7', ratio: '68.2%' }, ages: [{ label: '35岁以下', count: '6 人 · 27.3%', percent: 27.3, color: 'red' }, { label: '36-45岁', count: '8 人 · 36.4%', percent: 36.4, color: 'gold' }, { label: '46-55岁', count: '5 人 · 22.7%', percent: 22.7, color: 'blue' }, { label: '56岁以上', count: '3 人 · 13.6%', percent: 13.6, color: 'green' }] },
+      '第六党支部': { type: '党支部', secretary: '马晓燕', foundDate: '2010-11-12', committeeCount: '3 人', subOrgCount: '0 个', memberCount: '26 人', status: '正常', statusClass: 'tag-green', phone: '0571-88880006', address: '高新区科技大道88号', stats: { total: '26', male: '17', female: '9', ratio: '65.4%' }, ages: [{ label: '35岁以下', count: '8 人 · 30.8%', percent: 30.8, color: 'red' }, { label: '36-45岁', count: '9 人 · 34.6%', percent: 34.6, color: 'gold' }, { label: '46-55岁', count: '6 人 · 23.1%', percent: 23.1, color: 'blue' }, { label: '56岁以上', count: '3 人 · 11.5%', percent: 11.5, color: 'green' }] }
+    };
+
+    // 树节点展开/收起
+    function toggleNode(headerEl) {
+      var toggle = headerEl.querySelector('.tree-toggle');
+      if (toggle.classList.contains('empty')) return; // 叶子节点不处理
+
+      var node = headerEl.parentElement;
+      var children = node.querySelector(':scope > .tree-children');
+      if (!children) return;
+
+      var isExpanded = children.classList.contains('expanded');
+      if (isExpanded) {
+        children.classList.remove('expanded');
+        toggle.classList.remove('expanded');
+      } else {
+        children.classList.add('expanded');
+        toggle.classList.add('expanded');
+      }
+
+      // 同时选中该节点
+      selectTreeNode(headerEl);
+    }
+
+    // 选中树节点 - 更新右侧详情
+    function selectTreeNode(headerEl) {
+      // 移除所有选中
+      document.querySelectorAll('.tree-node-header').forEach(function(h) {
+        h.classList.remove('selected');
+      });
+      headerEl.classList.add('selected');
+
+      var name = headerEl.querySelector('.node-name').textContent;
+      currentSelectedNode = name;
+
+      // 查找数据 - 先查党工委，再查党委/党总支，再查支部
+      var data = orgDetailData[name] || branchData[name];
+      // 如果没找到，用通用模板
+      if (!data) {
+        data = generateMockData(name);
+      }
+      if (data) {
+        updateDetailPanel(name, data);
+      }
+    }
+
+    // 生成模拟数据
+    function generateMockData(name) {
+      var type = '党支部';
+      var count = Math.floor(Math.random() * 30) + 10;
+      if (name.indexOf('党工委') > -1) { type = '党工委'; count = Math.floor(Math.random() * 100) + 100; }
+      else if (name.indexOf('党委') > -1) { type = '党委'; count = Math.floor(Math.random() * 50) + 30; }
+      else if (name.indexOf('党总支') > -1) { type = '党总支'; count = Math.floor(Math.random() * 30) + 20; }
+
+      var male = Math.floor(count * 0.65);
+      var female = count - male;
+      return {
+        type: type,
+        secretary: '张书记',
+        foundDate: '2010-01-01',
+        committeeCount: Math.floor(count / 10) + ' 人',
+        subOrgCount: type === '党支部' ? '0 个' : (Math.floor(count / 15) + ' 个'),
+        memberCount: count + ' 人',
+        status: '正常',
+        statusClass: 'tag-green',
+        phone: '0571-8888' + String(Math.floor(Math.random() * 9000) + 1000),
+        address: '高新区XX路XX号',
+        gis: {
+          lng: (120.1 + Math.random() * 0.1).toFixed(4),
+          lat: (30.25 + Math.random() * 0.1).toFixed(4),
+          x: 15 + Math.floor(Math.random() * 70),
+          y: 20 + Math.floor(Math.random() * 60)
+        },
+        stats: { total: count, male: male, female: female, ratio: Math.round(male / count * 1000) / 10 + '%' },
+        ages: [
+          { label: '35岁以下', count: Math.floor(count * 0.3) + ' 人 · ' + Math.round(count * 0.3 / count * 100) + '%', percent: 30, color: 'red' },
+          { label: '36-45岁', count: Math.floor(count * 0.35) + ' 人 · ' + Math.round(count * 0.35 / count * 100) + '%', percent: 35, color: 'gold' },
+          { label: '46-55岁', count: Math.floor(count * 0.25) + ' 人 · ' + Math.round(count * 0.25 / count * 100) + '%', percent: 25, color: 'blue' },
+          { label: '56岁以上', count: Math.floor(count * 0.1) + ' 人 · ' + Math.round(count * 0.1 / count * 100) + '%', percent: 10, color: 'green' }
+        ]
+      };
+    }
+
+    // 更新右侧详情面板
+    function updateDetailPanel(name, data) {
+      document.getElementById('detailTitle').textContent = '基本信息 - ' + name;
+      document.getElementById('infoName').textContent = name;
+      document.getElementById('infoType').textContent = data.type;
+      document.getElementById('infoSecretary').textContent = data.secretary;
+      document.getElementById('infoFoundDate').textContent = data.foundDate;
+      document.getElementById('infoCommitteeCount').textContent = data.committeeCount;
+      document.getElementById('infoSubOrgCount').textContent = data.subOrgCount;
+      document.getElementById('infoMemberCount').textContent = data.memberCount;
+
+      var statusEl = document.getElementById('infoStatus');
+      statusEl.textContent = data.status;
+      statusEl.className = 'info-value ' + data.statusClass;
+
+      document.getElementById('infoPhone').textContent = data.phone;
+      document.getElementById('infoAddress').textContent = data.address;
+
+      // 更新统计
+      document.getElementById('statTotal').textContent = data.stats.total;
+      document.getElementById('statMale').textContent = data.stats.male;
+      document.getElementById('statFemale').textContent = data.stats.female;
+      document.getElementById('statRatio').textContent = data.stats.ratio;
+
+      // 更新年龄分布
+      if (data.ages && data.ages.length >= 4) {
+        for (var i = 0; i < 4; i++) {
+          var age = data.ages[i];
+          document.getElementById('age' + (i + 1) + 'Count').textContent = age.count;
+          var bar = document.getElementById('age' + (i + 1) + 'Bar');
+          bar.style.width = age.percent + '%';
+        }
+      }
+    }
+
+    // 展开/收起全部
+    var allExpanded = false;
+    function toggleExpandAll(btn) {
+      var tree = document.getElementById('orgTree');
+      var toggles = tree.querySelectorAll('.tree-toggle:not(.empty)');
+      var childrens = tree.querySelectorAll('.tree-children');
+
+      allExpanded = !allExpanded;
+      btn.textContent = allExpanded ? '收起全部' : '展开全部';
+
+      toggles.forEach(function(t) {
+        if (allExpanded) {
+          t.classList.add('expanded');
+        } else {
+          t.classList.remove('expanded');
+        }
+      });
+      childrens.forEach(function(c) {
+        if (allExpanded) {
+          c.classList.add('expanded');
+        } else {
+          c.classList.remove('expanded');
+        }
+      });
+    }
+
+    // 新增党组织弹窗
+    function openAddOrgModal() {
+      var modal = document.getElementById('addOrgModal');
+      document.getElementById('addOrgForm').reset();
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeAddOrgModal() {
+      var modal = document.getElementById('addOrgModal');
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function submitAddOrg() {
+      var name = document.getElementById('orgName').value.trim();
+      var type = document.getElementById('orgType').value;
+      var secretary = document.getElementById('orgSecretary').value.trim();
+      var establishDate = document.getElementById('establishDate').value;
+
+      if (!name) {
+        alert('请输入组织名称');
+        document.getElementById('orgName').focus();
+        return;
+      }
+      if (!type) {
+        alert('请选择组织类型');
+        document.getElementById('orgType').focus();
+        return;
+      }
+      if (!secretary) {
+        alert('请输入书记姓名');
+        document.getElementById('orgSecretary').focus();
+        return;
+      }
+      if (!establishDate) {
+        alert('请选择成立时间');
+        document.getElementById('establishDate').focus();
+        return;
+      }
+
+      alert('添加成功！\n组织名称：' + name + '\n组织类型：' + type + '\n书记：' + secretary);
+      closeAddOrgModal();
+    }
+
+    // 点击遮罩层关闭弹窗
+    document.addEventListener('DOMContentLoaded', function() {
+      var modal = document.getElementById('addOrgModal');
+      if (modal) {
+        modal.addEventListener('click', function(e) {
+          if (e.target === modal) {
+            closeAddOrgModal();
+          }
+        });
+      }
+      // ESC键关闭弹窗
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          var m = document.getElementById('addOrgModal');
+          if (m && m.classList.contains('show')) {
+            closeAddOrgModal();
+          }
+        }
+      });
+    });
+
+    // 跳转到组织详情页
+    function goToDetail() {
+      var name = document.getElementById('infoName').textContent;
+      window.location.href = 'org_detail.html?org=' + encodeURIComponent(name);
+    }
+  </script>
+  <script src="common.js"></script>
+</body>
+</html>
