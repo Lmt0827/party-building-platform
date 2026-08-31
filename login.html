@@ -1,0 +1,1136 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>党建数字化平台 - 登录</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden;
+  }
+
+  /* ========== 背景容器 ========== */
+  .login-bg {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #142841 0%, #1e3a5f 50%, #0f1e35 100%);
+    overflow: hidden;
+  }
+
+  /* 网格线 */
+  .grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      linear-gradient(rgba(100, 150, 220, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(100, 150, 220, 0.06) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
+
+  /* 径向光晕 */
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .glow-orb.orb-1 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #c9302c 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+    animation: floatOrb1 8s ease-in-out infinite;
+  }
+  .glow-orb.orb-2 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, #1e5a9e 0%, transparent 70%);
+    bottom: -150px;
+    right: -100px;
+    animation: floatOrb2 10s ease-in-out infinite;
+  }
+  @keyframes floatOrb1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, 30px); }
+  }
+  @keyframes floatOrb2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-40px, -20px); }
+  }
+
+  /* 金色粒子光点 */
+  .particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffd700 0%, rgba(255, 215, 0, 0.3) 60%, transparent 100%);
+    box-shadow: 0 0 15px #ffd700, 0 0 30px rgba(255, 215, 0, 0.5);
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  .particle.p1 { width: 8px; height: 8px; top: 15%; left: 20%; animation-delay: 0s; }
+  .particle.p2 { width: 4px; height: 4px; top: 25%; left: 35%; animation-delay: 0.5s; }
+  .particle.p3 { width: 6px; height: 6px; top: 40%; left: 15%; animation-delay: 1s; }
+  .particle.p4 { width: 5px; height: 5px; top: 60%; left: 25%; animation-delay: 1.5s; }
+  .particle.p5 { width: 7px; height: 7px; top: 75%; left: 10%; animation-delay: 2s; }
+  .particle.p6 { width: 3px; height: 3px; top: 10%; left: 45%; animation-delay: 0.8s; }
+  .particle.p7 { width: 5px; height: 5px; top: 85%; left: 30%; animation-delay: 2.5s; }
+  .particle.p8 { width: 4px; height: 4px; top: 50%; left: 40%; animation-delay: 1.2s; }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  /* 红色飘带装饰（左上角） */
+  .ribbon-decor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 280px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .ribbon-decor::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, rgba(201, 48, 44, 0.8) 0%, rgba(180, 30, 30, 0.4) 50%, transparent 70%);
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+  }
+  .ribbon-decor::after {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #ffd700, transparent);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  }
+  .ribbon-line {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, #ffd700, transparent);
+  }
+  .ribbon-line:nth-child(2) { top: 65px; width: 90px; opacity: 0.6; }
+
+  /* 底部山水/城市剪影 */
+  .city-silhouette {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .mountain-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .mountain-1 {
+    background:
+      linear-gradient(to top, rgba(10, 25, 50, 0.9) 0%, transparent 100%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200' preserveAspectRatio='none'%3E%3Cpolygon points='0,200 100,120 200,160 300,80 400,140 500,60 600,130 700,90 800,150 900,70 1000,120 1100,100 1200,140 1200,200' fill='%230a1a35' opacity='0.8'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: bottom;
+    opacity: 0.7;
+  }
+  .mountain-2 {
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 180' preserveAspectRatio='none'%3E%3Cpolygon points='0,180 80,100 180,140 280,60 380,120 480,40 580,110 680,70 780,130 880,50 980,100 1080,80 1200,120 1200,180' fill='%230d2040' opacity='0.6'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: bottom;
+  }
+  .city-buildings {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 80' preserveAspectRatio='none'%3E%3Crect x='50' y='30' width='20' height='50' fill='%23081428'/%3E%3Crect x='80' y='20' width='25' height='60' fill='%23081428'/%3E%3Crect x='115' y='40' width='18' height='40' fill='%23081428'/%3E%3Crect x='150' y='15' width='30' height='65' fill='%23081428'/%3E%3Crect x='190' y='35' width='22' height='45' fill='%23081428'/%3E%3Crect x='230' y='25' width='28' height='55' fill='%23081428'/%3E%3Crect x='270' y='45' width='20' height='35' fill='%23081428'/%3E%3Crect x='310' y='10' width='35' height='70' fill='%23081428'/%3E%3Crect x='360' y='30' width='25' height='50' fill='%23081428'/%3E%3Crect x='400' y='20' width='20' height='60' fill='%23081428'/%3E%3Crect x='440' y='40' width='30' height='40' fill='%23081428'/%3E%3Crect x='490' y='15' width='25' height='65' fill='%23081428'/%3E%3Crect x='530' y='35' width='22' height='45' fill='%23081428'/%3E%3Crect x='570' y='25' width='28' height='55' fill='%23081428'/%3E%3Crect x='610' y='45' width='20' height='35' fill='%23081428'/%3E%3Crect x='650' y='10' width='35' height='70' fill='%23081428'/%3E%3Crect x='700' y='30' width='25' height='50' fill='%23081428'/%3E%3Crect x='740' y='20' width='20' height='60' fill='%23081428'/%3E%3Crect x='780' y='40' width='30' height='40' fill='%23081428'/%3E%3Crect x='830' y='15' width='25' height='65' fill='%23081428'/%3E%3Crect x='870' y='35' width='22' height='45' fill='%23081428'/%3E%3Crect x='910' y='25' width='28' height='55' fill='%23081428'/%3E%3Crect x='950' y='45' width='20' height='35' fill='%23081428'/%3E%3Crect x='990' y='10' width='35' height='70' fill='%23081428'/%3E%3Crect x='1040' y='30' width='25' height='50' fill='%23081428'/%3E%3Crect x='1080' y='20' width='20' height='60' fill='%23081428'/%3E%3Crect x='1120' y='40' width='30' height='40' fill='%23081428'/%3E%3Crect x='1170' y='25' width='25' height='55' fill='%23081428'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: bottom;
+    opacity: 0.9;
+  }
+
+  /* ========== 登录卡片 ========== */
+  .login-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10%;
+  }
+
+  .login-card {
+    width: 440px;
+    background: linear-gradient(145deg, #ffffff 0%, #f5f7fa 100%);
+    border-radius: 16px;
+    box-shadow:
+      0 25px 60px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 215, 0, 0.1);
+    padding: 45px 40px 35px;
+    position: relative;
+    animation: cardFadeIn 0.8s ease-out;
+  }
+
+  @keyframes cardFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 卡片顶部金色装饰线 */
+  .login-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #c9302c 0%, #ffd700 50%, #c9302c 100%);
+    border-radius: 16px 16px 0 0;
+  }
+
+  /* Logo 区域 */
+  .logo-section {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .party-emblem {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 15px;
+    background: linear-gradient(135deg, #c9302c 0%, #a02020 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: #ffd700;
+    font-family: "STKaiti", "KaiTi", "Microsoft YaHei", serif;
+    box-shadow:
+      0 4px 15px rgba(201, 48, 44, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+  }
+  .party-emblem::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 2px solid rgba(255, 215, 0, 0.6);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+  }
+
+  .platform-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a2d4a;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .platform-subtitle {
+    font-size: 13px;
+    color: #6b7c93;
+    letter-spacing: 1px;
+  }
+
+  /* Tab 切换 */
+  .tab-nav {
+    display: flex;
+    margin-bottom: 28px;
+    position: relative;
+    border-bottom: 2px solid #e8ecf1;
+  }
+
+  .tab-item {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 15px;
+    color: #6b7c93;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    font-weight: 500;
+  }
+
+  .tab-item.active {
+    color: #c9302c;
+    font-weight: 600;
+  }
+
+  .tab-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #c9302c, #ffd700);
+    border-radius: 2px;
+  }
+
+  .tab-item:hover {
+    color: #c9302c;
+  }
+
+  /* 表单区域 */
+  .form-panel {
+    display: none;
+  }
+  .form-panel.active {
+    display: block;
+    animation: fadeSlide 0.4s ease;
+  }
+
+  @keyframes fadeSlide {
+    from {
+      opacity: 0;
+      transform: translateX(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .form-group .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: #8b99ad;
+    transition: color 0.3s ease;
+    pointer-events: none;
+  }
+
+  .form-group input {
+    width: 100%;
+    height: 46px;
+    padding: 0 16px 0 42px;
+    border: 1.5px solid #dce3ec;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a2d4a;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .form-group input::placeholder {
+    color: #a0aec0;
+  }
+
+  .form-group input:hover {
+    border-color: #b8c5d6;
+    background: #ffffff;
+  }
+
+  .form-group input:focus {
+    border-color: #c9302c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(201, 48, 44, 0.1);
+  }
+
+  .form-group input:focus + .input-icon,
+  .form-group:focus-within .input-icon {
+    color: #c9302c;
+  }
+
+  /* 密码可见性切换 */
+  .toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: #8b99ad;
+    transition: color 0.3s ease;
+    user-select: none;
+  }
+  .toggle-password:hover {
+    color: #c9302c;
+  }
+
+  /* 验证码 */
+  .captcha-group {
+    display: flex;
+    gap: 12px;
+  }
+  .captcha-group .form-group {
+    flex: 1;
+    margin-bottom: 0;
+  }
+  .captcha-image {
+    width: 110px;
+    height: 46px;
+    border: 1.5px solid #dce3ec;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #e8ecf1 0%, #d0d9e5 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+  }
+  .captcha-image:hover {
+    border-color: #c9302c;
+  }
+  .captcha-image span {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1a2d4a;
+    letter-spacing: 4px;
+    font-style: italic;
+    font-family: "Georgia", serif;
+    user-select: none;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+  .captcha-image::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    right: 5px;
+    height: 1px;
+    background: rgba(201, 48, 44, 0.3);
+    transform: rotate(-5deg);
+  }
+  .captcha-image::after {
+    content: '点击刷新';
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 10px;
+    color: #8b99ad;
+    font-style: normal;
+  }
+
+  /* 记住我 / 忘记密码 */
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+
+  .remember-me {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #6b7c93;
+    user-select: none;
+  }
+  .remember-me input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    accent-color: #c9302c;
+    cursor: pointer;
+  }
+
+  .forgot-password {
+    color: #c9302c;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .forgot-password:hover {
+    color: #a02020;
+    text-decoration: underline;
+  }
+
+  /* 登录按钮 */
+  .login-btn {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #c9302c 0%, #a02020 100%);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(201, 48, 44, 0.3);
+    overflow: hidden;
+  }
+
+  .login-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .login-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .login-btn:hover {
+    background: linear-gradient(135deg, #d43a36 0%, #b02828 100%);
+    box-shadow: 0 6px 20px rgba(201, 48, 44, 0.5);
+    transform: translateY(-1px);
+  }
+
+  .login-btn:hover::before,
+  .login-btn:hover::after {
+    opacity: 1;
+  }
+
+  .login-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(201, 48, 44, 0.3);
+  }
+
+  /* 底部其他登录方式 */
+  .other-login {
+    margin-top: 28px;
+    text-align: center;
+  }
+
+  .other-login-title {
+    font-size: 12px;
+    color: #a0aec0;
+    margin-bottom: 15px;
+    position: relative;
+  }
+  .other-login-title::before,
+  .other-login-title::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #dce3ec);
+  }
+  .other-login-title::before {
+    left: 0;
+    background: linear-gradient(90deg, transparent, #dce3ec);
+  }
+  .other-login-title::after {
+    right: 0;
+    background: linear-gradient(90deg, #dce3ec, transparent);
+  }
+
+  .other-login-icons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+  }
+
+  .login-icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .login-icon-item:hover {
+    transform: translateY(-3px);
+  }
+
+  .icon-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1.5px solid #dce3ec;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7c93;
+    transition: all 0.3s ease;
+    background: #fff;
+  }
+  .login-icon-item:hover .icon-circle {
+    border-color: #c9302c;
+    color: #c9302c;
+    box-shadow: 0 4px 12px rgba(201, 48, 44, 0.2);
+  }
+
+  .login-icon-item span {
+    font-size: 12px;
+    color: #8b99ad;
+  }
+
+  /* 版权信息 */
+  .copyright {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    z-index: 5;
+  }
+
+  /* 左侧标语区（大屏显示） */
+  .hero-text {
+    position: absolute;
+    left: 8%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    color: #fff;
+    max-width: 480px;
+  }
+
+  .hero-title {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    line-height: 1.3;
+    background: linear-gradient(90deg, #ffffff 0%, #ffd700 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 3px;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 30px;
+    line-height: 1.8;
+    letter-spacing: 1px;
+  }
+
+  .hero-divider {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #c9302c, #ffd700);
+    margin-bottom: 30px;
+    border-radius: 2px;
+  }
+
+  .hero-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+  }
+
+  .hero-feature-dot {
+    width: 8px;
+    height: 8px;
+    background: #ffd700;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ffd700;
+  }
+
+  /* 企业选择下拉框 */
+  .enterprise-select {
+    position: relative;
+  }
+  .enterprise-select select {
+    width: 100%;
+    height: 46px;
+    padding: 0 16px 0 42px;
+    border: 1.5px solid #dce3ec;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a2d4a;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .enterprise-select select:hover {
+    border-color: #b8c5d6;
+    background: #ffffff;
+  }
+  .enterprise-select select:focus {
+    border-color: #c9302c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(201, 48, 44, 0.1);
+  }
+  .enterprise-select .select-arrow {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    color: #8b99ad;
+    pointer-events: none;
+    transition: transform 0.3s ease;
+  }
+  .enterprise-select select:focus + .select-arrow {
+    transform: translateY(-50%) rotate(180deg);
+    color: #c9302c;
+  }
+
+  /* ========== 响应式设计 ========== */
+  @media (max-width: 1200px) {
+    .hero-text {
+      left: 5%;
+      max-width: 380px;
+    }
+    .hero-title {
+      font-size: 32px;
+    }
+    .login-container {
+      padding-right: 5%;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .hero-text {
+      display: none;
+    }
+    .login-container {
+      justify-content: center;
+      padding-right: 0;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .login-card {
+      width: 92%;
+      padding: 35px 25px 28px;
+    }
+    .platform-name {
+      font-size: 20px;
+    }
+    .party-emblem {
+      width: 56px;
+      height: 56px;
+      font-size: 28px;
+    }
+    .logo-section {
+      margin-bottom: 24px;
+    }
+    .captcha-image {
+      width: 95px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .login-card {
+      padding: 30px 20px 24px;
+    }
+    .platform-name {
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+    .platform-subtitle {
+      font-size: 12px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="login-bg">
+  <!-- 网格线 -->
+  <div class="grid-overlay"></div>
+
+  <!-- 光晕 -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <!-- 金色粒子 -->
+  <div class="particles">
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+    <div class="particle p4"></div>
+    <div class="particle p5"></div>
+    <div class="particle p6"></div>
+    <div class="particle p7"></div>
+    <div class="particle p8"></div>
+  </div>
+
+  <!-- 红色飘带装饰 -->
+  <div class="ribbon-decor">
+    <div class="ribbon-line"></div>
+    <div class="ribbon-line"></div>
+  </div>
+
+  <!-- 底部山水城市剪影 -->
+  <div class="city-silhouette">
+    <div class="mountain-layer mountain-1"></div>
+    <div class="mountain-layer mountain-2"></div>
+    <div class="city-buildings"></div>
+  </div>
+
+  <!-- 左侧标语区 -->
+  <div class="hero-text">
+    <div class="hero-title">党建数字化平台</div>
+    <div class="hero-divider"></div>
+    <div class="hero-subtitle">以数字化赋能基层党建<br>打造智慧党建管理新范式</div>
+    <div class="hero-features">
+      <div class="hero-feature">
+        <span class="hero-feature-dot"></span>
+        <span>组织管理 · 党员教育 · 党建活动一体化</span>
+      </div>
+      <div class="hero-feature">
+        <span class="hero-feature-dot"></span>
+        <span>数据驱动 · 智能分析 · 科学决策</span>
+      </div>
+      <div class="hero-feature">
+        <span class="hero-feature-dot"></span>
+        <span>安全可靠 · 高效便捷 · 服务群众</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 登录卡片 -->
+  <div class="login-container">
+    <div class="login-card">
+      <!-- Logo 区域 -->
+      <div class="logo-section">
+        <div class="party-emblem">党</div>
+        <div class="platform-name">党建数字化平台</div>
+        <div class="platform-subtitle">高新区智慧党建管理系统</div>
+      </div>
+
+      <!-- Tab 切换 -->
+      <div class="tab-nav">
+        <div class="tab-item active" data-tab="operator">运营登录</div>
+        <div class="tab-item" data-tab="enterprise">企业登录</div>
+      </div>
+
+      <!-- 运营登录表单 -->
+      <div class="form-panel active" id="operator-panel">
+        <div class="form-group">
+          <input type="text" id="op-account" placeholder="请输入账号" autocomplete="username">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+
+        <div class="form-group">
+          <input type="password" id="op-password" placeholder="请输入密码" autocomplete="current-password">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span class="toggle-password" onclick="togglePassword('op-password', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </span>
+        </div>
+
+        <div class="captcha-group">
+          <div class="form-group">
+            <input type="text" id="op-captcha" placeholder="请输入验证码" maxlength="4">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 12l2 2 4-4"></path>
+              <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.5 0 4.77 1.02 6.41 2.67"></path>
+            </svg>
+          </div>
+          <div class="captcha-image" onclick="refreshCaptcha(this)">
+            <span id="op-captcha-text">A3K9</span>
+          </div>
+        </div>
+
+        <div class="form-options" style="margin-top: 20px;">
+          <label class="remember-me">
+            <input type="checkbox"> 记住我
+          </label>
+          <a href="#" class="forgot-password">忘记密码？</a>
+        </div>
+
+        <button class="login-btn" onclick="handleLogin('operator')">登 录</button>
+      </div>
+
+      <!-- 企业登录表单 -->
+      <div class="form-panel" id="enterprise-panel">
+        <div class="form-group enterprise-select">
+          <select id="ent-select">
+            <option value="">请选择企业</option>
+            <option value="1">高新技术产业开发区投资集团有限公司</option>
+            <option value="2">科技创新发展股份有限公司</option>
+            <option value="3">智慧城市建设运营有限公司</option>
+            <option value="4">数字经济产业发展有限公司</option>
+            <option value="5">园区服务管理集团有限公司</option>
+          </select>
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 21h18"></path>
+            <path d="M5 21V7l8-4v18"></path>
+            <path d="M19 21V11l-6-4"></path>
+            <path d="M9 9v.01"></path>
+            <path d="M9 13v.01"></path>
+            <path d="M9 17v.01"></path>
+          </svg>
+          <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+
+        <div class="form-group">
+          <input type="text" id="ent-account" placeholder="请输入账号" autocomplete="username">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+
+        <div class="form-group">
+          <input type="password" id="ent-password" placeholder="请输入密码" autocomplete="current-password">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span class="toggle-password" onclick="togglePassword('ent-password', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </span>
+        </div>
+
+        <div class="captcha-group">
+          <div class="form-group">
+            <input type="text" id="ent-captcha" placeholder="请输入验证码" maxlength="4">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 12l2 2 4-4"></path>
+              <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.5 0 4.77 1.02 6.41 2.67"></path>
+            </svg>
+          </div>
+          <div class="captcha-image" onclick="refreshCaptcha(this)">
+            <span id="ent-captcha-text">X7B2</span>
+          </div>
+        </div>
+
+        <div class="form-options" style="margin-top: 20px;">
+          <label class="remember-me">
+            <input type="checkbox"> 记住我
+          </label>
+          <a href="#" class="forgot-password">忘记密码？</a>
+        </div>
+
+        <button class="login-btn" onclick="handleLogin('enterprise')">登 录</button>
+      </div>
+
+      <!-- 其他登录方式 -->
+      <div class="other-login">
+        <div class="other-login-title">其他登录方式</div>
+        <div class="other-login-icons">
+          <div class="login-icon-item">
+            <div class="icon-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <path d="M7 7h10v10H7z"></path>
+                <path d="M12 7v10"></path>
+                <path d="M7 12h10"></path>
+              </svg>
+            </div>
+            <span>扫码登录</span>
+          </div>
+          <div class="login-icon-item">
+            <div class="icon-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+            </div>
+            <span>短信登录</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 版权信息 -->
+  <div class="copyright">
+    Copyright © 2024 高新区智慧党建管理系统 版权所有 | 技术支持：数字化转型办公室
+  </div>
+</div>
+
+<script>
+  // Tab 切换
+  document.querySelectorAll('.tab-item').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var tabName = this.getAttribute('data-tab');
+
+      // 切换 tab 样式
+      document.querySelectorAll('.tab-item').forEach(function(t) {
+        t.classList.remove('active');
+      });
+      this.classList.add('active');
+
+      // 切换面板
+      document.querySelectorAll('.form-panel').forEach(function(panel) {
+        panel.classList.remove('active');
+      });
+      document.getElementById(tabName + '-panel').classList.add('active');
+    });
+  });
+
+  // 密码可见性切换
+  function togglePassword(inputId, iconEl) {
+    var input = document.getElementById(inputId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      iconEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+    } else {
+      input.type = 'password';
+      iconEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+    }
+  }
+
+  // 刷新验证码
+  function refreshCaptcha(el) {
+    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    var code = '';
+    for (var i = 0; i < 4; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    var span = el.querySelector('span');
+    span.textContent = code;
+
+    // 简单的旋转动画
+    el.style.transform = 'scale(0.95)';
+    setTimeout(function() {
+      el.style.transform = 'scale(1)';
+    }, 150);
+  }
+
+  // 登录处理
+  function handleLogin(type) {
+    var account, password, captcha;
+
+    if (type === 'operator') {
+      account = document.getElementById('op-account').value;
+      password = document.getElementById('op-password').value;
+      captcha = document.getElementById('op-captcha').value;
+    } else {
+      var entSelect = document.getElementById('ent-select').value;
+      account = document.getElementById('ent-account').value;
+      password = document.getElementById('ent-password').value;
+      captcha = document.getElementById('ent-captcha').value;
+
+      if (!entSelect) {
+        alert('请选择企业');
+        return;
+      }
+    }
+
+    if (!account) {
+      alert('请输入账号');
+      return;
+    }
+    if (!password) {
+      alert('请输入密码');
+      return;
+    }
+    if (!captcha) {
+      alert('请输入验证码');
+      return;
+    }
+
+    // 模拟登录
+    var btn = event.target;
+    var originalText = btn.textContent;
+    btn.textContent = '登录中...';
+    btn.style.opacity = '0.8';
+    btn.disabled = true;
+
+    setTimeout(function() {
+      btn.textContent = originalText;
+      btn.style.opacity = '1';
+      btn.disabled = false;
+      alert('登录成功！（演示）');
+    }, 1500);
+  }
+
+  // 回车键登录
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      var activeTab = document.querySelector('.tab-item.active').getAttribute('data-tab');
+      handleLogin(activeTab);
+    }
+  });
+</script>
+<script src="common.js"></script>
+</body>
+</html>
+
