@@ -1,0 +1,3784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企业数据发布 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ============================================
+       页面特有样式 - 浅色政务风格
+       ============================================ */
+
+    /* 主 Tab 切换 */
+    .tabs {
+      display: flex;
+      gap: 32px;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 20px;
+    }
+
+    .tab-item {
+      padding: 14px 0;
+      font-size: 15px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .tab-item:hover {
+      color: var(--accent-red);
+    }
+
+    .tab-item.active {
+      color: var(--accent-red);
+      font-weight: 600;
+    }
+
+    .tab-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent-red);
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* 表格顶部工具栏 */
+    .data-table-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .data-table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-light);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .data-table-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .data-table-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* 状态筛选标签 */
+    .table-status-tabs {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .table-status-tab {
+      padding: 5px 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: 14px;
+      transition: all 0.2s ease;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+
+    .table-status-tab:hover {
+      color: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+
+    .table-status-tab.active {
+      background: var(--accent-red);
+      color: #fff;
+      border-color: var(--accent-red);
+      font-weight: 500;
+    }
+
+    .table-status-tab .count {
+      font-weight: 600;
+      margin-left: 2px;
+    }
+
+    /* 分类筛选下拉 */
+    .table-category-filter select {
+      height: 32px;
+      padding: 0 30px 0 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color 0.2s ease;
+    }
+
+    .table-category-filter select:hover {
+      border-color: var(--accent-red);
+    }
+
+    .table-category-filter select:focus {
+      border-color: var(--accent-red);
+    }
+
+    /* 搜索框 */
+    .search-wrapper {
+      position: relative;
+    }
+
+    .search-wrapper .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .search-input {
+      width: 240px;
+      height: 34px;
+      padding: 0 12px 0 36px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-red);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* 按钮 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 34px;
+      padding: 0 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--accent-red);
+      color: #fff;
+      border-color: var(--accent-red);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-red-dark);
+      border-color: var(--accent-red-dark);
+    }
+
+    .btn-outline {
+      background: var(--surface);
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+
+    .btn-outline:hover {
+      color: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+
+    .btn-secondary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary-dark);
+      border-color: var(--primary-dark);
+    }
+
+    /* 数据表格 */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .data-table thead th {
+      background: #f7f9fc;
+      padding: 0 16px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 500;
+      color: #64748b;
+      border-bottom: 1px solid #e8ecf1;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      height: 40px;
+      vertical-align: middle;
+    }
+
+    .data-table tbody td {
+      padding: 0 16px;
+      font-size: 13px;
+      color: #1e293b;
+      border-bottom: 1px solid #f0f2f5;
+      vertical-align: middle;
+      height: 52px;
+    }
+
+    .data-table tbody tr {
+      cursor: pointer;
+      transition: background 0.15s ease;
+      height: 52px;
+    }
+
+    .data-table tbody tr:hover {
+      background: #fafbfc;
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table .col-title {
+      width: auto;
+    }
+
+    .data-table .title-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      line-height: 1.3;
+    }
+
+    .data-table .title-main {
+      font-weight: 500;
+      color: #1e293b;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .data-table .title-sub {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .data-table .col-category {
+      width: 100px;
+    }
+
+    .data-table .col-unit {
+      width: 130px;
+      color: #475569;
+      font-size: 13px;
+    }
+
+    .data-table .col-status {
+      width: 90px;
+    }
+
+    .data-table .col-views {
+      width: 80px;
+      text-align: center;
+      color: #64748b;
+    }
+
+    .data-table .col-time {
+      width: 140px;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .data-table .col-actions {
+      width: 130px;
+      text-align: right;
+    }
+
+    /* 表格操作按钮 */
+    .table-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-end;
+    }
+
+    .table-actions-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .table-action-btn {
+      font-size: 12px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      font-family: inherit;
+    }
+
+    .table-action-btn:hover {
+      color: #c41e3a;
+      text-decoration: underline;
+    }
+
+    .table-action-btn.danger {
+      color: #c41e3a;
+      border: none;
+      padding: 0;
+      font-size: 12px;
+      line-height: normal;
+    }
+
+    .table-action-btn.danger:hover {
+      text-decoration: underline;
+    }
+
+    /* 标签状态 */
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .tag-green {
+      background: #f0fdf4;
+      color: var(--success);
+      border: 1px solid #bbf7d0;
+    }
+
+    .tag-blue {
+      background: #eff6ff;
+      color: var(--info);
+      border: 1px solid #bfdbfe;
+    }
+
+    .tag-orange {
+      background: #fff7ed;
+      color: var(--warning);
+      border: 1px solid #fed7aa;
+    }
+
+    .tag-gold {
+      background: #fefce8;
+      color: #a16207;
+      border: 1px solid #fef08a;
+    }
+
+    .tag-red {
+      background: #fef2f2;
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    /* 违禁词高亮 */
+    .forbidden-word {
+      background: var(--danger);
+      color: #fff;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    .forbidden-warning {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--danger);
+      font-size: 13px;
+    }
+
+    /* 分类徽章 */
+    .category-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.5;
+    }
+
+    .category-badge.theory {
+      background: var(--info);
+    }
+
+    .category-badge.investment {
+      background: #f97316;
+    }
+
+    .category-badge.activity {
+      background: var(--success);
+    }
+
+    .category-badge.development {
+      background: #7c3aed;
+    }
+
+    .category-badge.signing {
+      background: #dc2626;
+    }
+
+    /* 分页 */
+    .table-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-light);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .pagination-info {
+      color: var(--text-muted);
+    }
+
+    .pagination-info strong {
+      color: var(--accent-red);
+      margin: 0 3px;
+      font-weight: 600;
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .page-btn {
+      min-width: 30px;
+      height: 30px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .page-btn.active {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ============================================
+       右侧抽屉样式
+       ============================================ */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .drawer-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 680px;
+      max-width: 90vw;
+      background: #ffffff;
+      border-left: 1px solid #e2e8f0;
+      z-index: 1001;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .drawer.active {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-shrink: 0;
+      background: #ffffff;
+    }
+
+    .drawer-header-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .drawer-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .drawer-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .drawer-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+
+    .drawer-close:hover {
+      background: var(--bg);
+      color: var(--text-main);
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .drawer-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .drawer-body::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .drawer-footer {
+      padding: 16px 24px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f7f9fc;
+      flex-shrink: 0;
+    }
+
+    .drawer-footer-left {
+      display: flex;
+      gap: 8px;
+    }
+
+    .drawer-footer-right {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* 抽屉内信息网格 */
+    .drawer-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .drawer-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border-radius: 6px;
+    }
+
+    .drawer-info-item .info-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .drawer-info-item .info-value {
+      font-size: 14px;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* 抽屉内容区 */
+    .drawer-content-section {
+      margin-bottom: 20px;
+      background: #f7f9fc;
+      border: 1px solid #e8ecf1;
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .drawer-content-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 12px;
+      padding-left: 10px;
+      border-left: 3px solid #c41e3a;
+      line-height: 1.2;
+    }
+
+    .drawer-content-body {
+      font-size: 13px;
+      color: #4a5568;
+      line-height: 1.8;
+      background: #ffffff;
+      padding: 14px 16px;
+      border-radius: 6px;
+      border: 1px solid #edf2f7;
+    }
+
+    .drawer-content-body p {
+      margin-bottom: 10px;
+    }
+
+    .drawer-content-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .drawer-content-body h4 {
+      color: var(--text-main);
+      margin: 14px 0 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .drawer-content-body ul {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+
+    .drawer-content-body li {
+      margin-bottom: 4px;
+    }
+
+    /* 附件列表 */
+    .attachment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .attachment-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .attachment-item:hover {
+      border-color: var(--accent-red);
+    }
+
+    .attachment-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: #eff6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .attachment-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .attachment-name {
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 500;
+    }
+
+    .attachment-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .attachment-download {
+      color: var(--accent-red);
+      font-size: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: color 0.2s ease;
+      font-weight: 500;
+    }
+
+    .attachment-download:hover {
+      text-decoration: underline;
+    }
+
+    /* ============================================
+       表单样式
+       ============================================ */
+    .form-section {
+      margin-bottom: 20px;
+      background: #f7f9fc;
+      border: 1px solid #e8ecf1;
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .form-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 16px;
+      padding-left: 10px;
+      border-left: 3px solid #c41e3a;
+      line-height: 1.2;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      flex: none;
+      width: 100%;
+    }
+
+    .form-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .form-label .required {
+      color: var(--danger);
+      margin-right: 4px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease;
+      font-family: inherit;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--accent-red);
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+
+    .form-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+
+    /* 上传区域 */
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--bg);
+    }
+
+    .upload-area:hover {
+      border-color: var(--accent-red);
+      background: #fef2f2;
+    }
+
+    .upload-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .upload-text {
+      font-size: 14px;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .upload-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* 导入步骤 */
+    .import-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0 30px;
+    }
+    .import-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-light);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      border: 2px solid var(--border-color);
+    }
+    .import-step.active .step-num {
+      background: var(--color-red-primary);
+      color: #fff;
+      border-color: var(--color-red-primary);
+    }
+    .step-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .import-step.active .step-label {
+      color: var(--color-red-primary);
+      font-weight: 500;
+    }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: var(--border-color);
+      margin: 0 12px;
+      max-width: 60px;
+      margin-bottom: 28px;
+    }
+
+    /* 导入提示 */
+    .import-notice {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      background: #f0f7ff;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .notice-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .notice-content p {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .notice-fields {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .notice-field {
+      padding: 4px 10px;
+      background: #fff;
+      border: 1px solid #d6e4ff;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #1677ff;
+    }
+
+    /* 模板下载 */
+    .template-download {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: var(--bg-light);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .template-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .template-icon {
+      font-size: 32px;
+    }
+    .template-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .template-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* 导入文件列表 */
+    .import-file-list {
+      margin-top: 16px;
+    }
+    .import-file-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-light);
+      border-radius: 8px;
+    }
+    .import-file-icon {
+      font-size: 24px;
+    }
+    .import-file-info {
+      flex: 1;
+    }
+    .import-file-name {
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .import-file-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .import-spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-color);
+      border-top-color: var(--color-red-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 导入汇总 */
+    .import-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .summary-item {
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .summary-item.success {
+      background: #f0fdf4;
+    }
+    .summary-item.warning {
+      background: #fffbeb;
+    }
+    .summary-item.error {
+      background: #fef2f2;
+    }
+    .summary-num {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .summary-item.success .summary-num {
+      color: #16a34a;
+    }
+    .summary-item.warning .summary-num {
+      color: #d97706;
+    }
+    .summary-item.error .summary-num {
+      color: #dc2626;
+    }
+    .summary-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* 预览表格 */
+    .import-preview-table-wrapper {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+    .import-preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .import-preview-table th {
+      background: var(--bg-light);
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 500;
+      color: var(--text-secondary);
+      position: sticky;
+      top: 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .import-preview-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .import-preview-table tr.row-warning {
+      background: #fffbeb;
+    }
+    .import-preview-table tbody tr:hover {
+      background: var(--bg-light);
+    }
+    .import-preview-table tbody tr.row-warning:hover {
+      background: #fef3c7;
+    }
+    .import-preview-tip {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .preview-count {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-left: 12px;
+      font-weight: normal;
+    }
+    .preview-count strong {
+      color: var(--color-red-primary);
+    }
+
+    /* 活动对象选择 */
+    .target-radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .target-radio-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 16px;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .target-radio-item:hover {
+      border-color: var(--accent-red);
+      background: #fef2f2;
+    }
+
+    .target-radio-item.active {
+      border-color: var(--accent-red);
+      background: #fef2f2;
+    }
+
+    .target-radio-item input[type="radio"] {
+      margin-top: 2px;
+      accent-color: var(--accent-red);
+    }
+
+    .target-radio-label {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .target-radio-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    .target-sub-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-light);
+    }
+
+    .target-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px 4px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text-main);
+    }
+
+    .target-tag .tag-remove {
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .target-tag .tag-remove:hover {
+      color: var(--danger);
+    }
+
+    .target-add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .target-add-btn:hover {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .uploaded-files {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .uploaded-file-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+    }
+
+    .uploaded-file-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: #eff6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .uploaded-file-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .uploaded-file-name {
+      font-size: 13px;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 500;
+    }
+
+    .uploaded-file-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .uploaded-file-remove {
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      transition: color 0.2s ease;
+    }
+
+    .uploaded-file-remove:hover {
+      color: var(--danger);
+    }
+
+    /* 时间轴 */
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: var(--border-light);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -20px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--border);
+      border: 2px solid var(--surface);
+      z-index: 1;
+    }
+
+    .timeline-item.done .timeline-dot {
+      background: var(--success);
+    }
+
+    .timeline-item.active .timeline-dot {
+      background: var(--accent-red);
+      box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.15);
+    }
+
+    .timeline-content {
+      padding-left: 8px;
+    }
+
+    .timeline-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .timeline-item:not(.done):not(.active) .timeline-title {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .timeline-time {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .timeline-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+  </style>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html" class="active">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="#">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">产业基础</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">企业数据发布</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+        <!-- Tab 切换 -->
+        <div class="tabs mb-20">
+          <div class="tab-item active" data-tab="enterprise-publish">企业活动发布</div>
+          <div class="tab-item" data-tab="recruit-publish">招聘数据发布</div>
+          <div class="tab-item" data-tab="party-service">党企服务</div>
+          <div class="tab-item" data-tab="enterprise-demand">企业诉求</div>
+        </div>
+
+        <!-- Tab 1: 企业活动发布 -->
+        <div class="tab-content active" id="enterprise-publish">
+          <div class="data-table-wrapper">
+            <div class="data-table-toolbar">
+              <div class="data-table-toolbar-left">
+                <div class="table-status-tabs">
+                  <div class="table-status-tab active" data-status="all">全部 <span class="count">128</span></div>
+                  <div class="table-status-tab" data-status="published">已发布 <span class="count">96</span></div>
+                  <div class="table-status-tab" data-status="draft">草稿 <span class="count">14</span></div>
+                  <div class="table-status-tab" data-status="rejected">系统驳回 <span class="count">4</span></div>
+                </div>
+                <div class="table-category-filter">
+                  <select>
+                    <option value="all">全部分类</option>
+                    <option value="theory">理论联学</option>
+                    <option value="investment">招商联推</option>
+                    <option value="activity">活动联办</option>
+                    <option value="development">发展联动</option>
+                    <option value="signing">重大签约</option>
+                  </select>
+                </div>
+                <div class="search-wrapper" style="max-width: 220px;">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="搜索标题/单位...">
+                </div>
+              </div>
+              <div class="data-table-toolbar-right">
+                <button class="btn btn-outline">📥 导入</button>
+                <button class="btn btn-primary" onclick="openDrawer('activity-publish-new')">+ 新建发布</button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="col-title">标题</th>
+                  <th class="col-category">分类</th>
+                  <th class="col-unit">发起单位</th>
+                  <th class="col-status">状态</th>
+                  <th class="col-time">发布时间</th>
+                  <th class="col-actions">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr onclick="openDrawer('activity-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">2024年重大项目集中签约仪式</span>
+                      <span class="title-sub">发布单位：区投资促进局</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge signing">重大签约</span></td>
+                  <td>区投资促进局</td>
+                  <td><span class="tag tag-green">已发布</span></td>
+                  <td>2024-11-05 09:30</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('activity-publish-detail-rejected')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">2024年度党建工作推进会</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge activity">活动联办</span></td>
+                  <td>区委组织部</td>
+                  <td><span class="tag tag-red">系统驳回</span></td>
+                  <td>2024-10-12 14:20</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-detail-rejected')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-edit-rejected')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('activity-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">2024年第三季度规上企业经济运行数据公报</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge development">发展联动</span></td>
+                  <td>区经济发展局</td>
+                  <td><span class="tag tag-green">已发布</span></td>
+                  <td>2024-10-15 09:30</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('activity-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">新一代信息技术产业发展白皮书（2024版）</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge investment">招商联推</span></td>
+                  <td>区投资促进局</td>
+                  <td><span class="tag tag-green">已发布</span></td>
+                  <td>2024-10-14 14:20</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('activity-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">党建引领·企企对话 第八期：产业链协同发展论坛</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge activity">活动联办</span></td>
+                  <td>区工商联</td>
+                  <td><span class="tag tag-green">已发布</span></td>
+                  <td>2024-10-12 10:00</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('activity-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">关于组织开展惠企政策宣讲月活动的通知</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge theory">理论联学</span></td>
+                  <td>区发改委</td>
+                  <td><span class="tag tag-green">已发布</span></td>
+                  <td>2024-10-10 09:00</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('activity-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">高端装备制造产业集群发展规划研讨会</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge development">发展联动</span></td>
+                  <td>区工信局</td>
+                  <td><span class="tag tag-orange">草稿</span></td>
+                  <td>2024-10-08 16:45</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('activity-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">2024年重点招商引资项目集中签约仪式</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge investment">招商联推</span></td>
+                  <td>区投资促进局</td>
+                  <td><span class="tag tag-green">已发布</span></td>
+                  <td>2024-10-05 11:30</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('activity-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">企业家党建研修班（第三期）报名通知</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge theory">理论联学</span></td>
+                  <td>区委组织部</td>
+                  <td><span class="tag tag-green">已发布</span></td>
+                  <td>2024-10-03 15:00</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('activity-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">中秋国庆送温暖 走访慰问重点企业活动</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge activity">活动联办</span></td>
+                  <td>区总工会</td>
+                  <td><span class="tag tag-green">已发布</span></td>
+                  <td>2024-09-28 09:30</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('activity-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="table-pagination">
+              <div class="pagination-info">
+                共 <strong>128</strong> 条记录，当前第 <strong>1</strong> / <strong>16</strong> 页
+              </div>
+              <div class="pagination-controls">
+                <button class="page-btn" disabled>上一页</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn">下一页</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: 招聘数据发布 -->
+        <div class="tab-content" id="recruit-publish">
+          <div class="data-table-wrapper">
+            <div class="data-table-toolbar">
+              <div class="data-table-toolbar-left">
+                <div class="table-status-tabs">
+                  <div class="table-status-tab active" data-status="all">全部 <span class="count">286</span></div>
+                  <div class="table-status-tab" data-status="published">招聘中 <span class="count">218</span></div>
+                  <div class="table-status-tab" data-status="closed">已结束 <span class="count">68</span></div>
+                </div>
+                <div class="table-category-filter">
+                  <select>
+                    <option value="all">全部产业</option>
+                    <option value="it">新一代信息技术</option>
+                    <option value="equipment">高端装备制造</option>
+                    <option value="material">新材料</option>
+                    <option value="bio">生物医药</option>
+                  </select>
+                </div>
+                <div class="search-wrapper" style="max-width: 220px;">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="搜索职位/企业...">
+                </div>
+              </div>
+              <div class="data-table-toolbar-right">
+                <button class="btn btn-outline">📥 下载模板</button>
+                <button class="btn btn-primary" onclick="openDrawer('recruit-publish-import')">📊 导入招聘数据</button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="col-title">单位名称</th>
+                  <th>岗位名称</th>
+                  <th>单位属性</th>
+                  <th>所属行业</th>
+                  <th style="text-align: center;">招聘人数</th>
+                  <th>学历要求</th>
+                  <th class="col-actions">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr onclick="openDrawer('recruit-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">华为技术有限公司</span>
+                      <span class="title-sub">深圳市龙岗区坂田华为基地 518129</span>
+                    </div>
+                  </td>
+                  <td>高级软件工程师</td>
+                  <td>民营企业</td>
+                  <td><span class="category-badge investment">新一代信息技术</span></td>
+                  <td style="text-align: center;">25</td>
+                  <td>本科及以上</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('recruit-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">中兴通讯股份有限公司</span>
+                      <span class="title-sub">深圳市南山区高新技术产业园 518057</span>
+                    </div>
+                  </td>
+                  <td>硬件研发工程师</td>
+                  <td>股份制企业</td>
+                  <td><span class="category-badge investment">新一代信息技术</span></td>
+                  <td style="text-align: center;">18</td>
+                  <td>本科及以上</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('recruit-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">比亚迪股份有限公司</span>
+                      <span class="title-sub">深圳市坪山区比亚迪路3009号 518118</span>
+                    </div>
+                  </td>
+                  <td>机械设计工程师</td>
+                  <td>股份制企业</td>
+                  <td><span class="category-badge development">高端装备制造</span></td>
+                  <td style="text-align: center;">32</td>
+                  <td>本科及以上</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('recruit-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">华大基因有限公司</span>
+                      <span class="title-sub">深圳市盐田区北山工业区 518083</span>
+                    </div>
+                  </td>
+                  <td>研发科学家</td>
+                  <td>民营企业</td>
+                  <td><span class="category-badge activity">生物医药</span></td>
+                  <td style="text-align: center;">12</td>
+                  <td>博士</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('recruit-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">深圳市柔宇科技股份有限公司</span>
+                      <span class="title-sub">深圳市龙岗区坪地街道 518117</span>
+                    </div>
+                  </td>
+                  <td>材料研发工程师</td>
+                  <td>民营企业</td>
+                  <td><span class="category-badge theory">新材料</span></td>
+                  <td style="text-align: center;">15</td>
+                  <td>硕士及以上</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('recruit-publish-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">欣旺达电子股份有限公司</span>
+                      <span class="title-sub">深圳市宝安区石岩街道 518108</span>
+                    </div>
+                  </td>
+                  <td>电池工艺工程师</td>
+                  <td>股份制企业</td>
+                  <td><span class="category-badge investment">新能源</span></td>
+                  <td style="text-align: center;">20</td>
+                  <td>本科及以上</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('recruit-publish-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="table-pagination">
+              <div class="pagination-info">
+                共 <strong>286</strong> 条记录，当前第 <strong>1</strong> / <strong>36</strong> 页
+              </div>
+              <div class="pagination-controls">
+                <button class="page-btn" disabled>上一页</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn">下一页</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: 党企服务 -->
+        <div class="tab-content" id="party-service">
+          <div class="data-table-wrapper">
+            <div class="data-table-toolbar">
+              <div class="data-table-toolbar-left">
+                <div class="table-status-tabs">
+                  <div class="table-status-tab active" data-status="all">全部 <span class="count">42</span></div>
+                  <div class="table-status-tab" data-status="active">进行中 <span class="count">28</span></div>
+                  <div class="table-status-tab" data-status="completed">已完成 <span class="count">14</span></div>
+                </div>
+                <div class="table-category-filter">
+                  <select>
+                    <option value="all">全部类型</option>
+                    <option value="policy">政策咨询</option>
+                    <option value="guide">党建指导</option>
+                    <option value="talent">人才服务</option>
+                    <option value="assist">困难帮扶</option>
+                  </select>
+                </div>
+                <div class="search-wrapper" style="max-width: 220px;">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="搜索标题/企业...">
+                </div>
+              </div>
+              <div class="data-table-toolbar-right">
+                <button class="btn btn-outline">📥 导入</button>
+                <button class="btn btn-primary" onclick="openDrawer('party-service-new')">+ 发布服务</button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="col-title">服务标题</th>
+                  <th class="col-category">类型</th>
+                  <th class="col-unit">发起部门</th>
+                  <th class="col-status">状态</th>
+                  <th class="col-views">参与企业</th>
+                  <th class="col-time">发布时间</th>
+                  <th class="col-actions">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr onclick="openDrawer('party-service-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">关于开展惠企政策宣讲月活动的通知</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge theory">政策咨询</span></td>
+                  <td>区发改委</td>
+                  <td><span class="tag tag-green">进行中</span></td>
+                  <td style="text-align: center;">156</td>
+                  <td>2024-10-14 09:00</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('party-service-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">非公企业党建工作指导员派驻公告</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge activity">党建指导</span></td>
+                  <td>区委组织部</td>
+                  <td><span class="tag tag-green">进行中</span></td>
+                  <td style="text-align: center;">89</td>
+                  <td>2024-10-10 14:30</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('party-service-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">2024年秋季企业人才专场招聘会</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge investment">人才服务</span></td>
+                  <td>区人社局</td>
+                  <td><span class="tag tag-green">进行中</span></td>
+                  <td style="text-align: center;">234</td>
+                  <td>2024-10-08 10:00</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('party-service-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">困难企业帮扶专项资金申请指南</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge development">困难帮扶</span></td>
+                  <td>区工信局</td>
+                  <td><span class="tag tag-green">进行中</span></td>
+                  <td style="text-align: center;">67</td>
+                  <td>2024-10-05 16:00</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('party-service-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">企业党建品牌创建培育计划</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge activity">党建指导</span></td>
+                  <td>区委组织部</td>
+                  <td><span class="tag tag-green">进行中</span></td>
+                  <td style="text-align: center;">45</td>
+                  <td>2024-10-03 11:00</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('party-service-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">高新技术企业认定政策解读会</span>
+                      <span class="title-sub">发布单位：区党建服务中心</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge theory">政策咨询</span></td>
+                  <td>区科技局</td>
+                  <td><span class="tag tag-green">已完成</span></td>
+                  <td style="text-align: center;">178</td>
+                  <td>2024-09-28 09:30</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('party-service-edit')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="table-pagination">
+              <div class="pagination-info">
+                共 <strong>42</strong> 条记录，当前第 <strong>1</strong> / <strong>6</strong> 页
+              </div>
+              <div class="pagination-controls">
+                <button class="page-btn" disabled>上一页</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">下一页</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: 企业诉求 -->
+        <div class="tab-content" id="enterprise-demand">
+          <div class="data-table-wrapper">
+            <div class="data-table-toolbar">
+              <div class="data-table-toolbar-left">
+                <div class="table-status-tabs">
+                  <div class="table-status-tab active" data-status="all">全部 <span class="count">36</span></div>
+                  <div class="table-status-tab" data-status="processing">处理中 <span class="count">15</span></div>
+                  <div class="table-status-tab" data-status="done">已办结 <span class="count">18</span></div>
+                  <div class="table-status-tab" data-status="urgent">紧急 <span class="count">3</span></div>
+                </div>
+                <div class="table-category-filter">
+                  <select>
+                    <option value="all">全部类型</option>
+                    <option value="policy">政策诉求</option>
+                    <option value="finance">融资诉求</option>
+                    <option value="talent">人才诉求</option>
+                    <option value="land">用地诉求</option>
+                  </select>
+                </div>
+                <div class="search-wrapper" style="max-width: 220px;">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="search-input" placeholder="搜索企业/诉求...">
+                </div>
+              </div>
+              <div class="data-table-toolbar-right">
+                <button class="btn btn-outline">📥 导入</button>
+                <button class="btn btn-primary" onclick="openDrawer('demand-new')">+ 提交诉求</button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="col-title">诉求标题</th>
+                  <th class="col-category">类型</th>
+                  <th class="col-unit">诉求企业</th>
+                  <th class="col-status">状态</th>
+                  <th class="col-views">紧急度</th>
+                  <th class="col-time">提交时间</th>
+                  <th class="col-actions">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr onclick="openDrawer('demand-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">某科技公司关于扩大生产融资支持的诉求</span>
+                      <span class="title-sub">联系人：张总 138****8888</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge investment">融资诉求</span></td>
+                  <td>星辰科技有限公司</td>
+                  <td><span class="tag tag-blue">处理中</span></td>
+                  <td style="text-align: center;"><span style="color: var(--color-red-primary);">⚡ 紧急</span></td>
+                  <td>2024-10-15 11:20</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('demand-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">某制造企业高端技术人才招聘诉求</span>
+                      <span class="title-sub">联系人：李经理 139****6666</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge theory">人才诉求</span></td>
+                  <td>恒瑞精密制造有限公司</td>
+                  <td><span class="tag tag-green">已办结</span></td>
+                  <td style="text-align: center;">普通</td>
+                  <td>2024-10-12 09:30</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('demand-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">某生物医药企业新厂区用地申请诉求</span>
+                      <span class="title-sub">联系人：王总 137****9999</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge development">用地诉求</span></td>
+                  <td>康健生物医药有限公司</td>
+                  <td><span class="tag tag-blue">处理中</span></td>
+                  <td style="text-align: center;"><span style="color: var(--color-gold-primary);">较急</span></td>
+                  <td>2024-10-10 14:00</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('demand-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">关于优化产业扶持政策的企业建议</span>
+                      <span class="title-sub">联系人：赵主任 136****7777</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge activity">政策诉求</span></td>
+                  <td>区企业家协会</td>
+                  <td><span class="tag tag-green">已办结</span></td>
+                  <td style="text-align: center;">普通</td>
+                  <td>2024-10-08 10:00</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('demand-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">某新材料企业技术改造补贴申请</span>
+                      <span class="title-sub">联系人：孙总 135****5555</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge theory">政策诉求</span></td>
+                  <td>创新新材料科技有限公司</td>
+                  <td><span class="tag tag-orange">待受理</span></td>
+                  <td style="text-align: center;">普通</td>
+                  <td>2024-10-06 16:30</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr onclick="openDrawer('demand-detail')">
+                  <td class="col-title">
+                    <div class="title-cell">
+                      <span class="title-main">某新能源企业融资担保诉求</span>
+                      <span class="title-sub">联系人：周总 134****3333</span>
+                    </div>
+                  </td>
+                  <td><span class="category-badge investment">融资诉求</span></td>
+                  <td>绿能新能源有限公司</td>
+                  <td><span class="tag tag-green">已办结</span></td>
+                  <td style="text-align: center;">普通</td>
+                  <td>2024-10-03 11:00</td>
+                  <td style="text-align: right;">
+                    <div class="table-actions">
+                      <div class="table-actions-row">
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
+                      </div>
+                      <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="table-pagination">
+              <div class="pagination-info">
+                共 <strong>36</strong> 条记录，当前第 <strong>1</strong> / <strong>6</strong> 页
+              </div>
+              <div class="pagination-controls">
+                <button class="page-btn" disabled>上一页</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">下一页</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      <!-- 右侧抽屉遮罩 -->
+      <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+      <!-- 右侧抽屉 -->
+      <div class="drawer" id="drawer">
+        <div class="drawer-header">
+          <div class="drawer-header-left">
+            <div class="drawer-title" id="drawerTitle">详情</div>
+            <div class="drawer-subtitle" id="drawerSubtitle">
+              <span>发布单位：区党建服务中心</span>
+              <span>·</span>
+              <span>更新时间：2024-10-15</span>
+            </div>
+          </div>
+          <div class="drawer-close" onclick="closeDrawer()">✕</div>
+        </div>
+        <div class="drawer-body" id="drawerBody">
+          <!-- 动态内容 -->
+        </div>
+        <div class="drawer-footer" id="drawerFooter">
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-secondary">保存草稿</button>
+            <button class="btn btn-primary">提交发布</button>
+          </div>
+        </div>
+      </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // 主 Tab 切换
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const tabId = this.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    // 侧边栏菜单展开/收起
+    document.querySelectorAll('.menu-title').forEach(title => {
+      title.addEventListener('click', function() {
+        const group = this.closest('.menu-group');
+        group.classList.toggle('expanded');
+      });
+    });
+
+    // 表格状态筛选标签
+    document.querySelectorAll('.table-status-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        const parent = this.closest('.data-table-wrapper');
+        parent.querySelectorAll('.table-status-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // 抽屉内容模板
+    const drawerTemplates = {
+      'activity-publish-detail': {
+        title: '2024年第三季度规上企业经济运行数据公报',
+        subtitle: '<span>分类：发展联动</span><span>·</span><span>已发布</span><span>·</span>',
+        body: `
+          <div class="drawer-info-grid">
+            <div class="drawer-info-item">
+              <span class="info-label">发布人</span>
+              <span class="info-value">张管理员</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">发布时间</span>
+              <span class="info-value">2024-10-15 09:30</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">发起单位</span>
+              <span class="info-value">区经济发展局</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">活动对象</span>
+              <span class="info-value">全部企业</span>
+            </div>
+          </div>
+          <div class="drawer-content-section">
+            <div class="drawer-content-title">详细内容</div>
+            <div class="drawer-content-body">
+              <h4>一、总体运行情况</h4>
+              <p>2024年第三季度，全区规模以上工业企业实现总产值856亿元，同比增长9.7%；实现营业收入798亿元，同比增长8.5%；实现利润总额92亿元，同比增长12.3%。</p>
+              <h4>二、分产业运行情况</h4>
+              <ul>
+                <li><strong>高端装备制造：</strong>总产值256亿元，同比增长11.2%</li>
+                <li><strong>新一代信息技术：</strong>总产值218亿元，同比增长15.6%</li>
+                <li><strong>新材料：</strong>总产值145亿元，同比增长8.3%</li>
+                <li><strong>生物医药：</strong>总产值98亿元，同比增长6.7%</li>
+                <li><strong>新能源：</strong>总产值86亿元，同比增长10.8%</li>
+              </ul>
+            </div>
+          </div>
+          <div class="drawer-content-section">
+            <div class="drawer-content-title">附件资料</div>
+            <div class="attachment-list">
+              <div class="attachment-item">
+                <div class="attachment-icon">📊</div>
+                <div class="attachment-info">
+                  <div class="attachment-name">2024年第三季度规上企业数据统计表.xlsx</div>
+                  <div class="attachment-meta">Excel · 2.4MB</div>
+                </div>
+                <div class="attachment-download">下载</div>
+              </div>
+              <div class="attachment-item">
+                <div class="attachment-icon">📄</div>
+                <div class="attachment-info">
+                  <div class="attachment-name">第三季度经济运行分析报告.pdf</div>
+                  <div class="attachment-meta">PDF · 5.8MB</div>
+                </div>
+                <div class="attachment-download">下载</div>
+              </div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">关闭</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-outline">撤回</button>
+            <button class="btn btn-secondary">复制链接</button>
+            <button class="btn btn-primary" onclick="openDrawer('activity-publish-edit')">编辑内容</button>
+          </div>
+        `
+      },
+      'activity-publish-edit': {
+        title: '编辑企业活动发布',
+        subtitle: '<span>编辑模式</span><span>·</span><span>草稿保存于 2024-10-15 10:30</span>',
+        body: `
+          <div class="form-section">
+            <div class="form-section-title">基本信息</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>发布标题</label>
+                <input type="text" class="form-input" value="2024年第三季度规上企业经济运行数据公报">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>活动分类</label>
+                <select class="form-select">
+                  <option>理论联学</option>
+                  <option>招商联推</option>
+                  <option>活动联办</option>
+                  <option selected>发展联动</option>
+                  <option>重大签约</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>发起单位</label>
+                <input type="text" class="form-input" value="区经济发展局">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>活动对象</label>
+                <div class="target-radio-group">
+                  <div class="target-radio-item active" onclick="selectTarget(this, 'all')">
+                    <input type="radio" name="targetType" checked>
+                    <div class="target-radio-label">
+                      全部企业
+                      <div class="target-radio-desc">面向区内所有注册企业发布，所有企业均可查看和参与</div>
+                    </div>
+                  </div>
+                  <div class="target-radio-item" onclick="selectTarget(this, 'industry')">
+                    <input type="radio" name="targetType">
+                    <div class="target-radio-label">
+                      按产业/行业
+                      <div class="target-radio-desc">选择指定产业或行业分类，面向对应企业定向发布</div>
+                      <div class="target-sub-options" style="display: none;">
+                        <span class="target-tag">新一代信息技术 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">高端装备制造 <span class="tag-remove">✕</span></span>
+                        <button class="target-add-btn">+ 添加产业</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="target-radio-item" onclick="selectTarget(this, 'custom')">
+                    <input type="radio" name="targetType">
+                    <div class="target-radio-label">
+                      定向选择企业
+                      <div class="target-radio-desc">手动选择指定企业，仅被选中的企业可查看和参与</div>
+                      <div class="target-sub-options" style="display: none;">
+                        <span class="target-tag">华为技术有限公司 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">中兴通讯股份有限公司 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">比亚迪股份有限公司 <span class="tag-remove">✕</span></span>
+                        <button class="target-add-btn">+ 添加企业</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">内容编辑</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>详细内容</label>
+                <textarea class="form-textarea" rows="10">一、总体运行情况
+2024年第三季度，全区规模以上工业企业实现总产值856亿元，同比增长9.7%；实现营业收入798亿元，同比增长8.5%；实现利润总额92亿元，同比增长12.3%。
+
+二、分产业运行情况
+- 高端装备制造：总产值256亿元，同比增长11.2%
+- 新一代信息技术：总产值218亿元，同比增长15.6%
+- 新材料：总产值145亿元，同比增长8.3%</textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">PDF上传</div>
+            <div class="upload-area" onclick="alert('选择PDF文件上传')">
+              <div class="upload-icon">📄</div>
+              <div class="upload-text">点击或拖拽PDF文件到此处上传</div>
+              <div class="upload-hint">系统将自动提取PDF内容并填入"详细内容"中，支持 .pdf 格式，单文件不超过 50MB</div>
+            </div>
+            <div class="uploaded-files">
+              <div class="uploaded-file-item">
+                <div class="uploaded-file-icon">📊</div>
+                <div class="uploaded-file-info">
+                  <div class="uploaded-file-name">2024年第三季度规上企业数据统计表.xlsx</div>
+                  <div class="uploaded-file-meta">2.4MB · 已上传</div>
+                </div>
+                <div class="uploaded-file-remove" onclick="this.parentElement.remove()">✕</div>
+              </div>
+              <div class="uploaded-file-item">
+                <div class="uploaded-file-icon">📄</div>
+                <div class="uploaded-file-info">
+                  <div class="uploaded-file-name">第三季度经济运行分析报告.pdf</div>
+                  <div class="uploaded-file-meta">5.8MB · 已上传</div>
+                </div>
+                <div class="uploaded-file-remove" onclick="this.parentElement.remove()">✕</div>
+              </div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-secondary">预览</button>
+            <button class="btn btn-outline">保存草稿</button>
+            <button class="btn btn-primary">立即发布</button>
+          </div>
+        `
+      },
+      'activity-publish-detail-rejected': {
+        title: '2024年度党建工作推进会',
+        subtitle: '<span>分类：活动联办</span><span>·</span><span style="color: var(--danger);">系统驳回</span><span>·</span>',
+        body: `
+          <div class="drawer-info-grid">
+            <div class="drawer-info-item">
+              <span class="info-label">发布人</span>
+              <span class="info-value">王管理员</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">提交时间</span>
+              <span class="info-value">2024-10-12 14:20</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">发起单位</span>
+              <span class="info-value">区委组织部</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">活动对象</span>
+              <span class="info-value">按产业（新一代信息技术、高端装备制造）</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">驳回时间</span>
+              <span class="info-value" style="color: var(--danger);">2024-10-12 14:22</span>
+            </div>
+          </div>
+          <div class="forbidden-warning">
+            <span style="font-size: 18px;">⚠</span>
+            <span>系统检测到 <strong>2</strong> 个违禁词，请修改后重新提交</span>
+          </div>
+          <div class="drawer-content-section" style="margin-top: 16px;">
+            <div class="drawer-content-title">详细内容</div>
+            <div class="drawer-content-body">
+              <p>为深入贯彻落实党的二十大精神，全面推进我区党建工作高质量发展，经区委研究决定，召开2024年度党建工作推进会。会议将总结上半年工作，部署下半年任务，表彰先进典型。严禁传播<span class="forbidden-word">颠覆</span>国家政权的言论，坚决抵制<span class="forbidden-word">反动</span>思想渗透。</p>
+              <h4>一、会议主题</h4>
+              <p>深入学习贯彻习近平新时代中国特色社会主义思想，全面推进新时代党的建设新的伟大工程。</p>
+              <h4>二、会议时间地点</h4>
+              <p>时间：2024年11月5日（星期二）上午9:00<br>地点：区行政中心一楼大礼堂</p>
+              <h4>三、注意事项</h4>
+              <p>会议期间严格遵守政治纪律，不得发表任何<span class="forbidden-word">颠覆</span>社会主义制度的言论，坚决反对一切<span class="forbidden-word">反动</span>思潮，确保会议风清气正。</p>
+            </div>
+          </div>
+          <div class="drawer-content-section">
+            <div class="drawer-content-title">附件资料</div>
+            <div class="attachment-list">
+              <div class="attachment-item">
+                <div class="attachment-icon">📄</div>
+                <div class="attachment-info">
+                  <div class="attachment-name">2024年度党建工作推进会方案.docx</div>
+                  <div class="attachment-meta">Word · 1.2MB</div>
+                </div>
+                <div class="attachment-download">下载</div>
+              </div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">关闭</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-primary" onclick="openDrawer('activity-publish-edit-rejected')">修改重提</button>
+          </div>
+        `
+      },
+      'activity-publish-edit-rejected': {
+        title: '修改重提 - 2024年度党建工作推进会',
+        subtitle: '<span>系统驳回</span><span>·</span><span style="color: var(--danger);">含 2 个违禁词</span>',
+        body: `
+          <div class="forbidden-warning">
+            <span style="font-size: 18px;">⚠</span>
+            <span>系统检测到 <strong>2</strong> 个违禁词（已用红色标记），请修改后重新提交</span>
+          </div>
+          <div class="form-section" style="margin-top: 16px;">
+            <div class="form-section-title">基本信息</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>发布标题</label>
+                <input type="text" class="form-input" value="2024年度党建工作推进会">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>活动分类</label>
+                <select class="form-select">
+                  <option>理论联学</option>
+                  <option>招商联推</option>
+                  <option selected>活动联办</option>
+                  <option>发展联动</option>
+                  <option>重大签约</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>发起单位</label>
+                <input type="text" class="form-input" value="区委组织部">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>活动对象</label>
+                <div class="target-radio-group">
+                  <div class="target-radio-item" onclick="selectTarget(this, 'all')">
+                    <input type="radio" name="targetType2">
+                    <div class="target-radio-label">
+                      全部企业
+                      <div class="target-radio-desc">面向区内所有注册企业发布，所有企业均可查看和参与</div>
+                    </div>
+                  </div>
+                  <div class="target-radio-item active" onclick="selectTarget(this, 'industry')">
+                    <input type="radio" name="targetType2" checked>
+                    <div class="target-radio-label">
+                      按产业/行业
+                      <div class="target-radio-desc">选择指定产业或行业分类，面向对应企业定向发布</div>
+                      <div class="target-sub-options" style="display: flex;">
+                        <span class="target-tag">新一代信息技术 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">高端装备制造 <span class="tag-remove">✕</span></span>
+                        <button class="target-add-btn">+ 添加产业</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="target-radio-item" onclick="selectTarget(this, 'custom')">
+                    <input type="radio" name="targetType2">
+                    <div class="target-radio-label">
+                      定向选择企业
+                      <div class="target-radio-desc">手动选择指定企业，仅被选中的企业可查看和参与</div>
+                      <div class="target-sub-options" style="display: none;">
+                        <span class="target-tag">华为技术有限公司 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">中兴通讯股份有限公司 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">比亚迪股份有限公司 <span class="tag-remove">✕</span></span>
+                        <button class="target-add-btn">+ 添加企业</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">内容编辑</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>详细内容</label>
+                <textarea class="form-textarea" rows="10">为深入贯彻落实党的二十大精神，全面推进我区党建工作高质量发展，经区委研究决定，召开2024年度党建工作推进会。会议将总结上半年工作，部署下半年任务，表彰先进典型。严禁传播<span class="forbidden-word">颠覆</span>国家政权的言论，坚决抵制<span class="forbidden-word">反动</span>思想渗透。
+
+一、会议主题
+深入学习贯彻习近平新时代中国特色社会主义思想，全面推进新时代党的建设新的伟大工程。
+
+二、会议时间地点
+时间：2024年11月5日（星期二）上午9:00
+地点：区行政中心一楼大礼堂
+
+三、注意事项
+会议期间严格遵守政治纪律，不得发表任何<span class="forbidden-word">颠覆</span>社会主义制度的言论，坚决反对一切<span class="forbidden-word">反动</span>思潮，确保会议风清气正。</textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">PDF上传</div>
+            <div class="upload-area" onclick="alert('选择PDF文件上传')">
+              <div class="upload-icon">📄</div>
+              <div class="upload-text">点击或拖拽PDF文件到此处上传</div>
+              <div class="upload-hint">系统将自动提取PDF内容并填入"详细内容"中，支持 .pdf 格式，单文件不超过 50MB</div>
+            </div>
+            <div class="uploaded-files">
+              <div class="uploaded-file-item">
+                <div class="uploaded-file-icon">📄</div>
+                <div class="uploaded-file-info">
+                  <div class="uploaded-file-name">2024年度党建工作推进会方案.pdf</div>
+                  <div class="uploaded-file-meta">1.2MB · 已上传 · 内容已提取</div>
+                </div>
+                <div class="uploaded-file-remove" onclick="this.parentElement.remove()">✕</div>
+              </div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-secondary">预览</button>
+            <button class="btn btn-outline">保存草稿</button>
+            <button class="btn btn-primary">重新提交</button>
+          </div>
+        `
+      },
+      'activity-publish-new': {
+        title: '新建企业活动发布',
+        subtitle: '<span>新建模式</span><span>·</span><span>填写信息后提交发布</span>',
+        body: `
+          <div class="form-section">
+            <div class="form-section-title">基本信息</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>发布标题</label>
+                <input type="text" class="form-input" placeholder="请输入发布标题">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>活动分类</label>
+                <select class="form-select">
+                  <option>请选择分类</option>
+                  <option>理论联学</option>
+                  <option>招商联推</option>
+                  <option>活动联办</option>
+                  <option>发展联动</option>
+                  <option>重大签约</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>发起单位</label>
+                <input type="text" class="form-input" placeholder="请输入发起单位">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>活动对象</label>
+                <div class="target-radio-group">
+                  <div class="target-radio-item active" onclick="selectTarget(this, 'all')">
+                    <input type="radio" name="targetType" checked>
+                    <div class="target-radio-label">
+                      全部企业
+                      <div class="target-radio-desc">面向区内所有注册企业发布，所有企业均可查看和参与</div>
+                    </div>
+                  </div>
+                  <div class="target-radio-item" onclick="selectTarget(this, 'industry')">
+                    <input type="radio" name="targetType">
+                    <div class="target-radio-label">
+                      按产业/行业
+                      <div class="target-radio-desc">选择指定产业或行业分类，面向对应企业定向发布</div>
+                      <div class="target-sub-options" style="display: none;">
+                        <span class="target-tag">新一代信息技术 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">高端装备制造 <span class="tag-remove">✕</span></span>
+                        <button class="target-add-btn">+ 添加产业</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="target-radio-item" onclick="selectTarget(this, 'custom')">
+                    <input type="radio" name="targetType">
+                    <div class="target-radio-label">
+                      定向选择企业
+                      <div class="target-radio-desc">手动选择指定企业，仅被选中的企业可查看和参与</div>
+                      <div class="target-sub-options" style="display: none;">
+                        <span class="target-tag">华为技术有限公司 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">中兴通讯股份有限公司 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">比亚迪股份有限公司 <span class="tag-remove">✕</span></span>
+                        <button class="target-add-btn">+ 添加企业</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">内容编辑</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>详细内容</label>
+                <textarea class="form-textarea" rows="12" placeholder="请输入详细内容，或上传PDF自动提取"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">PDF上传</div>
+            <div class="upload-area" onclick="alert('选择PDF文件上传')">
+              <div class="upload-icon">📄</div>
+              <div class="upload-text">点击或拖拽PDF文件到此处上传</div>
+              <div class="upload-hint">系统将自动提取PDF内容并填入"详细内容"中，支持 .pdf 格式，单文件不超过 50MB</div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-secondary">预览</button>
+            <button class="btn btn-outline">保存草稿</button>
+            <button class="btn btn-primary">提交发布</button>
+          </div>
+        `
+      },
+      'recruit-publish-detail': {
+        title: '高级软件工程师',
+        subtitle: '<span>华为技术有限公司</span><span>·</span><span>25人</span>',
+        body: `
+          <div class="drawer-info-grid">
+            <div class="drawer-info-item">
+              <span class="info-label">单位名称</span>
+              <span class="info-value">华为技术有限公司</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">岗位名称</span>
+              <span class="info-value">高级软件工程师</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">单位属性</span>
+              <span class="info-value">民营企业</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">所属行业</span>
+              <span class="info-value">新一代信息技术</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">招聘人数</span>
+              <span class="info-value" style="color: var(--color-gold-primary);">25 人</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">学历要求</span>
+              <span class="info-value">本科及以上</span>
+            </div>
+            <div class="drawer-info-item" style="grid-column: span 2;">
+              <span class="info-label">单位地址+邮编</span>
+              <span class="info-value">深圳市龙岗区坂田华为基地 518129</span>
+            </div>
+            <div class="drawer-info-item" style="grid-column: span 2;">
+              <span class="info-label">专业要求</span>
+              <span class="info-value">计算机科学与技术、软件工程等相关专业</span>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">关闭</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-secondary">下架</button>
+            <button class="btn btn-primary" onclick="openDrawer('recruit-publish-edit')">编辑</button>
+          </div>
+        `
+      },
+      'recruit-publish-edit': {
+        title: '编辑招聘岗位',
+        subtitle: '<span>编辑模式</span><span>·</span><span>最后更新于 2024-10-14 12:00</span>',
+        body: `
+          <div class="form-section">
+            <div class="form-section-title">单位信息</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>单位名称</label>
+                <input type="text" class="form-input" value="华为技术有限公司">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>单位属性</label>
+                <select class="form-select">
+                  <option selected>民营企业</option>
+                  <option>国有企业</option>
+                  <option>股份制企业</option>
+                  <option>外商投资企业</option>
+                  <option>事业单位</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>所属行业</label>
+                <select class="form-select">
+                  <option selected>新一代信息技术</option>
+                  <option>高端装备制造</option>
+                  <option>新材料</option>
+                  <option>生物医药</option>
+                  <option>新能源</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>单位地址+邮编</label>
+                <input type="text" class="form-input" value="深圳市龙岗区坂田华为基地 518129">
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">岗位信息</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>岗位名称</label>
+                <input type="text" class="form-input" value="高级软件工程师">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>招聘人数</label>
+                <input type="number" class="form-input" value="25">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>专业要求</label>
+                <input type="text" class="form-input" value="计算机科学与技术、软件工程等相关专业">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>学历要求</label>
+                <select class="form-select">
+                  <option>不限</option>
+                  <option>大专及以上</option>
+                  <option selected>本科及以上</option>
+                  <option>硕士及以上</option>
+                  <option>博士</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-outline">保存草稿</button>
+            <button class="btn btn-primary">保存修改</button>
+          </div>
+        `
+      },
+      'recruit-publish-import': {
+        title: '导入招聘数据',
+        subtitle: '<span>表格识别导入</span><span>·</span><span>系统自动识别Excel表格字段</span>',
+        body: `
+          <div class="form-section">
+            <div class="form-section-title">模板说明</div>
+            <div class="import-notice">
+              <div class="notice-icon">📋</div>
+              <div class="notice-content">
+                <p>请先下载标准模板，按照模板格式填写招聘数据后再上传。系统将自动识别以下字段：</p>
+                <div class="notice-fields">
+                  <span class="notice-field">单位名称</span>
+                  <span class="notice-field">单位属性</span>
+                  <span class="notice-field">所属行业</span>
+                  <span class="notice-field">单位地址+邮编</span>
+                  <span class="notice-field">岗位名称</span>
+                  <span class="notice-field">招聘人数</span>
+                  <span class="notice-field">专业要求</span>
+                  <span class="notice-field">学历要求</span>
+                </div>
+              </div>
+            </div>
+            <div class="template-download">
+              <div class="template-info">
+                <div class="template-icon">📊</div>
+                <div class="template-text">
+                  <div class="template-name">招聘数据导入模板.xlsx</div>
+                  <div class="template-meta">Excel格式 · 含8个标准字段 · 示例数据</div>
+                </div>
+              </div>
+              <button class="btn btn-outline">📥 下载模板</button>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">上传文件</div>
+            <div class="upload-area import-upload" onclick="document.getElementById('importFileInput').click()">
+              <input type="file" id="importFileInput" style="display: none;" accept=".xlsx,.xls">
+              <div class="upload-icon">📁</div>
+              <div class="upload-text">点击或拖拽Excel文件到此处上传</div>
+              <div class="upload-hint">支持 .xlsx / .xls 格式，单次最多支持 500 条岗位数据</div>
+            </div>
+            <div class="import-file-list" id="importFileList" style="display: none;">
+              <div class="import-file-item">
+                <div class="import-file-icon">📊</div>
+                <div class="import-file-info">
+                  <div class="import-file-name">秋季招聘岗位汇总.xlsx</div>
+                  <div class="import-file-meta">识别中... 预计 3 秒</div>
+                </div>
+                <div class="import-file-status">
+                  <div class="import-spinner"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-section" id="importPreviewSection" style="display: none;">
+            <div class="form-section-title">
+              识别结果预览
+              <span class="preview-count">共识别 <strong>128</strong> 条数据</span>
+            </div>
+            <div class="import-summary">
+              <div class="summary-item success">
+                <div class="summary-num">125</div>
+                <div class="summary-label">校验通过</div>
+              </div>
+              <div class="summary-item warning">
+                <div class="summary-num">3</div>
+                <div class="summary-label">待修正</div>
+              </div>
+              <div class="summary-item error">
+                <div class="summary-num">0</div>
+                <div class="summary-label">识别失败</div>
+              </div>
+            </div>
+            <div class="import-preview-table-wrapper">
+              <table class="import-preview-table">
+                <thead>
+                  <tr>
+                    <th>单位名称</th>
+                    <th>岗位名称</th>
+                    <th>所属行业</th>
+                    <th>招聘人数</th>
+                    <th>学历要求</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>华为技术有限公司</td>
+                    <td>高级软件工程师</td>
+                    <td>新一代信息技术</td>
+                    <td style="text-align: center;">25</td>
+                    <td>本科及以上</td>
+                  </tr>
+                  <tr>
+                    <td>中兴通讯股份有限公司</td>
+                    <td>硬件研发工程师</td>
+                    <td>新一代信息技术</td>
+                    <td style="text-align: center;">18</td>
+                    <td>本科及以上</td>
+                  </tr>
+                  <tr>
+                    <td>比亚迪股份有限公司</td>
+                    <td>机械设计工程师</td>
+                    <td>高端装备制造</td>
+                    <td style="text-align: center;">32</td>
+                    <td>本科及以上</td>
+                  </tr>
+                  <tr class="row-warning">
+                    <td>某科技公司</td>
+                    <td>算法工程师</td>
+                    <td style="color: var(--color-warning);">— 未识别 —</td>
+                    <td style="text-align: center;">10</td>
+                    <td>硕士及以上</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="import-preview-tip">
+              仅显示前4条预览，完整数据请在导入后查看。存在待修正项时，系统将跳过异常数据并导入正常数据。
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-outline">重新上传</button>
+            <button class="btn btn-primary" onclick="alert('已导入125条招聘数据'); closeDrawer();">确认导入（125条）</button>
+          </div>
+        `
+      },
+      'party-service-detail': {
+        title: '关于开展惠企政策宣讲月活动的通知',
+        subtitle: '<span>政策咨询</span><span>·</span><span>进行中</span><span>·</span><span>参与企业 156 家</span>',
+        body: `
+          <div class="drawer-info-grid">
+            <div class="drawer-info-item">
+              <span class="info-label">发起部门</span>
+              <span class="info-value">区发改委</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">发布时间</span>
+              <span class="info-value">2024-10-14 09:00</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">活动时间</span>
+              <span class="info-value">10月15日-11月15日</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">服务方式</span>
+              <span class="info-value">线上+线下</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">服务对象</span>
+              <span class="info-value">全部企业</span>
+            </div>
+          </div>
+          <div class="drawer-content-section">
+            <div class="drawer-content-title">服务内容</div>
+            <div class="drawer-content-body">
+              <p>为帮助企业全面了解最新惠企政策，决定开展"惠企政策宣讲月"活动，涵盖税收优惠、研发补贴、人才引进、融资支持等多项政策解读。</p>
+              <h4>宣讲内容</h4>
+              <ul>
+                <li>高新技术企业税收优惠政策解读</li>
+                <li>研发费用加计扣除政策实操指引</li>
+                <li>人才引进补贴政策申报指南</li>
+              </ul>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">关闭</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-secondary">复制链接</button>
+            <button class="btn btn-primary" onclick="openDrawer('party-service-edit')">编辑</button>
+          </div>
+        `
+      },
+      'party-service-edit': {
+        title: '编辑党企服务',
+        subtitle: '<span>编辑模式</span><span>·</span><span>最后更新于 2024-10-14 09:00</span>',
+        body: `
+          <div class="form-section">
+            <div class="form-section-title">基本信息</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>服务标题</label>
+                <input type="text" class="form-input" value="关于开展惠企政策宣讲月活动的通知">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>服务类型</label>
+                <select class="form-select">
+                  <option selected>政策咨询</option>
+                  <option>党建指导</option>
+                  <option>人才服务</option>
+                  <option>困难帮扶</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>发起部门</label>
+                <input type="text" class="form-input" value="区发改委">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>服务对象</label>
+                <div class="target-radio-group">
+                  <div class="target-radio-item active" onclick="selectTarget(this, 'all')">
+                    <input type="radio" name="serviceTargetEdit" checked>
+                    <div class="target-radio-label">
+                      全部企业
+                      <div class="target-radio-desc">面向区内所有注册企业发布，所有企业均可查看和参与</div>
+                    </div>
+                  </div>
+                  <div class="target-radio-item" onclick="selectTarget(this, 'industry')">
+                    <input type="radio" name="serviceTargetEdit">
+                    <div class="target-radio-label">
+                      按产业/行业
+                      <div class="target-radio-desc">选择指定产业或行业分类，面向对应企业定向发布</div>
+                      <div class="target-sub-options" style="display: none;">
+                        <span class="target-tag">新一代信息技术 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">高端装备制造 <span class="tag-remove">✕</span></span>
+                        <button class="target-add-btn">+ 添加产业</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="target-radio-item" onclick="selectTarget(this, 'custom')">
+                    <input type="radio" name="serviceTargetEdit">
+                    <div class="target-radio-label">
+                      定向选择企业
+                      <div class="target-radio-desc">手动选择指定企业，仅被选中的企业可查看和参与</div>
+                      <div class="target-sub-options" style="display: none;">
+                        <span class="target-tag">华为技术有限公司 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">中兴通讯股份有限公司 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">比亚迪股份有限公司 <span class="tag-remove">✕</span></span>
+                        <button class="target-add-btn">+ 添加企业</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">服务内容</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>详细内容</label>
+                <textarea class="form-textarea" rows="6">为帮助企业全面了解最新惠企政策，决定开展"惠企政策宣讲月"活动。</textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">附件资料</div>
+            <div class="upload-area" onclick="alert('选择文件上传')">
+              <div class="upload-icon">📁</div>
+              <div class="upload-text">点击上传政策文件资料</div>
+              <div class="upload-hint">支持 PDF、Word、Excel 等格式</div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-outline">保存草稿</button>
+            <button class="btn btn-primary">发布服务</button>
+          </div>
+        `
+      },
+      'party-service-new': {
+        title: '发布新服务',
+        subtitle: '<span>新建模式</span><span>·</span><span>填写服务信息后发布</span>',
+        body: `
+          <div class="form-section">
+            <div class="form-section-title">基本信息</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>服务标题</label>
+                <input type="text" class="form-input" placeholder="请输入服务标题">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>服务类型</label>
+                <select class="form-select">
+                  <option>请选择类型</option>
+                  <option>政策咨询</option>
+                  <option>党建指导</option>
+                  <option>人才服务</option>
+                  <option>困难帮扶</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>发起部门</label>
+                <input type="text" class="form-input" placeholder="请输入发起部门">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>服务对象</label>
+                <div class="target-radio-group">
+                  <div class="target-radio-item active" onclick="selectTarget(this, 'all')">
+                    <input type="radio" name="serviceTarget" checked>
+                    <div class="target-radio-label">
+                      全部企业
+                      <div class="target-radio-desc">面向区内所有注册企业发布，所有企业均可查看和参与</div>
+                    </div>
+                  </div>
+                  <div class="target-radio-item" onclick="selectTarget(this, 'industry')">
+                    <input type="radio" name="serviceTarget">
+                    <div class="target-radio-label">
+                      按产业/行业
+                      <div class="target-radio-desc">选择指定产业或行业分类，面向对应企业定向发布</div>
+                      <div class="target-sub-options" style="display: none;">
+                        <span class="target-tag">新一代信息技术 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">高端装备制造 <span class="tag-remove">✕</span></span>
+                        <button class="target-add-btn">+ 添加产业</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="target-radio-item" onclick="selectTarget(this, 'custom')">
+                    <input type="radio" name="serviceTarget">
+                    <div class="target-radio-label">
+                      定向选择企业
+                      <div class="target-radio-desc">手动选择指定企业，仅被选中的企业可查看和参与</div>
+                      <div class="target-sub-options" style="display: none;">
+                        <span class="target-tag">华为技术有限公司 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">中兴通讯股份有限公司 <span class="tag-remove">✕</span></span>
+                        <span class="target-tag">比亚迪股份有限公司 <span class="tag-remove">✕</span></span>
+                        <button class="target-add-btn">+ 添加企业</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">服务内容</div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>详细内容</label>
+                <textarea class="form-textarea" rows="6" placeholder="请详细描述服务内容、方式、时间安排等"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">附件上传</div>
+            <div class="upload-area" onclick="alert('选择文件上传')">
+              <div class="upload-icon">📁</div>
+              <div class="upload-text">点击上传相关资料文件</div>
+              <div class="upload-hint">支持 PDF、Word、Excel、图片等格式</div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-outline">保存草稿</button>
+            <button class="btn btn-primary">发布服务</button>
+          </div>
+        `
+      },
+      'demand-detail': {
+        title: '某科技公司关于扩大生产融资支持的诉求',
+        subtitle: '<span>融资诉求</span><span>·</span><span>处理中</span><span>·</span><span>⚡ 紧急</span>',
+        body: `
+          <div class="drawer-info-grid">
+            <div class="drawer-info-item">
+              <span class="info-label">诉求企业</span>
+              <span class="info-value">星辰科技有限公司</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">企业规模</span>
+              <span class="info-value">中型企业</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">所属产业</span>
+              <span class="info-value">新一代信息技术</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">联系人</span>
+              <span class="info-value">张总 138****8888</span>
+            </div>
+            <div class="drawer-info-item">
+              <span class="info-label">承办部门</span>
+              <span class="info-value">区金融办、区工信局</span>
+            </div>
+          </div>
+          <div class="drawer-content-section">
+            <div class="drawer-content-title">诉求内容</div>
+            <div class="drawer-content-body">
+              <p>我公司是一家专注于智能终端设备研发生产的高新技术企业，近年来发展迅速，订单持续增长。为满足市场需求，计划扩大生产规模，新增两条自动化生产线，总投资约5000万元。</p>
+              <p>目前企业自有资金3000万元，尚有2000万元资金缺口，希望能够获得政府贴息贷款支持。</p>
+            </div>
+          </div>
+          <div class="drawer-content-section">
+            <div class="drawer-content-title">办理进度</div>
+            <div class="timeline">
+              <div class="timeline-item done">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-title">诉求提交</div>
+                  <div class="timeline-time">2024-10-15 11:20</div>
+                  <div class="timeline-desc">企业在线提交诉求</div>
+                </div>
+              </div>
+              <div class="timeline-item done">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-title">受理登记</div>
+                  <div class="timeline-time">2024-10-15 14:30</div>
+                  <div class="timeline-desc">党建服务中心受理并登记</div>
+                </div>
+              </div>
+              <div class="timeline-item active">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-title">部门办理中</div>
+                  <div class="timeline-time">2024-10-16 09:00</div>
+                  <div class="timeline-desc">已转办至区金融办，正在对接银行</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="timeline-title">反馈结果</div>
+                  <div class="timeline-time">待完成</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">关闭</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-secondary">转交部门</button>
+            <button class="btn btn-primary" onclick="openDrawer('demand-process')">回复企业</button>
+          </div>
+        `
+      },
+      'demand-process': {
+        title: '处理诉求',
+        subtitle: '<span>融资诉求</span><span>·</span><span>星辰科技有限公司</span>',
+        body: `
+          <div class="form-section">
+            <div class="form-section-title">诉求信息</div>
+            <div class="drawer-info-grid">
+              <div class="drawer-info-item">
+                <span class="info-label">诉求企业</span>
+                <span class="info-value">星辰科技有限公司</span>
+              </div>
+              <div class="drawer-info-item">
+                <span class="info-label">诉求类型</span>
+                <span class="info-value">融资诉求</span>
+              </div>
+              <div class="drawer-info-item">
+                <span class="info-label">联系人</span>
+                <span class="info-value">张总 138****8888</span>
+              </div>
+              <div class="drawer-info-item">
+                <span class="info-label">提交时间</span>
+                <span class="info-value">2024-10-15 11:20</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">办理信息</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>承办部门</label>
+                <select class="form-select">
+                  <option selected>区金融办</option>
+                  <option>区发改委</option>
+                  <option>区人社局</option>
+                  <option>区自然资源局</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>办理状态</label>
+                <select class="form-select">
+                  <option>待受理</option>
+                  <option selected>处理中</option>
+                  <option>已办结</option>
+                  <option>已驳回</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label">处理回复</label>
+                <textarea class="form-textarea" rows="5" placeholder="请输入对企业的回复内容..."></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">附件上传</div>
+            <div class="upload-area" onclick="alert('选择文件上传')">
+              <div class="upload-icon">📎</div>
+              <div class="upload-text">上传办理相关文件</div>
+              <div class="upload-hint">支持 PDF、Word、图片等格式</div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-secondary">暂存</button>
+            <button class="btn btn-primary">提交回复</button>
+          </div>
+        `
+      },
+      'demand-new': {
+        title: '提交企业诉求',
+        subtitle: '<span>新建模式</span><span>·</span><span>填写诉求信息后提交</span>',
+        body: `
+          <div class="form-section">
+            <div class="form-section-title">企业信息</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>企业名称</label>
+                <input type="text" class="form-input" placeholder="请输入企业全称">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>统一社会信用代码</label>
+                <input type="text" class="form-input" placeholder="请输入信用代码">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>联系人</label>
+                <input type="text" class="form-input" placeholder="请输入联系人姓名">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>联系电话</label>
+                <input type="text" class="form-input" placeholder="请输入联系电话">
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">诉求信息</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>诉求类型</label>
+                <select class="form-select">
+                  <option>请选择诉求类型</option>
+                  <option>政策诉求</option>
+                  <option>融资诉求</option>
+                  <option>人才诉求</option>
+                  <option>用地诉求</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">紧急程度</label>
+                <select class="form-select">
+                  <option>普通</option>
+                  <option>较急</option>
+                  <option>紧急</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>诉求标题</label>
+                <input type="text" class="form-input" placeholder="请简要描述诉求">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label class="form-label"><span class="required">*</span>诉求详情</label>
+                <textarea class="form-textarea" rows="6" placeholder="请详细描述您的诉求内容、背景情况和期望解决方式..."></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">佐证材料</div>
+            <div class="upload-area" onclick="alert('选择文件上传')">
+              <div class="upload-icon">📎</div>
+              <div class="upload-text">上传相关证明材料</div>
+              <div class="upload-hint">支持 PDF、Word、图片等格式，最多上传10个文件</div>
+            </div>
+          </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+          </div>
+          <div class="drawer-footer-right">
+            <button class="btn btn-outline">保存草稿</button>
+            <button class="btn btn-primary">提交诉求</button>
+          </div>
+        `
+      }
+    };
+
+    // 活动对象选择
+    function selectTarget(el, type) {
+      var group = el.closest('.target-radio-group');
+      var items = group.querySelectorAll('.target-radio-item');
+      items.forEach(function(item) {
+        item.classList.remove('active');
+        item.querySelector('input[type="radio"]').checked = false;
+        var sub = item.querySelector('.target-sub-options');
+        if (sub) sub.style.display = 'none';
+      });
+      el.classList.add('active');
+      el.querySelector('input[type="radio"]').checked = true;
+      var sub = el.querySelector('.target-sub-options');
+      if (sub && type !== 'all') sub.style.display = 'flex';
+    }
+
+    // 模拟导入识别流程
+    function simulateImport() {
+      var fileList = document.getElementById('importFileList');
+      var previewSection = document.getElementById('importPreviewSection');
+      if (!fileList) return;
+
+      fileList.style.display = 'block';
+
+      setTimeout(function() {
+        var fileMeta = fileList.querySelector('.import-file-meta');
+        if (fileMeta) fileMeta.textContent = '识别完成 ✓';
+        var spinner = fileList.querySelector('.import-spinner');
+        if (spinner) spinner.style.display = 'none';
+        var fileStatus = fileList.querySelector('.import-file-status');
+        if (fileStatus) fileStatus.innerHTML = '<span style="color: #16a34a; font-size: 13px;">✓ 成功</span>';
+      }, 1500);
+
+      setTimeout(function() {
+        if (previewSection) {
+          previewSection.style.display = 'block';
+        }
+      }, 2500);
+    }
+
+    function openDrawer(type) {
+      const template = drawerTemplates[type];
+      if (!template) { console.warn('Unknown drawer type:', type); return; }
+      const drawer = document.getElementById('drawer');
+      const overlay = document.getElementById('drawerOverlay');
+      document.getElementById('drawerTitle').textContent = template.title;
+      document.getElementById('drawerSubtitle').innerHTML = template.subtitle;
+      document.getElementById('drawerBody').innerHTML = template.body;
+      document.getElementById('drawerFooter').innerHTML = template.footer;
+      drawer.classList.add('active');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      // 导入抽屉：绑定上传区域点击事件
+      if (type === 'recruit-publish-import') {
+        setTimeout(function() {
+          var uploadArea = document.querySelector('.import-upload');
+          if (uploadArea) {
+            uploadArea.addEventListener('click', function(e) {
+              if (e.target.tagName === 'INPUT') return;
+              simulateImport();
+            });
+          }
+        }, 100);
+      }
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawer').classList.remove('active');
+      document.getElementById('drawerOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeDrawer();
+    });
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
+
