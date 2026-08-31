@@ -1,0 +1,1458 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模型参数微调 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .tabs-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .tabs-card .tabs { padding: 0 12px; }
+
+    /* 微调页面 - 左右分栏 */
+    .finetune-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+    }
+
+    /* 配置卡片 */
+    .config-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .config-card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg);
+    }
+    .config-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .config-card-icon {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      background: rgba(196,30,58,0.1);
+      color: var(--accent-red);
+    }
+    .config-card-body {
+      padding: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .form-label .required { color: var(--accent-red); margin-right: 2px; }
+
+    .form-input, .form-select-full {
+      width: 100%;
+      height: 38px;
+      padding: 0 12px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      outline: none;
+      font-family: inherit;
+    }
+    .form-input:focus, .form-select-full:focus {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 0 3px rgba(196,30,58,0.1);
+    }
+    .form-textarea {
+      width: 100%;
+      min-height: 70px;
+      padding: 10px 12px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      outline: none;
+      font-family: inherit;
+      resize: vertical;
+    }
+    .form-textarea:focus {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 0 3px rgba(196,30,58,0.1);
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* 微调类型选择器 */
+    .finetype-selector {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .finetype-option {
+      padding: 10px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface);
+    }
+    .finetype-option:hover {
+      border-color: var(--accent-red);
+      background: rgba(196,30,58,0.03);
+    }
+    .finetype-option.active {
+      border-color: var(--accent-red);
+      background: rgba(196,30,58,0.06);
+      color: var(--accent-red);
+      font-weight: 600;
+    }
+    .finetype-option .ft-name { font-size: 12px; font-weight: 500; }
+    .finetype-option .ft-desc { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+    /* 滑块行 */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slider-row .slider { flex: 1; }
+    .slider-value {
+      min-width: 50px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-red);
+      font-family: 'DIN', Arial, sans-serif;
+    }
+
+    /* 操作按钮区 */
+    .action-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn-start-finetune {
+      flex: 1;
+      height: 46px;
+      background: linear-gradient(135deg, var(--accent-gold), #b8941f);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(212,175,55,0.3);
+    }
+    .btn-start-finetune:hover {
+      box-shadow: 0 6px 20px rgba(212,175,55,0.4);
+      transform: translateY(-1px);
+    }
+
+    /* 监控面板 */
+    .monitor-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .monitor-card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .monitor-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .monitor-card-title::before {
+      content: '';
+      width: 3px; height: 16px;
+      background: linear-gradient(180deg, var(--accent-red), var(--accent-gold));
+      border-radius: 2px;
+    }
+    .monitor-card-body { padding: 18px; }
+
+    /* 训练状态 */
+    .training-status {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .training-status-icon {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(47,133,90,0.15), rgba(47,133,90,0.05));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      position: relative;
+    }
+    .training-status-icon::after {
+      content: '';
+      position: absolute;
+      top: -3px; left: -3px; right: -3px; bottom: -3px;
+      border: 2px solid var(--success);
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1.5s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .training-status-info .status-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .training-status-info .status-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* 流光进度条 */
+    .progress-glow {
+      width: 100%;
+      height: 12px;
+      background: var(--bg);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-glow-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-red), var(--accent-gold), var(--accent-red));
+      background-size: 200% 100%;
+      border-radius: 6px;
+      animation: flow 2s linear infinite;
+      position: relative;
+      box-shadow: 0 0 10px rgba(212,175,55,0.4);
+    }
+    @keyframes flow {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .progress-glow-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+    .progress-glow-text strong { color: var(--accent-gold); font-size: 14px; }
+
+    /* 图表行 */
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .mini-chart-box {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+    }
+    .mini-chart-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .mini-chart-title .val {
+      color: var(--accent-red);
+      font-weight: 700;
+      font-family: 'DIN', Arial, sans-serif;
+    }
+
+    /* 模型对比区 */
+    .model-compare {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .model-compare-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+    .model-compare-card h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+    .model-compare-card .metric-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px;
+    }
+    .model-compare-card .metric-row:last-child { border-bottom: none; }
+    .metric-row .metric-label { color: var(--text-secondary); }
+    .metric-row .metric-value { font-weight: 600; color: var(--text-main); }
+    .metric-row .metric-value.good { color: var(--success); }
+    .metric-row .metric-value.bad { color: var(--danger); }
+
+    .radar-chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      text-align: center;
+    }
+    .radar-chart-box h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-main);
+    }
+
+    /* 优化建议卡片 */
+    .suggestion-card {
+      background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(196,30,58,0.05));
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .suggestion-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .suggestion-list {
+      list-style: none;
+      padding: 0;
+    }
+    .suggestion-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(212,175,55,0.15);
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .suggestion-list li:last-child { border-bottom: none; }
+    .suggestion-list li::before {
+      content: '💡';
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+
+    /* 模型管理卡片网格 */
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .model-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .model-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent-gold);
+      transform: translateY(-2px);
+    }
+    .model-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-red), var(--accent-gold));
+    }
+    .model-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .model-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .model-version {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .model-icon {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(196,30,58,0.12), rgba(212,175,55,0.12));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .model-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 12px 0;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .model-stat { text-align: center; }
+    .model-stat-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: 'DIN', Arial, sans-serif;
+    }
+    .model-stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .model-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .model-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .model-date { font-size: 12px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html" class="active">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+      <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="index.html">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">AI智能体</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">微调训练</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+
+        <!-- Tab 切换 -->
+        <div class="tabs-card">
+          <div class="tabs">
+            <div class="tab-item active" data-tab="tab-finetune">模型微调</div>
+            <div class="tab-item" data-tab="tab-optimize">微调优化</div>
+            <div class="tab-item" data-tab="tab-manage">模型管理</div>
+          </div>
+        </div>
+
+        <!-- Tab 1: 模型微调 -->
+        <div class="tab-pane active" id="tab-finetune">
+          <div class="finetune-layout">
+            <!-- 左侧配置表单 -->
+            <div>
+              <!-- 基础配置 -->
+              <div class="config-card">
+                <div class="config-card-header">
+                  <div class="config-card-icon">⚙</div>
+                  <div class="config-card-title">基础配置</div>
+                </div>
+                <div class="config-card-body">
+                  <div class="form-group">
+                    <label class="form-label"><span class="required">*</span>基础模型</label>
+                    <select class="form-select-full">
+                      <option>通义千问-7B (Qwen-7B)</option>
+                      <option>通义千问-14B (Qwen-14B)</option>
+                      <option>LLaMA-2-7B</option>
+                      <option>ChatGLM3-6B</option>
+                      <option>Baichuan2-13B</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label"><span class="required">*</span>任务名称</label>
+                    <input type="text" class="form-input" value="政务问答微调-0818">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">任务描述</label>
+                    <textarea class="form-textarea" placeholder="请输入任务描述...">基于政务知识库对基础模型进行微调，提升党建领域问答准确率</textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label"><span class="required">*</span>微调类型</label>
+                    <div class="finetype-selector">
+                      <div class="finetype-option">
+                        <div class="ft-name">全量</div>
+                        <div class="ft-desc">Full FT</div>
+                      </div>
+                      <div class="finetype-option active">
+                        <div class="ft-name">LoRA</div>
+                        <div class="ft-desc">低秩适配</div>
+                      </div>
+                      <div class="finetype-option">
+                        <div class="ft-name">QLoRA</div>
+                        <div class="ft-desc">量化LoRA</div>
+                      </div>
+                      <div class="finetype-option">
+                        <div class="ft-name">P-tuning</div>
+                        <div class="ft-desc">前缀微调</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 数据集配置 -->
+              <div class="config-card">
+                <div class="config-card-header">
+                  <div class="config-card-icon" style="background:rgba(43,108,176,0.1); color:var(--info);">📊</div>
+                  <div class="config-card-title">数据集配置</div>
+                </div>
+                <div class="config-card-body">
+                  <div class="form-group">
+                    <label class="form-label"><span class="required">*</span>训练集</label>
+                    <select class="form-select-full">
+                      <option>政务问答训练集 v2.1 (12,800条)</option>
+                      <option>党建知识库训练集 v1.5 (8,600条)</option>
+                      <option>企业服务问答集 v3.0 (15,200条)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label"><span class="required">*</span>验证集</label>
+                    <select class="form-select-full">
+                      <option>政务问答验证集 v2.1 (1,280条)</option>
+                      <option>自动划分验证集</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">数据格式</label>
+                    <select class="form-select-full">
+                      <option>对话格式 (Conversation)</option>
+                      <option>指令格式 (Instruction)</option>
+                      <option>问答格式 (QA)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">
+                      训练/验证比例
+                      <span style="float:right; color:var(--accent-red); font-weight:600;">90% / 10%</span>
+                    </label>
+                    <input type="range" class="slider" min="50" max="95" value="90">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 训练参数 -->
+              <div class="config-card">
+                <div class="config-card-header">
+                  <div class="config-card-icon" style="background:rgba(47,133,90,0.1); color:var(--success);">🎯</div>
+                  <div class="config-card-title">训练参数</div>
+                </div>
+                <div class="config-card-body">
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label class="form-label">学习率</label>
+                      <input type="text" class="form-input" value="2e-4">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">批次大小</label>
+                      <input type="text" class="form-input" value="8">
+                    </div>
+                  </div>
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label class="form-label">Epochs</label>
+                      <input type="text" class="form-input" value="3">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">最大序列长度</label>
+                      <input type="text" class="form-input" value="2048">
+                    </div>
+                  </div>
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label class="form-label">预热步数</label>
+                      <input type="text" class="form-input" value="100">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">权重衰减</label>
+                      <input type="text" class="form-input" value="0.01">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 操作按钮 -->
+              <div class="action-bar">
+                <button class="btn-start-finetune">
+                  <span>🚀</span>
+                  开始微调
+                </button>
+              </div>
+              <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn btn-secondary" style="flex:1;">💾 保存配置</button>
+                <button class="btn btn-secondary" style="flex:1;">↺ 重置</button>
+              </div>
+            </div>
+
+            <!-- 右侧实时监控 -->
+            <div>
+              <!-- 训练状态 -->
+              <div class="monitor-card">
+                <div class="monitor-card-header">
+                  <div class="monitor-card-title">训练状态监控</div>
+                  <span class="badge badge-green">训练中</span>
+                </div>
+                <div class="monitor-card-body">
+                  <div class="training-status">
+                    <div class="training-status-icon">⚡</div>
+                    <div class="training-status-info">
+                      <div class="status-title">政务问答微调-0818</div>
+                      <div class="status-desc">Epoch 2/3 · Step 1,856/3,200 · GPU利用率 89%</div>
+                    </div>
+                  </div>
+                  <div class="progress-glow">
+                    <div class="progress-glow-bar" style="width: 58%;"></div>
+                  </div>
+                  <div class="progress-glow-text">
+                    <span>训练进度</span>
+                    <strong>58%</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Loss & 准确率曲线 -->
+              <div class="chart-row">
+                <div class="monitor-card" style="margin-bottom:0;">
+                  <div class="monitor-card-body" style="padding:14px;">
+                    <div class="mini-chart-title">
+                      <span>Loss 损失</span>
+                      <span class="val">0.2486 ↓</span>
+                    </div>
+                    <svg width="100%" height="100" viewBox="0 0 320 100">
+                      <!-- 网格 -->
+                      <line x1="30" y1="10" x2="310" y2="10" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3"/>
+                      <line x1="30" y1="35" x2="310" y2="35" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3"/>
+                      <line x1="30" y1="60" x2="310" y2="60" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3"/>
+                      <line x1="30" y1="85" x2="310" y2="85" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3"/>
+                      <line x1="30" y1="10" x2="30" y2="85" stroke="#e2e8f0" stroke-width="1"/>
+                      <!-- 训练loss -->
+                      <path d="M30,20 Q60,25 90,35 T150,48 T210,58 T270,68 T310,75" 
+                            fill="none" stroke="#c41e3a" stroke-width="2"/>
+                      <!-- 验证loss -->
+                      <path d="M30,15 Q60,22 90,30 T150,42 T210,52 T270,62 T310,68" 
+                            fill="none" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,3"/>
+                      <!-- 图例 -->
+                      <g transform="translate(180, 5)">
+                        <rect x="0" y="0" width="12" height="2" fill="#c41e3a"/>
+                        <text x="16" y="5" font-size="9" fill="#718096">训练</text>
+                        <rect x="50" y="0" width="12" height="2" fill="#d4af37"/>
+                        <text x="66" y="5" font-size="9" fill="#718096">验证</text>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="monitor-card" style="margin-bottom:0;">
+                  <div class="monitor-card-body" style="padding:14px;">
+                    <div class="mini-chart-title">
+                      <span>准确率</span>
+                      <span class="val" style="color:var(--success);">92.4% ↑</span>
+                    </div>
+                    <svg width="100%" height="100" viewBox="0 0 320 100">
+                      <line x1="30" y1="10" x2="310" y2="10" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3"/>
+                      <line x1="30" y1="35" x2="310" y2="35" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3"/>
+                      <line x1="30" y1="60" x2="310" y2="60" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3"/>
+                      <line x1="30" y1="85" x2="310" y2="85" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3"/>
+                      <line x1="30" y1="10" x2="30" y2="85" stroke="#e2e8f0" stroke-width="1"/>
+                      <!-- 准确率曲线 -->
+                      <path d="M30,75 Q60,65 90,55 T150,42 T210,30 T270,20 T310,15" 
+                            fill="none" stroke="#2f855a" stroke-width="2"/>
+                      <!-- 面积填充 -->
+                      <path d="M30,75 Q60,65 90,55 T150,42 T210,30 T270,20 T310,15 L310,85 L30,85 Z" 
+                            fill="url(#accGrad)" opacity="0.2"/>
+                      <defs>
+                        <linearGradient id="accGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" style="stop-color:#2f855a"/>
+                          <stop offset="100%" style="stop-color:#2f855a; stop-opacity:0"/>
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 学习率曲线 -->
+              <div class="monitor-card" style="margin-bottom:16px;">
+                <div class="monitor-card-body" style="padding:14px;">
+                  <div class="mini-chart-title">
+                    <span>学习率变化</span>
+                    <span class="val" style="color:var(--info); font-size:12px;">2.0e-4 → 1.2e-4</span>
+                  </div>
+                  <svg width="100%" height="70" viewBox="0 0 640 70">
+                    <line x1="0" y1="10" x2="640" y2="10" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3"/>
+                    <line x1="0" y1="40" x2="640" y2="40" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="3,3"/>
+                    <line x1="0" y1="60" x2="640" y2="60" stroke="#e2e8f0" stroke-width="1"/>
+                    <!-- 预热+衰减 -->
+                    <path d="M0,60 L60,12 L120,12 L200,18 L300,28 L400,38 L500,48 L640,55" 
+                          fill="none" stroke="#2b6cb0" stroke-width="2"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- 终端日志 -->
+              <div class="monitor-card">
+                <div class="monitor-card-header">
+                  <div class="monitor-card-title">训练日志</div>
+                  <span class="table-action-link">下载日志</span>
+                </div>
+                <div class="monitor-card-body" style="padding:0;">
+                  <div class="terminal-log" style="border-radius:0 0 10px 10px;">
+                    <div class="log-line"><span class="log-time">[10:24:35]</span> <span class="log-info">[INFO]</span> Loading dataset: 政务问答训练集 v2.1</div>
+                    <div class="log-line"><span class="log-time">[10:24:36]</span> <span class="log-info">[INFO]</span> Train samples: 11,520 | Eval samples: 1,280</div>
+                    <div class="log-line"><span class="log-time">[10:24:38]</span> <span class="log-info">[INFO]</span> Initializing model: Qwen-7B + LoRA</div>
+                    <div class="log-line"><span class="log-time">[10:24:45]</span> <span class="log-success">[SUCCESS]</span> Model loaded successfully</div>
+                    <div class="log-line"><span class="log-time">[10:24:46]</span> <span class="log-info">[INFO]</span> Training started: Epoch 1/3</div>
+                    <div class="log-line"><span class="log-time">[10:45:12]</span> <span class="log-success">[SUCCESS]</span> Epoch 1 completed. Loss: 0.8542 Acc: 78.2%</div>
+                    <div class="log-line"><span class="log-time">[10:45:15]</span> <span class="log-info">[INFO]</span> Training started: Epoch 2/3</div>
+                    <div class="log-line"><span class="log-time">[11:02:30]</span> <span class="log-warn">[WARN]</span> GPU memory usage: 89% (high)</div>
+                    <div class="log-line"><span class="log-time">[11:05:48]</span> <span class="log-info">[INFO]</span> Step 1,856/3,200 - loss: 0.2486</div>
+                    <div class="log-line"><span class="log-time">[11:06:00]</span> <span class="log-info">[INFO]</span> Eval accuracy: 92.4% (improved)</div>
+                    <div class="log-line"><span class="log-time">[11:06:15]</span> <span class="log-info">[INFO]</span> Saving checkpoint... </div>
+                    <div class="log-line" style="border-left:2px solid #d4af37; padding-left:8px; margin-top:8px; animation: blink 1s infinite;">
+                      <span class="log-time">[11:06:20]</span> <span class="log-info">[INFO]</span> Training in progress...
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 预计剩余时间 -->
+              <div style="background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(196,30,58,0.05)); border:1px solid rgba(212,175,55,0.3); border-radius: var(--radius-md); padding: 16px 20px; display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                  <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">预计剩余时间</div>
+                  <div style="font-size:20px; font-weight:700; color:var(--accent-gold); font-family:'DIN',Arial,sans-serif;">1小时 42分钟</div>
+                </div>
+                <div style="font-size:36px;">⏱</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: 微调优化 -->
+        <div class="tab-pane" id="tab-optimize">
+          <!-- 优化任务列表 -->
+          <div class="card mb-20">
+            <div class="card-header">
+              <div class="card-title">优化任务列表</div>
+              <div class="flex items-center gap-8">
+                <button class="btn btn-primary btn-sm">+ 新建优化</button>
+              </div>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>任务名称</th>
+                    <th>基础模型</th>
+                    <th>优化类型</th>
+                    <th>准确率提升</th>
+                    <th>开始时间</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight:500;">政务问答优化-v3</td>
+                    <td>Qwen-7B-LoRA</td>
+                    <td><span class="tag tag-blue">超参搜索</span></td>
+                    <td style="color:var(--success); font-weight:600;">+3.2%</td>
+                    <td>2026-08-17 14:30</td>
+                    <td><span class="badge badge-green">已完成</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <span class="table-action-link">查看详情</span>
+                        <span class="table-action-link">对比</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:500;">党建知识蒸馏实验</td>
+                    <td>Qwen-14B→7B</td>
+                    <td><span class="tag tag-gold">知识蒸馏</span></td>
+                    <td style="color:var(--success); font-weight:600;">+5.8%</td>
+                    <td>2026-08-16 09:00</td>
+                    <td><span class="badge badge-green">已完成</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <span class="table-action-link">查看详情</span>
+                        <span class="table-action-link">对比</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:500;">LoRA秩参数优化</td>
+                    <td>Qwen-7B</td>
+                    <td><span class="tag tag-red">结构优化</span></td>
+                    <td style="color:var(--success); font-weight:600;">+2.1%</td>
+                    <td>2026-08-15 16:45</td>
+                    <td><span class="badge badge-green">已完成</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <span class="table-action-link">查看详情</span>
+                        <span class="table-action-link">对比</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:500;">数据增强优化</td>
+                    <td>Qwen-7B-LoRA</td>
+                    <td><span class="tag tag-green">数据优化</span></td>
+                    <td style="color:var(--warning); font-weight:600;">进行中</td>
+                    <td>2026-08-18 08:00</td>
+                    <td><span class="badge badge-orange">运行中</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <span class="table-action-link">查看进度</span>
+                        <span class="table-action-link danger">终止</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 模型对比区 -->
+          <div class="section-title">模型对比分析<span class="section-subtitle">基础模型 vs 微调后模型</span></div>
+          <div class="model-compare mb-20">
+            <!-- 基础模型 -->
+            <div class="model-compare-card">
+              <h4 style="color:var(--text-muted);">📘 基础模型</h4>
+              <div style="font-size:16px; font-weight:600; margin-bottom:12px;">Qwen-7B</div>
+              <div class="metric-row">
+                <span class="metric-label">准确率</span>
+                <span class="metric-value">86.2%</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">召回率</span>
+                <span class="metric-value">82.5%</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">F1分数</span>
+                <span class="metric-value">84.3%</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">推理速度</span>
+                <span class="metric-value good">32 tokens/s</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">资源占用</span>
+                <span class="metric-value good">14GB</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">稳定性</span>
+                <span class="metric-value">98.5%</span>
+              </div>
+            </div>
+
+            <!-- 雷达图 -->
+            <div class="radar-chart-box">
+              <h4>性能雷达图</h4>
+              <svg width="100%" height="260" viewBox="0 0 260 260">
+                <!-- 雷达网格 -->
+                <g transform="translate(130, 130)">
+                  <!-- 多边形网格 -->
+                  <polygon points="0,-100 87,-50 87,50 0,100 -87,50 -87,-50" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                  <polygon points="0,-75 65,-37 65,37 0,75 -65,37 -65,-37" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                  <polygon points="0,-50 43,-25 43,25 0,50 -43,25 -43,-25" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                  <polygon points="0,-25 22,-12 22,12 0,25 -22,12 -22,-12" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                  <!-- 轴线 -->
+                  <line x1="0" y1="0" x2="0" y2="-100" stroke="#e2e8f0" stroke-width="1"/>
+                  <line x1="0" y1="0" x2="87" y2="-50" stroke="#e2e8f0" stroke-width="1"/>
+                  <line x1="0" y1="0" x2="87" y2="50" stroke="#e2e8f0" stroke-width="1"/>
+                  <line x1="0" y1="0" x2="0" y2="100" stroke="#e2e8f0" stroke-width="1"/>
+                  <line x1="0" y1="0" x2="-87" y2="50" stroke="#e2e8f0" stroke-width="1"/>
+                  <line x1="0" y1="0" x2="-87" y2="-50" stroke="#e2e8f0" stroke-width="1"/>
+                  
+                  <!-- 基础模型区域 -->
+                  <polygon points="0,-80 72,-41 70,40 0,82 -72,42 -70,-43" 
+                           fill="rgba(113,128,150,0.15)" stroke="#718096" stroke-width="2"/>
+                  
+                  <!-- 微调后模型区域 -->
+                  <polygon points="0,-92 82,-47 80,46 0,94 -82,45 -80,-48" 
+                           fill="rgba(196,30,58,0.2)" stroke="#c41e3a" stroke-width="2"/>
+                  
+                  <!-- 数据点 -->
+                  <circle cx="0" cy="-92" r="4" fill="#c41e3a"/>
+                  <circle cx="82" cy="-47" r="4" fill="#c41e3a"/>
+                  <circle cx="80" cy="46" r="4" fill="#c41e3a"/>
+                  <circle cx="0" cy="94" r="4" fill="#c41e3a"/>
+                  <circle cx="-82" cy="45" r="4" fill="#c41e3a"/>
+                  <circle cx="-80" cy="-48" r="4" fill="#c41e3a"/>
+                  
+                  <!-- 标签 -->
+                  <text x="0" y="-112" text-anchor="middle" font-size="11" fill="#4a5568" font-weight="600">准确率</text>
+                  <text x="108" y="-50" text-anchor="start" font-size="11" fill="#4a5568" font-weight="600">召回率</text>
+                  <text x="108" y="56" text-anchor="start" font-size="11" fill="#4a5568" font-weight="600">F1分数</text>
+                  <text x="0" y="118" text-anchor="middle" font-size="11" fill="#4a5568" font-weight="600">推理速度</text>
+                  <text x="-108" y="56" text-anchor="end" font-size="11" fill="#4a5568" font-weight="600">资源占用</text>
+                  <text x="-108" y="-50" text-anchor="end" font-size="11" fill="#4a5568" font-weight="600">稳定性</text>
+                </g>
+                
+                <!-- 图例 -->
+                <g transform="translate(60, 240)">
+                  <rect x="0" y="0" width="16" height="3" fill="#718096" rx="1.5"/>
+                  <text x="22" y="5" font-size="11" fill="#718096">基础模型</text>
+                  <rect x="80" y="0" width="16" height="3" fill="#c41e3a" rx="1.5"/>
+                  <text x="102" y="5" font-size="11" fill="#c41e3a" font-weight="600">微调后</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 微调后模型 -->
+            <div class="model-compare-card">
+              <h4 style="color:var(--accent-red);">📕 微调后模型</h4>
+              <div style="font-size:16px; font-weight:600; margin-bottom:12px;">政务问答-v3 (LoRA)</div>
+              <div class="metric-row">
+                <span class="metric-label">准确率</span>
+                <span class="metric-value good">92.4% <span style="font-size:11px;">↑6.2</span></span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">召回率</span>
+                <span class="metric-value good">89.6% <span style="font-size:11px;">↑7.1</span></span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">F1分数</span>
+                <span class="metric-value good">91.0% <span style="font-size:11px;">↑6.7</span></span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">推理速度</span>
+                <span class="metric-value">30 tokens/s <span style="font-size:11px; color:var(--danger);">↓2</span></span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">资源占用</span>
+                <span class="metric-value">14.5GB <span style="font-size:11px; color:var(--danger);">↑0.5</span></span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">稳定性</span>
+                <span class="metric-value good">99.2% <span style="font-size:11px;">↑0.7</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 智能优化建议 -->
+          <div class="suggestion-card">
+            <div class="suggestion-title">
+              <span style="font-size:20px;">🤖</span>
+              AI 智能优化建议
+            </div>
+            <ul class="suggestion-list">
+              <li>建议将学习率调整为 1.5e-4，当前学习率略高，可能导致后期震荡</li>
+              <li>LoRA秩建议从 8 增加到 16，可提升约 1.5% 的准确率，显存增加约 800MB</li>
+              <li>训练数据中政务问答类样本占比过高，建议补充更多党建历史类数据</li>
+              <li>可尝试加入权重衰减 0.05，有助于提高模型泛化能力</li>
+              <li>建议使用余弦退火学习率调度器替代固定学习率，预计可提升 0.8-1.2%</li>
+            </ul>
+            <div style="margin-top:14px; text-align:right;">
+              <button class="btn btn-gold btn-sm">✨ 一键应用优化建议</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: 模型管理 -->
+        <div class="tab-pane" id="tab-manage">
+          <!-- 筛选栏 -->
+          <div class="filter-bar">
+            <div class="filter-left">
+              <select class="filter-select">
+                <option>全部类型</option>
+                <option>基础模型</option>
+                <option>微调模型</option>
+                <option>LoRA适配器</option>
+              </select>
+              <select class="filter-select">
+                <option>全部状态</option>
+                <option>已部署</option>
+                <option>训练中</option>
+                <option>已归档</option>
+              </select>
+            </div>
+            <div class="filter-right">
+              <button class="btn btn-primary btn-sm">+ 导入模型</button>
+            </div>
+          </div>
+
+          <!-- 模型卡片网格 -->
+          <div class="model-grid">
+            <div class="model-card">
+              <div class="model-card-header">
+                <div>
+                  <div class="model-name">政务问答微调模型</div>
+                  <div class="model-version">v3.0.0 · Qwen-7B-LoRA</div>
+                </div>
+                <div class="model-icon">🤖</div>
+              </div>
+              <div class="model-stats">
+                <div class="model-stat">
+                  <div class="model-stat-value">7B</div>
+                  <div class="model-stat-label">参数量</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">12.8K</div>
+                  <div class="model-stat-label">训练数据</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">LoRA</div>
+                  <div class="model-stat-label">微调方式</div>
+                </div>
+              </div>
+              <div class="model-tags">
+                <span class="badge badge-green">已部署</span>
+                <span class="tag tag-red">政务领域</span>
+                <span class="tag tag-gold">准确率 92.4%</span>
+              </div>
+              <div class="model-footer">
+                <span class="model-date">创建于 2026-08-17</span>
+                <div class="table-actions">
+                  <span class="table-action-link">部署</span>
+                  <span class="table-action-link">详情</span>
+                  <span class="table-action-link">微调</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="model-card">
+              <div class="model-card-header">
+                <div>
+                  <div class="model-name">党建知识模型</div>
+                  <div class="model-version">v2.1.0 · Qwen-14B-LoRA</div>
+                </div>
+                <div class="model-icon">📚</div>
+              </div>
+              <div class="model-stats">
+                <div class="model-stat">
+                  <div class="model-stat-value">14B</div>
+                  <div class="model-stat-label">参数量</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">8.6K</div>
+                  <div class="model-stat-label">训练数据</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">LoRA</div>
+                  <div class="model-stat-label">微调方式</div>
+                </div>
+              </div>
+              <div class="model-tags">
+                <span class="badge badge-green">已部署</span>
+                <span class="tag tag-blue">党建领域</span>
+                <span class="tag tag-gold">准确率 95.1%</span>
+              </div>
+              <div class="model-footer">
+                <span class="model-date">创建于 2026-08-10</span>
+                <div class="table-actions">
+                  <span class="table-action-link">部署</span>
+                  <span class="table-action-link">详情</span>
+                  <span class="table-action-link">微调</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="model-card">
+              <div class="model-card-header">
+                <div>
+                  <div class="model-name">企业服务模型</div>
+                  <div class="model-version">v1.5.0 · Qwen-7B-LoRA</div>
+                </div>
+                <div class="model-icon">🏢</div>
+              </div>
+              <div class="model-stats">
+                <div class="model-stat">
+                  <div class="model-stat-value">7B</div>
+                  <div class="model-stat-label">参数量</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">15.2K</div>
+                  <div class="model-stat-label">训练数据</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">QLoRA</div>
+                  <div class="model-stat-label">微调方式</div>
+                </div>
+              </div>
+              <div class="model-tags">
+                <span class="badge badge-green">已部署</span>
+                <span class="tag tag-green">企业服务</span>
+                <span class="tag tag-gold">准确率 89.7%</span>
+              </div>
+              <div class="model-footer">
+                <span class="model-date">创建于 2026-07-28</span>
+                <div class="table-actions">
+                  <span class="table-action-link">部署</span>
+                  <span class="table-action-link">详情</span>
+                  <span class="table-action-link">微调</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="model-card">
+              <div class="model-card-header">
+                <div>
+                  <div class="model-name">通义千问-7B 基础</div>
+                  <div class="model-version">v1.0.0 · 原始模型</div>
+                </div>
+                <div class="model-icon" style="background:linear-gradient(135deg, rgba(113,128,150,0.12), rgba(113,128,150,0.05));">🧠</div>
+              </div>
+              <div class="model-stats">
+                <div class="model-stat">
+                  <div class="model-stat-value">7B</div>
+                  <div class="model-stat-label">参数量</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">--</div>
+                  <div class="model-stat-label">训练数据</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">--</div>
+                  <div class="model-stat-label">微调方式</div>
+                </div>
+              </div>
+              <div class="model-tags">
+                <span class="badge badge-blue">基础模型</span>
+                <span class="tag">通用领域</span>
+              </div>
+              <div class="model-footer">
+                <span class="model-date">导入于 2026-06-01</span>
+                <div class="table-actions">
+                  <span class="table-action-link">部署</span>
+                  <span class="table-action-link">详情</span>
+                  <span class="table-action-link">微调</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="model-card">
+              <div class="model-card-header">
+                <div>
+                  <div class="model-name">人才政策模型</div>
+                  <div class="model-version">v1.2.0 · Qwen-7B-LoRA</div>
+                </div>
+                <div class="model-icon">👥</div>
+              </div>
+              <div class="model-stats">
+                <div class="model-stat">
+                  <div class="model-stat-value">7B</div>
+                  <div class="model-stat-label">参数量</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">6.8K</div>
+                  <div class="model-stat-label">训练数据</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">P-tuning</div>
+                  <div class="model-stat-label">微调方式</div>
+                </div>
+              </div>
+              <div class="model-tags">
+                <span class="badge badge-orange">训练中</span>
+                <span class="tag tag-orange">人才服务</span>
+              </div>
+              <div class="model-footer">
+                <span class="model-date">创建于 2026-08-18</span>
+                <div class="table-actions">
+                  <span class="table-action-link">查看进度</span>
+                  <span class="table-action-link">详情</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="model-card">
+              <div class="model-card-header">
+                <div>
+                  <div class="model-name">活动推荐模型</div>
+                  <div class="model-version">v1.0.0 · Qwen-7B-LoRA</div>
+                </div>
+                <div class="model-icon">🎯</div>
+              </div>
+              <div class="model-stats">
+                <div class="model-stat">
+                  <div class="model-stat-value">7B</div>
+                  <div class="model-stat-label">参数量</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">4.2K</div>
+                  <div class="model-stat-label">训练数据</div>
+                </div>
+                <div class="model-stat">
+                  <div class="model-stat-value">LoRA</div>
+                  <div class="model-stat-label">微调方式</div>
+                </div>
+              </div>
+              <div class="model-tags">
+                <span class="badge" style="background:#a0aec0; color:#fff;">已归档</span>
+                <span class="tag">活动推荐</span>
+              </div>
+              <div class="model-footer">
+                <span class="model-date">创建于 2026-07-15</span>
+                <div class="table-actions">
+                  <span class="table-action-link">恢复</span>
+                  <span class="table-action-link">详情</span>
+                  <span class="table-action-link danger">删除</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pagination">
+            <div class="pagination-item">‹</div>
+            <div class="pagination-item active">1</div>
+            <div class="pagination-item">2</div>
+            <div class="pagination-item">›</div>
+          </div>
+        </div>
+            </main>
+    </div>
+  </div>
+
+  <script>
+    // Tab 切换
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', function() {
+        const target = this.dataset.tab;
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById(target).classList.add('active');
+      });
+    });
+
+    // 微调类型选择
+    document.querySelectorAll('.finetype-option').forEach(opt => {
+      opt.addEventListener('click', function() {
+        document.querySelectorAll('.finetype-option').forEach(o => o.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // 导航菜单展开
+    document.querySelectorAll('.nav-group > .nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        const group = this.closest('.nav-group');
+        if (group) {
+          group.classList.toggle('expanded');
+        }
+      });
+    });
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
+
