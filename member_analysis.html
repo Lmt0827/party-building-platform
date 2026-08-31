@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>党员数据分析 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* 页面特有样式 */
+    .age-bar .bar:nth-child(2) { height: 45px; }
+    .age-bar .bar:nth-child(4) { height: 85px; }
+    .age-bar .bar:nth-child(6) { height: 120px; }
+    .age-bar .bar:nth-child(8) { height: 160px; }
+    .age-bar .bar:nth-child(10) { height: 140px; }
+    .age-bar .bar:nth-child(12) { height: 95px; }
+
+    /* 年龄分布列表 */
+    .age-dist-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .age-dist-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .age-dist-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .age-label {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .age-value {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+    .age-value em {
+      font-style: normal;
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    .age-dist-bar {
+      height: 8px;
+      background: var(--bg-light);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .age-dist-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .table-female-col {
+      min-width: 160px;
+    }
+    
+    .female-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .female-progress-wrap .progress {
+      flex: 1;
+      min-width: 80px;
+    }
+    
+    .female-progress-wrap .progress-value {
+      font-size: 12px;
+      color: var(--gold-500);
+      font-weight: 600;
+      min-width: 40px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html" class="active">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="index.html">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="member.html">党员管理</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">党员分析</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+        <!-- 筛选栏 -->
+        <div class="filter-bar">
+          <div class="filter-item">
+            <span class="filter-label">时间范围：</span>
+            <select class="filter-select">
+              <option>2024年度</option>
+              <option>2023年度</option>
+              <option>近一年</option>
+              <option>近半年</option>
+              <option>近三个月</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button class="btn btn-secondary">重置</button>
+            <button class="btn btn-primary">查询</button>
+            <button class="btn btn-gold">⬇ 导出</button>
+          </div>
+        </div>
+
+        <!-- KPI 卡片 -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">党员总数</div>
+            <div class="kpi-value gold">28,560</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +4.8%</span>
+            </div>
+          </div>
+          <div class="kpi-card gold">
+            <div class="kpi-label">正式党员</div>
+            <div class="kpi-value">26,128</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +3.2%</span>
+            </div>
+          </div>
+          <div class="kpi-card blue">
+            <div class="kpi-label">预备党员</div>
+            <div class="kpi-value">2,432</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +8.5%</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">发展对象</div>
+            <div class="kpi-value blue">1,856</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +12.1%</span>
+            </div>
+          </div>
+          <div class="kpi-card gold">
+            <div class="kpi-label">积极分子</div>
+            <div class="kpi-value red">3,240</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +15.6%</span>
+            </div>
+          </div>
+          <div class="kpi-card blue">
+            <div class="kpi-label">女性党员占比</div>
+            <div class="kpi-value gold">38.6%</div>
+            <div class="kpi-trend">
+              <span class="arrow">▲</span>
+              <span>较上年 +1.2%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 上排图表：3列 -->
+        <div class="chart-row cols-3">
+          <!-- 年龄结构分布 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">党员年龄结构分布</div>
+              <span class="card-extra">总计 25,860 人</span>
+            </div>
+            <div class="chart-container" style="padding-top: 8px;">
+              <div class="age-dist-list">
+                <div class="age-dist-item">
+                  <div class="age-dist-head">
+                    <span class="age-label">25岁以下</span>
+                    <span class="age-value">1,280 人 <em>5.0%</em></span>
+                  </div>
+                  <div class="age-dist-bar">
+                    <div class="age-dist-fill" style="width: 5%; background: #3b82f6;"></div>
+                  </div>
+                </div>
+                <div class="age-dist-item">
+                  <div class="age-dist-head">
+                    <span class="age-label">26-35岁</span>
+                    <span class="age-value">2,450 人 <em>9.5%</em></span>
+                  </div>
+                  <div class="age-dist-bar">
+                    <div class="age-dist-fill" style="width: 9.5%; background: #10b981;"></div>
+                  </div>
+                </div>
+                <div class="age-dist-item">
+                  <div class="age-dist-head">
+                    <span class="age-label">36-45岁</span>
+                    <span class="age-value">3,560 人 <em>13.8%</em></span>
+                  </div>
+                  <div class="age-dist-bar">
+                    <div class="age-dist-fill" style="width: 13.8%; background: #f0c14b;"></div>
+                  </div>
+                </div>
+                <div class="age-dist-item">
+                  <div class="age-dist-head">
+                    <span class="age-label">46-55岁</span>
+                    <span class="age-value">7,820 人 <em>30.2%</em></span>
+                  </div>
+                  <div class="age-dist-bar">
+                    <div class="age-dist-fill" style="width: 30.2%; background: #ef4444;"></div>
+                  </div>
+                </div>
+                <div class="age-dist-item">
+                  <div class="age-dist-head">
+                    <span class="age-label">56-65岁</span>
+                    <span class="age-value">6,540 人 <em>25.3%</em></span>
+                  </div>
+                  <div class="age-dist-bar">
+                    <div class="age-dist-fill" style="width: 25.3%; background: #8b5cf6;"></div>
+                  </div>
+                </div>
+                <div class="age-dist-item">
+                  <div class="age-dist-head">
+                    <span class="age-label">66岁以上</span>
+                    <span class="age-value">4,210 人 <em>16.3%</em></span>
+                  </div>
+                  <div class="age-dist-bar">
+                    <div class="age-dist-fill" style="width: 16.3%; background: #64748b;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 学历分布饼图 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">党员学历分布</div>
+              <span class="card-extra">占比分析</span>
+            </div>
+            <div class="chart-container" style="display: flex; flex-direction: column; justify-content: center;">
+              <div class="css-chart-pie">
+                <svg class="pie-svg" viewBox="0 0 100 100">
+                  <!-- 博士 3.5% = 12.6° -->
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#f0c14b" stroke-width="16"
+                    stroke-dasharray="12.6 238.6" stroke-dashoffset="0" />
+                  <!-- 硕士 10.2% = 36.7°  offset=12.6 -->
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#ef4444" stroke-width="16"
+                    stroke-dasharray="36.7 214.5" stroke-dashoffset="-12.6" />
+                  <!-- 本科 38.6% = 139°  offset=49.3 -->
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#3b82f6" stroke-width="16"
+                    stroke-dasharray="139 112.2" stroke-dashoffset="-49.3" />
+                  <!-- 大专 25.8% = 92.9°  offset=188.3 -->
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#10b981" stroke-width="16"
+                    stroke-dasharray="92.9 158.3" stroke-dashoffset="-188.3" />
+                  <!-- 高中/中专 14.9% = 53.6°  offset=281.2 -->
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#8b5cf6" stroke-width="16"
+                    stroke-dasharray="53.6 197.6" stroke-dashoffset="-281.2" />
+                  <!-- 初中及以下 7% = 25.2° -->
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#64748b" stroke-width="16"
+                    stroke-dasharray="25.2 226" stroke-dashoffset="-334.8" />
+                </svg>
+                <div class="pie-center">
+                  <div class="pie-center-value">28,560</div>
+                  <div class="pie-center-label">党员总数</div>
+                </div>
+              </div>
+              <div class="pie-legend">
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#f0c14b;"></span>
+                  <span>博士 3.5%</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#ef4444;"></span>
+                  <span>硕士 10.2%</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#3b82f6;"></span>
+                  <span>本科 38.6%</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#10b981;"></span>
+                  <span>大专 25.8%</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#8b5cf6;"></span>
+                  <span>高中/中专 14.9%</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#64748b;"></span>
+                  <span>初中及以下 7.0%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 党员类型环形图 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">党员类型分布</div>
+              <span class="card-extra">结构占比</span>
+            </div>
+            <div class="chart-container" style="display: flex; flex-direction: column; justify-content: center;">
+              <div class="css-chart-pie">
+                <svg class="pie-svg" viewBox="0 0 100 100">
+                  <!-- 正式党员 91.4% = 329° -->
+                  <circle cx="50" cy="50" r="35" fill="none" stroke="#e53935" stroke-width="10"
+                    stroke-dasharray="329 121.6" stroke-dashoffset="0" />
+                  <!-- 预备党员 8.5% = 30.6°  offset=329 -->
+                  <circle cx="50" cy="50" r="35" fill="none" stroke="#f0c14b" stroke-width="10"
+                    stroke-dasharray="30.6 419.6" stroke-dashoffset="-329" />
+                  <!-- 其他 0.1% 忽略 -->
+                </svg>
+                <div class="pie-center">
+                  <div class="pie-center-value" style="font-size: 20px;">28,560</div>
+                  <div class="pie-center-label">党员总人数</div>
+                </div>
+              </div>
+              <div class="pie-legend">
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#e53935;"></span>
+                  <span>正式党员 26,128 (91.4%)</span>
+                </div>
+                <div class="pie-legend-item">
+                  <span class="pie-legend-dot" style="background:#f0c14b;"></span>
+                  <span>预备党员 2,432 (8.5%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 中排图表：2列 -->
+        <div class="chart-row cols-2">
+          <!-- 发展趋势折线图 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">党员发展趋势</div>
+              <span class="card-extra">近5年数据</span>
+            </div>
+            <div class="chart-container">
+              <div class="css-chart-line">
+                <div class="line-legend">
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#f0c14b;"></span>
+                    <span>积极分子</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#ef4444;"></span>
+                    <span>发展对象</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#3b82f6;"></span>
+                    <span>预备党员</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-dot" style="background:#10b981;"></span>
+                    <span>正式党员</span>
+                  </div>
+                </div>
+                <div class="chart-grid">
+                  <div class="grid-line" data-value="8000"></div>
+                  <div class="grid-line" data-value="6000"></div>
+                  <div class="grid-line" data-value="4000"></div>
+                  <div class="grid-line" data-value="2000"></div>
+                  <div class="grid-line" data-value="0"></div>
+                </div>
+                <div class="chart-xaxis">
+                  <span class="xaxis-label">2020</span>
+                  <span class="xaxis-label">2021</span>
+                  <span class="xaxis-label">2022</span>
+                  <span class="xaxis-label">2023</span>
+                  <span class="xaxis-label">2024</span>
+                </div>
+                <svg class="chart-svg" viewBox="0 0 400 200" preserveAspectRatio="none">
+                  <!-- 积极分子 (金色) -->
+                  <polyline fill="none" stroke="#f0c14b" stroke-width="2"
+                    points="0,150 100,135 200,120 300,105 400,90" />
+                  <circle cx="0" cy="150" r="3" fill="#f0c14b" />
+                  <circle cx="100" cy="135" r="3" fill="#f0c14b" />
+                  <circle cx="200" cy="120" r="3" fill="#f0c14b" />
+                  <circle cx="300" cy="105" r="3" fill="#f0c14b" />
+                  <circle cx="400" cy="90" r="3" fill="#f0c14b" />
+                  
+                  <!-- 发展对象 (红色) -->
+                  <polyline fill="none" stroke="#ef4444" stroke-width="2"
+                    points="0,170 100,160 200,148 300,135 400,120" />
+                  <circle cx="0" cy="170" r="3" fill="#ef4444" />
+                  <circle cx="100" cy="160" r="3" fill="#ef4444" />
+                  <circle cx="200" cy="148" r="3" fill="#ef4444" />
+                  <circle cx="300" cy="135" r="3" fill="#ef4444" />
+                  <circle cx="400" cy="120" r="3" fill="#ef4444" />
+                  
+                  <!-- 预备党员 (蓝色) -->
+                  <polyline fill="none" stroke="#3b82f6" stroke-width="2"
+                    points="0,160 100,150 200,140 300,130 400,118" />
+                  <circle cx="0" cy="160" r="3" fill="#3b82f6" />
+                  <circle cx="100" cy="150" r="3" fill="#3b82f6" />
+                  <circle cx="200" cy="140" r="3" fill="#3b82f6" />
+                  <circle cx="300" cy="130" r="3" fill="#3b82f6" />
+                  <circle cx="400" cy="118" r="3" fill="#3b82f6" />
+                  
+                  <!-- 正式党员 (绿色) - 数量大，用不同比例 -->
+                  <polyline fill="none" stroke="#10b981" stroke-width="2"
+                    points="0,60 100,48 200,38 300,25 400,15" />
+                  <circle cx="0" cy="60" r="3" fill="#10b981" />
+                  <circle cx="100" cy="48" r="3" fill="#10b981" />
+                  <circle cx="200" cy="38" r="3" fill="#10b981" />
+                  <circle cx="300" cy="25" r="3" fill="#10b981" />
+                  <circle cx="400" cy="15" r="3" fill="#10b981" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- 党组织党员发展数量排行 Top5 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">党组织党员发展数量排行 TOP5</div>
+              <span class="card-extra">按发展对象数量排序</span>
+            </div>
+            <div class="chart-container">
+              <div class="css-chart-hbar">
+                <div class="hbar-row">
+                  <span class="hbar-rank top1">1</span>
+                  <span class="hbar-label">高新区党工委</span>
+                  <div class="hbar-track">
+                    <div class="hbar-fill gold" style="width: 95%;"></div>
+                    <span class="hbar-value">285</span>
+                  </div>
+                </div>
+                <div class="hbar-row">
+                  <span class="hbar-rank top2">2</span>
+                  <span class="hbar-label">经开区党工委</span>
+                  <div class="hbar-track">
+                    <div class="hbar-fill gold" style="width: 77%;"></div>
+                    <span class="hbar-value">220</span>
+                  </div>
+                </div>
+                <div class="hbar-row">
+                  <span class="hbar-rank top3">3</span>
+                  <span class="hbar-label">国企党委</span>
+                  <div class="hbar-track">
+                    <div class="hbar-fill" style="width: 68%;"></div>
+                    <span class="hbar-value">195</span>
+                  </div>
+                </div>
+                <div class="hbar-row">
+                  <span class="hbar-rank">4</span>
+                  <span class="hbar-label">教育系统党委</span>
+                  <div class="hbar-track">
+                    <div class="hbar-fill" style="width: 63%;"></div>
+                    <span class="hbar-value">180</span>
+                  </div>
+                </div>
+                <div class="hbar-row">
+                  <span class="hbar-rank">5</span>
+                  <span class="hbar-label">卫生系统党委</span>
+                  <div class="hbar-track">
+                    <div class="hbar-fill" style="width: 56%;"></div>
+                    <span class="hbar-value">160</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部表格 -->
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="table-toolbar-title">各党组织党员分布详情</div>
+            <div class="table-toolbar-actions">
+              <button class="btn btn-secondary">⬇ 导出Excel</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>党组织名称</th>
+                  <th>党员总数</th>
+                  <th>正式党员</th>
+                  <th>预备党员</th>
+                  <th>发展对象</th>
+                  <th>积极分子</th>
+                  <th class="table-female-col">女党员占比</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>高新区党工委</td>
+                  <td class="text-gold font-bold">3,850</td>
+                  <td>3,520</td>
+                  <td>330</td>
+                  <td>285</td>
+                  <td>520</td>
+                  <td class="table-female-col">
+                    <div class="female-progress-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 42.5%;"></div>
+                      </div>
+                      <span class="progress-value">42.5%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>经开区党工委</td>
+                  <td class="text-gold font-bold">3,320</td>
+                  <td>3,050</td>
+                  <td>270</td>
+                  <td>220</td>
+                  <td>410</td>
+                  <td class="table-female-col">
+                    <div class="female-progress-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 36.8%;"></div>
+                      </div>
+                      <span class="progress-value">36.8%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>国企党委</td>
+                  <td class="text-gold font-bold">3,050</td>
+                  <td>2,820</td>
+                  <td>230</td>
+                  <td>195</td>
+                  <td>350</td>
+                  <td class="table-female-col">
+                    <div class="female-progress-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 32.1%;"></div>
+                      </div>
+                      <span class="progress-value">32.1%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>教育系统党委</td>
+                  <td class="text-gold font-bold">2,760</td>
+                  <td>2,540</td>
+                  <td>220</td>
+                  <td>180</td>
+                  <td>320</td>
+                  <td class="table-female-col">
+                    <div class="female-progress-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 52.3%;"></div>
+                      </div>
+                      <span class="progress-value">52.3%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>卫生系统党委</td>
+                  <td class="text-gold font-bold">2,440</td>
+                  <td>2,250</td>
+                  <td>190</td>
+                  <td>160</td>
+                  <td>280</td>
+                  <td class="table-female-col">
+                    <div class="female-progress-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 58.6%;"></div>
+                      </div>
+                      <span class="progress-value">58.6%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>街道党工委</td>
+                  <td class="text-gold font-bold">2,120</td>
+                  <td>1,960</td>
+                  <td>160</td>
+                  <td>135</td>
+                  <td>240</td>
+                  <td class="table-female-col">
+                    <div class="female-progress-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 45.2%;"></div>
+                      </div>
+                      <span class="progress-value">45.2%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>两新组织党委</td>
+                  <td class="text-gold font-bold">1,830</td>
+                  <td>1,680</td>
+                  <td>150</td>
+                  <td>120</td>
+                  <td>220</td>
+                  <td class="table-female-col">
+                    <div class="female-progress-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 34.7%;"></div>
+                      </div>
+                      <span class="progress-value">34.7%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>机关党委</td>
+                  <td class="text-gold font-bold">1,550</td>
+                  <td>1,450</td>
+                  <td>100</td>
+                  <td>85</td>
+                  <td>160</td>
+                  <td class="table-female-col">
+                    <div class="female-progress-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 38.4%;"></div>
+                      </div>
+                      <span class="progress-value">38.4%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>农委党委</td>
+                  <td class="text-gold font-bold">1,300</td>
+                  <td>1,200</td>
+                  <td>100</td>
+                  <td>75</td>
+                  <td>140</td>
+                  <td class="table-female-col">
+                    <div class="female-progress-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 28.9%;"></div>
+                      </div>
+                      <span class="progress-value">28.9%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>文旅系统党委</td>
+                  <td class="text-gold font-bold">1,060</td>
+                  <td>980</td>
+                  <td>80</td>
+                  <td>65</td>
+                  <td>120</td>
+                  <td class="table-female-col">
+                    <div class="female-progress-wrap">
+                      <div class="progress">
+                        <div class="progress-bar" style="width: 48.2%;"></div>
+                      </div>
+                      <span class="progress-value">48.2%</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <div class="pagination-info">共 156 条记录，当前第 1 / 16 页</div>
+            <div class="pagination-nav">
+              <button class="page-btn" disabled>上一页</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <button class="page-btn">4</button>
+              <button class="page-btn">5</button>
+              <span class="text-muted">...</span>
+              <button class="page-btn">16</button>
+              <button class="page-btn">下一页</button>
+            </div>
+            <div class="page-size">
+              <span>每页</span>
+              <select>
+                <option>10</option>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+              </select>
+              <span>条</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    // KPI卡片点击跳转
+    document.querySelectorAll('.kpi-card').forEach(function(card) {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', function() {
+        var label = this.querySelector('.kpi-label')?.textContent || '';
+        if (label.includes('党员总数') || label.includes('发展')) {
+          window.location.href = 'member.html';
+        } else if (label.includes('培养') || label.includes('积极分子')) {
+          window.location.href = 'member_development.html';
+        }
+      });
+    });
+
+    // 表格内"查看/详情"按钮跳转
+    document.querySelectorAll('.table-actions .btn-link, .table-actions button.btn-link').forEach(function(btn) {
+      btn.style.cursor = 'pointer';
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var text = this.textContent.trim();
+        var row = this.closest('tr');
+        var name = row?.querySelector('td:nth-child(2)')?.textContent?.trim() || '未知';
+        if (text === '查看' || text === '详情') {
+          alert('查看详情：' + name);
+        } else if (text === '分析') {
+          window.location.href = 'member_analysis.html?type=' + encodeURIComponent(name);
+        }
+      });
+    });
+
+    // 分页交互
+    document.querySelectorAll('.page-btn').forEach(function(btn) {
+      if (!btn.disabled && !btn.classList.contains('active')) {
+        btn.addEventListener('click', function() {
+          var active = document.querySelector('.page-btn.active');
+          if (active) active.classList.remove('active');
+          if (/^\d+$/.test(this.textContent.trim())) {
+            this.classList.add('active');
+          }
+        });
+      }
+    });
+
+    // 图表卡片点击跳转
+    document.querySelectorAll('.chart-card').forEach(function(card) {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', function() {
+        var title = this.querySelector('.chart-title, .card-title')?.textContent || '';
+        if (title.includes('分布') || title.includes('结构')) {
+          window.location.href = 'member.html';
+        }
+      });
+    });
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
+
