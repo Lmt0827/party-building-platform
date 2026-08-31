@@ -1,0 +1,1319 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>报表设计器 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* 设计器专用布局 */
+    .designer-layout {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - var(--header-height));
+      overflow: hidden;
+    }
+    .designer-body {
+      display: grid;
+      grid-template-columns: 240px 1fr 300px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* 左侧面板 */
+    .left-panel {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .panel-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .panel-tab {
+      flex: 1;
+      padding: 10px 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .panel-tab:hover { color: var(--accent-red); }
+    .panel-tab.active {
+      color: var(--accent-red);
+      border-bottom-color: var(--accent-red);
+      background: var(--surface);
+      font-weight: 600;
+    }
+    .panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+    .panel-content-pane { display: none; }
+    .panel-content-pane.active { display: block; }
+
+    .component-group-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin: 12px 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .component-group-title:first-child { margin-top: 0; }
+
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .component-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: grab;
+      transition: all 0.2s;
+      background: var(--surface);
+    }
+    .component-item:hover {
+      border-color: var(--accent-red);
+      background: rgba(196,30,58,0.03);
+      transform: translateY(-1px);
+    }
+    .component-item .comp-icon {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      border-radius: 6px;
+      background: var(--bg);
+    }
+    .component-item .comp-name {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* 中间画布区 */
+    .canvas-area {
+      background: var(--bg);
+      overflow: auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .canvas-page-tabs {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      gap: 4px;
+    }
+    .canvas-page-tab {
+      padding: 6px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .canvas-page-tab.active {
+      background: var(--surface);
+      color: var(--accent-red);
+      font-weight: 600;
+      position: relative;
+      top: 1px;
+    }
+    .canvas-page-tab .close-btn {
+      width: 16px; height: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      border-radius: 50%;
+      color: var(--text-muted);
+    }
+    .canvas-page-tab .close-btn:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+    .add-page-btn {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .add-page-btn:hover {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .canvas-wrapper {
+      flex: 1;
+      overflow: auto;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+    }
+    .canvas-page {
+      width: 794px;
+      min-height: 1123px;
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      position: relative;
+      background-image:
+        linear-gradient(var(--border-light) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+      background-size: 20px 20px;
+      padding: 40px;
+    }
+
+    /* 画布上的组件 */
+    .canvas-component {
+      position: absolute;
+      border: 1px solid transparent;
+      cursor: move;
+      transition: border-color 0.15s;
+    }
+    .canvas-component:hover {
+      border-color: var(--border);
+    }
+    .canvas-component.selected {
+      border: 2px solid var(--info);
+      border-style: solid;
+    }
+    .canvas-component.selected::before,
+    .canvas-component.selected::after {
+      content: '';
+      position: absolute;
+      width: 8px; height: 8px;
+      background: #fff;
+      border: 2px solid var(--info);
+      border-radius: 2px;
+    }
+    .canvas-component.selected::before { top: -5px; left: -5px; }
+    .canvas-component.selected::after { bottom: -5px; right: -5px; }
+    .canvas-component.selected .handle-tl { top: -5px; left: -5px; }
+    .canvas-component.selected .handle-tr { top: -5px; right: -5px; }
+    .canvas-component.selected .handle-bl { bottom: -5px; left: -5px; }
+    .canvas-component.selected .handle-br { bottom: -5px; right: -5px; }
+    .canvas-component.selected .handle-tm { top: -5px; left: 50%; transform: translateX(-50%); }
+    .canvas-component.selected .handle-bm { bottom: -5px; left: 50%; transform: translateX(-50%); }
+    .canvas-component.selected .handle-ml { left: -5px; top: 50%; transform: translateY(-50%); }
+    .canvas-component.selected .handle-mr { right: -5px; top: 50%; transform: translateY(-50%); }
+    .resize-handle {
+      position: absolute;
+      width: 8px; height: 8px;
+      background: #fff;
+      border: 2px solid var(--info);
+      border-radius: 2px;
+      z-index: 10;
+    }
+
+    /* 报表标题组件 */
+    .report-title-comp {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    /* 数据统计卡组件 */
+    .stat-card-comp {
+      background: linear-gradient(135deg, #f8fafc, #fff);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .stat-card-comp .scc-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .stat-card-comp .scc-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent-red);
+      font-family: 'DIN', Arial, sans-serif;
+    }
+    .stat-card-comp.gold .scc-value { color: var(--accent-gold); }
+    .stat-card-comp.blue .scc-value { color: var(--info); }
+    .stat-card-comp.green .scc-value { color: var(--success); }
+
+    /* 图表组件 */
+    .chart-comp {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .chart-comp-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    /* 右侧属性面板 */
+    .right-panel {
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .prop-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .prop-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .prop-title .prop-icon {
+      width: 24px; height: 24px;
+      border-radius: 5px;
+      background: rgba(43,108,176,0.1);
+      color: var(--info);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+    }
+    .prop-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .prop-action-btn {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 5px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    .prop-action-btn:hover {
+      background: var(--bg);
+      color: var(--accent-red);
+    }
+    .prop-action-btn.active {
+      background: rgba(196,30,58,0.08);
+      color: var(--accent-red);
+    }
+
+    .prop-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    .prop-section {
+      border-bottom: 1px solid var(--border-light);
+    }
+    .prop-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      background: var(--bg);
+      transition: background 0.2s;
+    }
+    .prop-section-header:hover { background: #edf2f7; }
+    .prop-section-header .arrow {
+      font-size: 10px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+    .prop-section.collapsed .arrow { transform: rotate(-90deg); }
+    .prop-section.collapsed .prop-section-body { display: none; }
+    .prop-section-body {
+      padding: 12px 16px;
+    }
+
+    .prop-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .prop-row:last-child { margin-bottom: 0; }
+    .prop-label {
+      width: 80px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .prop-input {
+      flex: 1;
+      height: 30px;
+      padding: 0 10px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface);
+      outline: none;
+      font-family: inherit;
+    }
+    .prop-input:focus {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 0 2px rgba(196,30,58,0.1);
+    }
+    .prop-select {
+      flex: 1;
+      height: 30px;
+      padding: 0 28px 0 10px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface);
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23718096'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .prop-color-picker {
+      width: 30px; height: 30px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 2px;
+    }
+    .prop-color-picker .color-inner {
+      width: 100%; height: 100%;
+      border-radius: 2px;
+    }
+
+    /* 动画设置底部 */
+    .prop-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .prop-footer-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 缩放控件 */
+    .zoom-control {
+      position: fixed;
+      bottom: 20px;
+      left: calc(240px + (100vw - 248px - 300px) / 2);
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 8px;
+      box-shadow: var(--shadow-md);
+      z-index: 50;
+    }
+    .zoom-btn {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .zoom-btn:hover {
+      background: var(--bg);
+      color: var(--accent-red);
+    }
+    .zoom-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      min-width: 50px;
+      text-align: center;
+    }
+
+    /* 工具栏图标按钮 */
+    .toolbar-icon-btn {
+      width: 32px; height: 32px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    .toolbar-icon-btn:hover {
+      background: var(--bg);
+      color: var(--accent-red);
+    }
+    .toolbar-icon-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .toolbar-icon-btn.active {
+      background: rgba(196,30,58,0.08);
+      color: var(--accent-red);
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html" class="active">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="index.html">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">智能报告</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">报表构建器</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+      <div class="designer-layout">
+        <!-- 顶部工具栏 -->
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:16px;">📄</span>
+              <input type="text" value="党组织建设情况分析报表" style="border:none; outline:none; font-size:15px; font-weight:600; color:var(--text-main); background:transparent; width:280px; font-family:inherit;">
+            </div>
+            <div class="toolbar-divider"></div>
+            <button class="btn btn-primary btn-sm">💾 保存</button>
+            <button class="btn btn-secondary btn-sm">👁 预览</button>
+            <button class="btn btn-gold btn-sm">🚀 发布</button>
+          </div>
+
+          <div class="toolbar-center">
+            <div class="toolbar-icon-btn" title="撤销">↶</div>
+            <div class="toolbar-icon-btn" title="重做">↷</div>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-icon-btn" title="复制">⎘</div>
+            <div class="toolbar-icon-btn" title="粘贴">⎗</div>
+            <div class="toolbar-icon-btn" title="删除">🗑</div>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-icon-btn" title="上移一层">↑</div>
+            <div class="toolbar-icon-btn" title="下移一层">↓</div>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-icon-btn" title="左对齐">⫷</div>
+            <div class="toolbar-icon-btn" title="水平居中">≡</div>
+            <div class="toolbar-icon-btn" title="右对齐">⫸</div>
+            <div class="toolbar-icon-btn" title="顶部对齐">⫯</div>
+            <div class="toolbar-icon-btn" title="垂直居中">⋮</div>
+            <div class="toolbar-icon-btn" title="底部对齐">⫰</div>
+          </div>
+
+          <div class="toolbar-right">
+            <div class="toolbar-icon-btn">−</div>
+            <span style="font-size:12px; color:var(--text-secondary); min-width:40px; text-align:center;">100%</span>
+            <div class="toolbar-icon-btn">+</div>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-icon-btn" title="页面设置">⚙</div>
+            <div class="toolbar-divider"></div>
+            <select class="filter-select" style="height:32px; min-width:100px; font-size:12px;">
+              <option>导出 PDF</option>
+              <option>导出 Excel</option>
+              <option>导出图片</option>
+              <option>打印</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="designer-body">
+          <!-- 左侧组件面板 -->
+          <div class="left-panel">
+            <div class="panel-tabs">
+              <div class="panel-tab active" data-pane="draw">绘制</div>
+              <div class="panel-tab" data-pane="chart">图表</div>
+              <div class="panel-tab" data-pane="data">数据</div>
+              <div class="panel-tab" data-pane="template">模板</div>
+            </div>
+            <div class="panel-content">
+              <!-- 绘制组件 -->
+              <div class="panel-content-pane active" id="draw-pane">
+                <div class="component-group-title">基础图形</div>
+                <div class="component-grid">
+                  <div class="component-item">
+                    <div class="comp-icon">━</div>
+                    <div class="comp-name">线段</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon">▭</div>
+                    <div class="comp-name">矩形</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon">○</div>
+                    <div class="comp-name">圆形</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon">T</div>
+                    <div class="comp-name">文本</div>
+                  </div>
+                </div>
+                <div class="component-group-title">交互组件</div>
+                <div class="component-grid">
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(196,30,58,0.1); color:var(--accent-red);">⬛</div>
+                    <div class="comp-name">按钮</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(47,133,90,0.1); color:var(--success);">●</div>
+                    <div class="comp-name">状态文本</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(43,108,176,0.1); color:var(--info);">x</div>
+                    <div class="comp-name">变量</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(212,175,55,0.15); color:#a08020;">✎</div>
+                    <div class="comp-name">写值</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 图表组件 -->
+              <div class="panel-content-pane" id="chart-pane">
+                <div class="component-group-title">常用图表</div>
+                <div class="component-grid">
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(196,30,58,0.1); color:var(--accent-red);">📊</div>
+                    <div class="comp-name">柱状图</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(43,108,176,0.1); color:var(--info);">📈</div>
+                    <div class="comp-name">折线图</div>
+                  </div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(212,175,55,0.15); color:#a08020;">🥧</div>
+                    <div class="comp-name">饼图</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(47,133,90,0.1); color:var(--success);">🎯</div>
+                    <div class="comp-name">仪表盘</div>
+                  </div>
+                </div>
+                <div class="component-group-title">高级图表</div>
+                <div class="component-grid">
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(128,90,213,0.1); color:#805ad5;">🕸</div>
+                    <div class="comp-name">雷达图</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(192,86,33,0.1); color:var(--warning);">·</div>
+                    <div class="comp-name">散点图</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(196,30,58,0.1); color:var(--accent-red);">📐</div>
+                    <div class="comp-name">面积图</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 数据组件 -->
+              <div class="panel-content-pane" id="data-pane">
+                <div class="component-group-title">数据展示</div>
+                <div class="component-grid">
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(196,30,58,0.1); color:var(--accent-red);">📊</div>
+                    <div class="comp-name">数据统计卡片</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(43,108,176,0.1); color:var(--info);">📋</div>
+                    <div class="comp-name">数据分析表格</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(212,175,55,0.15); color:#a08020;">📝</div>
+                    <div class="comp-name">报告文本组件</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 模板素材 -->
+              <div class="panel-content-pane" id="template-pane">
+                <div class="component-group-title">模板库</div>
+                <div class="component-grid">
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(196,30,58,0.1); color:var(--accent-red);">🏛</div>
+                    <div class="comp-name">党建月报模板</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(43,108,176,0.1); color:var(--info);">📊</div>
+                    <div class="comp-name">数据分析模板</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(47,133,90,0.1); color:var(--success);">🏢</div>
+                    <div class="comp-name">企业报表模板</div>
+                  </div>
+                  <div class="component-item">
+                    <div class="comp-icon" style="background:rgba(212,175,55,0.15); color:#a08020;">👥</div>
+                    <div class="comp-name">党员统计模板</div>
+                  </div>
+                </div>
+                <div class="component-group-title">我的模板</div>
+                <div style="font-size:12px; color:var(--text-muted); text-align:center; padding:20px 0;">
+                  暂无自定义模板
+                </div>
+                <div class="component-group-title">我的图库</div>
+                <div style="font-size:12px; color:var(--text-muted); text-align:center; padding:20px 0;">
+                  暂无图片素材
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 中间画布 -->
+          <div class="canvas-area">
+            <div class="canvas-page-tabs">
+              <div class="canvas-page-tab active">
+                页面1
+                <span class="close-btn">×</span>
+              </div>
+              <div class="add-page-btn">+</div>
+            </div>
+
+            <div class="canvas-wrapper">
+              <div class="canvas-page">
+                <!-- 报表标题 -->
+                <div class="canvas-component selected" style="top: 30px; left: 50%; transform: translateX(-50%); width: 600px;">
+                  <div class="report-title-comp">2026年度党组织建设情况分析报告</div>
+                  <div class="resize-handle handle-tl"></div>
+                  <div class="resize-handle handle-tr"></div>
+                  <div class="resize-handle handle-bl"></div>
+                  <div class="resize-handle handle-br"></div>
+                  <div class="resize-handle handle-tm"></div>
+                  <div class="resize-handle handle-bm"></div>
+                  <div class="resize-handle handle-ml"></div>
+                  <div class="resize-handle handle-mr"></div>
+                </div>
+
+                <!-- 三个数据统计卡 -->
+                <div class="canvas-component" style="top: 100px; left: 40px; width: 200px;">
+                  <div class="stat-card-comp">
+                    <div class="scc-label">党组织总数</div>
+                    <div class="scc-value">12,458</div>
+                    <div style="font-size:11px; color:var(--success); margin-top:4px;">↑ 5.2% 较上年</div>
+                  </div>
+                </div>
+
+                <div class="canvas-component" style="top: 100px; left: 260px; width: 200px;">
+                  <div class="stat-card-comp blue">
+                    <div class="scc-label">党员总数</div>
+                    <div class="scc-value">86,342</div>
+                    <div style="font-size:11px; color:var(--success); margin-top:4px;">↑ 8.6% 较上年</div>
+                  </div>
+                </div>
+
+                <div class="canvas-component" style="top: 100px; left: 480px; width: 200px;">
+                  <div class="stat-card-comp gold">
+                    <div class="scc-label">活动总数</div>
+                    <div class="scc-value">5,672</div>
+                    <div style="font-size:11px; color:var(--success); margin-top:4px;">↑ 12.3% 较上年</div>
+                  </div>
+                </div>
+
+                <!-- 柱状图 -->
+                <div class="canvas-component" style="top: 200px; left: 40px; width: 420px;">
+                  <div class="chart-comp">
+                    <div class="chart-comp-title">各街道党组织数量分布</div>
+                    <svg width="396" height="180" viewBox="0 0 396 180">
+                      <!-- 网格线 -->
+                      <line x1="40" y1="20" x2="40" y2="150" stroke="#e2e8f0" stroke-width="1"/>
+                      <line x1="40" y1="150" x2="386" y2="150" stroke="#e2e8f0" stroke-width="1"/>
+                      <line x1="40" y1="90" x2="386" y2="90" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4"/>
+                      <line x1="40" y1="55" x2="386" y2="55" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4"/>
+                      <line x1="40" y1="125" x2="386" y2="125" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4"/>
+                      <!-- Y轴标签 -->
+                      <text x="35" y="24" text-anchor="end" font-size="10" fill="#a0aec0">5000</text>
+                      <text x="35" y="59" text-anchor="end" font-size="10" fill="#a0aec0">3750</text>
+                      <text x="35" y="94" text-anchor="end" font-size="10" fill="#a0aec0">2500</text>
+                      <text x="35" y="129" text-anchor="end" font-size="10" fill="#a0aec0">1250</text>
+                      <text x="35" y="154" text-anchor="end" font-size="10" fill="#a0aec0">0</text>
+                      <!-- 柱子 -->
+                      <rect x="55" y="85" width="30" height="65" rx="3" fill="url(#barGrad1)"/>
+                      <rect x="105" y="60" width="30" height="90" rx="3" fill="url(#barGrad1)"/>
+                      <rect x="155" y="45" width="30" height="105" rx="3" fill="url(#barGrad1)"/>
+                      <rect x="205" y="70" width="30" height="80" rx="3" fill="url(#barGrad1)"/>
+                      <rect x="255" y="55" width="30" height="95" rx="3" fill="url(#barGrad1)"/>
+                      <rect x="305" y="80" width="30" height="70" rx="3" fill="url(#barGrad1)"/>
+                      <rect x="355" y="95" width="30" height="55" rx="3" fill="url(#barGrad1)"/>
+                      <!-- 渐变定义 -->
+                      <defs>
+                        <linearGradient id="barGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" style="stop-color:#c41e3a"/>
+                          <stop offset="100%" style="stop-color:#d4af37"/>
+                        </linearGradient>
+                      </defs>
+                      <!-- X轴标签 -->
+                      <text x="70" y="168" text-anchor="middle" font-size="10" fill="#718096">街道A</text>
+                      <text x="120" y="168" text-anchor="middle" font-size="10" fill="#718096">街道B</text>
+                      <text x="170" y="168" text-anchor="middle" font-size="10" fill="#718096">街道C</text>
+                      <text x="220" y="168" text-anchor="middle" font-size="10" fill="#718096">街道D</text>
+                      <text x="270" y="168" text-anchor="middle" font-size="10" fill="#718096">街道E</text>
+                      <text x="320" y="168" text-anchor="middle" font-size="10" fill="#718096">街道F</text>
+                      <text x="370" y="168" text-anchor="middle" font-size="10" fill="#718096">街道G</text>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- 饼图 -->
+                <div class="canvas-component" style="top: 200px; left: 480px; width: 230px;">
+                  <div class="chart-comp">
+                    <div class="chart-comp-title">党员年龄分布</div>
+                    <svg width="206" height="180" viewBox="0 0 206 180">
+                      <g transform="translate(90, 85)">
+                        <!-- 饼图扇形 -->
+                        <path d="M0,-65 A65,65 0 0,1 56.3,-32.5 L0,0 Z" fill="#c41e3a"/>
+                        <path d="M56.3,-32.5 A65,65 0 0,1 63,15.8 L0,0 Z" fill="#d4af37"/>
+                        <path d="M63,15.8 A65,65 0 0,1 22.5,61 L0,0 Z" fill="#2b6cb0"/>
+                        <path d="M22.5,61 A65,65 0 0,1 -32.5,56.3 L0,0 Z" fill="#2f855a"/>
+                        <path d="M-32.5,56.3 A65,65 0 0,1 -65,0 L0,0 Z" fill="#805ad5"/>
+                        <path d="M-65,0 A65,65 0 0,1 -46,-46 L0,0 Z" fill="#c05621"/>
+                        <!-- 中心圆 -->
+                        <circle cx="0" cy="0" r="30" fill="#fff"/>
+                        <text x="0" y="-4" text-anchor="middle" font-size="11" fill="#718096">总人数</text>
+                        <text x="0" y="12" text-anchor="middle" font-size="14" font-weight="700" fill="#c41e3a">86342</text>
+                      </g>
+                      <!-- 图例 -->
+                      <g font-size="10" fill="#4a5568">
+                        <rect x="170" y="20" width="10" height="10" fill="#c41e3a" rx="2"/>
+                        <text x="185" y="29">35岁以下</text>
+                        <rect x="170" y="40" width="10" height="10" fill="#d4af37" rx="2"/>
+                        <text x="185" y="49">36-45岁</text>
+                        <rect x="170" y="60" width="10" height="10" fill="#2b6cb0" rx="2"/>
+                        <text x="185" y="69">46-55岁</text>
+                        <rect x="170" y="80" width="10" height="10" fill="#2f855a" rx="2"/>
+                        <text x="185" y="89">56-60岁</text>
+                        <rect x="170" y="100" width="10" height="10" fill="#805ad5" rx="2"/>
+                        <text x="185" y="109">61-65岁</text>
+                        <rect x="170" y="120" width="10" height="10" fill="#c05621" rx="2"/>
+                        <text x="185" y="129">65岁以上</text>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- 折线图 -->
+                <div class="canvas-component" style="top: 420px; left: 40px; width: 670px;">
+                  <div class="chart-comp">
+                    <div class="chart-comp-title">2026年党员发展趋势</div>
+                    <svg width="640" height="200" viewBox="0 0 640 200">
+                      <!-- 网格 -->
+                      <line x1="50" y1="20" x2="620" y2="20" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4"/>
+                      <line x1="50" y1="65" x2="620" y2="65" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4"/>
+                      <line x1="50" y1="110" x2="620" y2="110" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4"/>
+                      <line x1="50" y1="155" x2="620" y2="155" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4"/>
+                      <line x1="50" y1="170" x2="620" y2="170" stroke="#e2e8f0" stroke-width="1"/>
+                      <line x1="50" y1="20" x2="50" y2="170" stroke="#e2e8f0" stroke-width="1"/>
+                      <!-- Y轴 -->
+                      <text x="45" y="24" text-anchor="end" font-size="10" fill="#a0aec0">3000</text>
+                      <text x="45" y="69" text-anchor="end" font-size="10" fill="#a0aec0">2250</text>
+                      <text x="45" y="114" text-anchor="end" font-size="10" fill="#a0aec0">1500</text>
+                      <text x="45" y="159" text-anchor="end" font-size="10" fill="#a0aec0">750</text>
+                      <text x="45" y="174" text-anchor="end" font-size="10" fill="#a0aec0">0</text>
+                      <!-- 折线1 -->
+                      <path d="M80,120 L130,100 L180,85 L230,70 L280,55 L330,45 L380,38 L430,32 L480,28 L530,25 L580,22 L610,20" 
+                            fill="none" stroke="#c41e3a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <!-- 折线2 -->
+                      <path d="M80,150 L130,140 L180,128 L230,115 L280,102 L330,90 L380,80 L430,72 L480,65 L530,60 L580,55 L610,52" 
+                            fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0"/>
+                      <!-- 数据点 -->
+                      <circle cx="80" cy="120" r="4" fill="#fff" stroke="#c41e3a" stroke-width="2"/>
+                      <circle cx="180" cy="85" r="4" fill="#fff" stroke="#c41e3a" stroke-width="2"/>
+                      <circle cx="280" cy="55" r="4" fill="#fff" stroke="#c41e3a" stroke-width="2"/>
+                      <circle cx="380" cy="38" r="4" fill="#fff" stroke="#c41e3a" stroke-width="2"/>
+                      <circle cx="480" cy="28" r="4" fill="#fff" stroke="#c41e3a" stroke-width="2"/>
+                      <circle cx="580" cy="22" r="4" fill="#fff" stroke="#c41e3a" stroke-width="2"/>
+                      <!-- 面积填充 -->
+                      <path d="M80,120 L130,100 L180,85 L230,70 L280,55 L330,45 L380,38 L430,32 L480,28 L530,25 L580,22 L610,20 L610,170 L80,170 Z" 
+                            fill="url(#areaGrad)" opacity="0.15"/>
+                      <defs>
+                        <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" style="stop-color:#c41e3a"/>
+                          <stop offset="100%" style="stop-color:#c41e3a; stop-opacity:0"/>
+                        </linearGradient>
+                      </defs>
+                      <!-- X轴 -->
+                      <text x="80" y="188" text-anchor="middle" font-size="10" fill="#718096">1月</text>
+                      <text x="130" y="188" text-anchor="middle" font-size="10" fill="#718096">2月</text>
+                      <text x="180" y="188" text-anchor="middle" font-size="10" fill="#718096">3月</text>
+                      <text x="230" y="188" text-anchor="middle" font-size="10" fill="#718096">4月</text>
+                      <text x="280" y="188" text-anchor="middle" font-size="10" fill="#718096">5月</text>
+                      <text x="330" y="188" text-anchor="middle" font-size="10" fill="#718096">6月</text>
+                      <text x="380" y="188" text-anchor="middle" font-size="10" fill="#718096">7月</text>
+                      <text x="430" y="188" text-anchor="middle" font-size="10" fill="#718096">8月</text>
+                      <text x="480" y="188" text-anchor="middle" font-size="10" fill="#718096">9月</text>
+                      <text x="530" y="188" text-anchor="middle" font-size="10" fill="#718096">10月</text>
+                      <text x="580" y="188" text-anchor="middle" font-size="10" fill="#718096">11月</text>
+                      <text x="610" y="188" text-anchor="middle" font-size="10" fill="#718096">12月</text>
+                      <!-- 图例 -->
+                      <g transform="translate(480, 5)">
+                        <rect x="0" y="0" width="20" height="3" fill="#c41e3a" rx="1.5"/>
+                        <text x="25" y="5" font-size="10" fill="#4a5568">发展人数</text>
+                        <rect x="80" y="0" width="20" height="3" fill="#d4af37" rx="1.5"/>
+                        <text x="105" y="5" font-size="10" fill="#4a5568">转正人数</text>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- 右侧属性面板 -->
+          <div class="right-panel">
+            <div class="prop-header">
+              <div class="prop-title">
+                <span class="prop-icon">T</span>
+                报表标题
+              </div>
+              <div class="prop-actions">
+                <div class="prop-action-btn" title="锁定">🔒</div>
+                <div class="prop-action-btn" title="隐藏">👁</div>
+              </div>
+            </div>
+
+            <div class="prop-body">
+              <!-- 基础属性 -->
+              <div class="prop-section">
+                <div class="prop-section-header">
+                  <span>基础属性</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="prop-section-body">
+                  <div class="prop-row">
+                    <span class="prop-label">组件名称</span>
+                    <input type="text" class="prop-input" value="报表标题">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">组件ID</span>
+                    <input type="text" class="prop-input" value="title_001" style="background:var(--bg); color:var(--text-muted);">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">左边距</span>
+                    <input type="text" class="prop-input" value="0">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">上边距</span>
+                    <input type="text" class="prop-input" value="30">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">宽度</span>
+                    <input type="text" class="prop-input" value="600">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">高度</span>
+                    <input type="text" class="prop-input" value="45">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 样式属性 -->
+              <div class="prop-section">
+                <div class="prop-section-header">
+                  <span>样式属性</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="prop-section-body">
+                  <div class="prop-row">
+                    <span class="prop-label">背景色</span>
+                    <div class="prop-color-picker">
+                      <div class="color-inner" style="background:transparent;"></div>
+                    </div>
+                    <input type="text" class="prop-input" value="transparent" style="margin-left:8px; flex:1;">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">边框</span>
+                    <select class="prop-select">
+                      <option>无边框</option>
+                      <option>实线</option>
+                      <option>虚线</option>
+                    </select>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">圆角</span>
+                    <input type="text" class="prop-input" value="0">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">阴影</span>
+                    <select class="prop-select">
+                      <option>无阴影</option>
+                      <option>小阴影</option>
+                      <option>中阴影</option>
+                      <option>大阴影</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 文本属性 -->
+              <div class="prop-section">
+                <div class="prop-section-header">
+                  <span>文本属性</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="prop-section-body">
+                  <div class="prop-row">
+                    <span class="prop-label">文本内容</span>
+                    <input type="text" class="prop-input" value="2026年度党组织建设情况分析报告">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">字体</span>
+                    <select class="prop-select">
+                      <option>微软雅黑</option>
+                      <option>宋体</option>
+                      <option>黑体</option>
+                      <option>楷体</option>
+                    </select>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">字号</span>
+                    <input type="text" class="prop-input" value="24">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">字色</span>
+                    <div class="prop-color-picker">
+                      <div class="color-inner" style="background:#142841;"></div>
+                    </div>
+                    <input type="text" class="prop-input" value="#142841" style="margin-left:8px; flex:1;">
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">字重</span>
+                    <select class="prop-select">
+                      <option>正常</option>
+                      <option selected>粗体</option>
+                    </select>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">对齐</span>
+                    <select class="prop-select">
+                      <option>左对齐</option>
+                      <option selected>居中对齐</option>
+                      <option>右对齐</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 数据属性 -->
+              <div class="prop-section collapsed">
+                <div class="prop-section-header">
+                  <span>数据属性</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="prop-section-body">
+                  <div class="prop-row">
+                    <span class="prop-label">数据来源</span>
+                    <select class="prop-select">
+                      <option>静态数据</option>
+                      <option>数据集</option>
+                      <option>API接口</option>
+                    </select>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">绑定字段</span>
+                    <select class="prop-select">
+                      <option>无</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 交互属性 -->
+              <div class="prop-section collapsed">
+                <div class="prop-section-header">
+                  <span>交互属性</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="prop-section-body">
+                  <div class="prop-row">
+                    <span class="prop-label">点击事件</span>
+                    <select class="prop-select">
+                      <option>无</option>
+                      <option>跳转链接</option>
+                      <option>显示弹窗</option>
+                      <option>钻取</option>
+                    </select>
+                  </div>
+                  <div class="prop-row">
+                    <span class="prop-label">悬停效果</span>
+                    <label class="switch" style="margin-left:auto;">
+                      <input type="checkbox">
+                      <span class="switch-slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 底部动画设置 -->
+            <div class="prop-footer">
+              <div class="prop-footer-title">
+                <span style="width:3px; height:14px; background:linear-gradient(180deg, var(--accent-red), var(--accent-gold)); border-radius:2px;"></span>
+                动画设置
+              </div>
+              <div class="prop-row">
+                <span class="prop-label">入场动画</span>
+                <select class="prop-select">
+                  <option>无</option>
+                  <option>淡入</option>
+                  <option>滑入</option>
+                  <option>缩放</option>
+                </select>
+              </div>
+              <div class="prop-row">
+                <span class="prop-label">动画时长</span>
+                <input type="text" class="prop-input" value="0.5s">
+              </div>
+              <div class="prop-row">
+                <span class="prop-label">延迟时间</span>
+                <input type="text" class="prop-input" value="0s">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // 左侧面板Tab切换
+    document.querySelectorAll('.panel-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        const target = this.dataset.pane;
+        document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel-content-pane').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById(target + '-pane').classList.add('active');
+      });
+    });
+
+    // 属性面板折叠
+    document.querySelectorAll('.prop-section-header').forEach(header => {
+      header.addEventListener('click', function() {
+        this.parentElement.classList.toggle('collapsed');
+      });
+    });
+
+    // 画布组件选中
+    document.querySelectorAll('.canvas-component').forEach(comp => {
+      comp.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('resize-handle')) return;
+        document.querySelectorAll('.canvas-component').forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        e.stopPropagation();
+      });
+    });
+
+    // 点击画布空白取消选中
+    document.querySelector('.canvas-page').addEventListener('mousedown', function(e) {
+      if (e.target === this || e.target.tagName === 'svg') {
+        document.querySelectorAll('.canvas-component').forEach(c => c.classList.remove('selected'));
+      }
+    });
+
+    // 导航菜单展开
+    document.querySelectorAll('.nav-group > .nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        const group = this.closest('.nav-group');
+        if (group) {
+          group.classList.toggle('expanded');
+        }
+      });
+    });
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
+
