@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新增产业 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* 页面特有样式 */
+    .page-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: color 0.2s;
+    }
+    .page-back:hover {
+      color: var(--color-red-deep);
+    }
+
+    /* 表单卡片 */
+    .form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .form-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-color);
+      background: linear-gradient(135deg, var(--color-red-deep), #a0182c);
+      color: #fff;
+    }
+    .form-card-title {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+    }
+    .form-card-title::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 16px;
+      background: var(--color-gold-primary);
+      border-radius: 2px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .form-card-body {
+      padding: 24px;
+    }
+
+    /* 表单布局 */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px 24px;
+    }
+    .form-grid .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-item-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .form-item-label .required {
+      color: var(--color-error);
+      margin-left: 2px;
+    }
+    .form-item-input {
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+      background: var(--bg-card);
+      transition: border-color 0.2s;
+    }
+    .form-item-input:focus {
+      outline: none;
+      border-color: var(--color-red-deep);
+    }
+    .form-item-input::placeholder {
+      color: var(--text-tertiary);
+    }
+    textarea.form-item-input {
+      height: auto;
+      padding: 10px 12px;
+      resize: vertical;
+      min-height: 80px;
+    }
+    select.form-item-input {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+
+    /* 状态单选 */
+    .status-radio-group {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      height: 40px;
+    }
+    .status-radio {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+    }
+    .status-radio input[type="radio"] {
+      accent-color: var(--color-red-deep);
+      cursor: pointer;
+    }
+
+    /* 标签输入 */
+    .tag-input-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      min-height: 40px;
+      align-items: center;
+      transition: border-color 0.2s;
+    }
+    .tag-input-area:focus-within {
+      border-color: var(--color-red-deep);
+    }
+    .tag-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: linear-gradient(135deg, var(--color-gold-primary), #e8a929);
+      color: #fff;
+      border-radius: 4px;
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+    }
+    .tag-remove {
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      opacity: 0.8;
+    }
+    .tag-remove:hover {
+      opacity: 1;
+    }
+    .tag-input {
+      flex: 1;
+      min-width: 120px;
+      border: none;
+      outline: none;
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+      background: transparent;
+    }
+    .tag-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    /* 底部操作栏 */
+    .form-footer {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      padding: 20px 0 40px;
+    }
+    .form-footer .btn {
+      min-width: 120px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 左侧导航（引用公共部分） -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-icon">党</div>
+        <div class="logo-text">
+          <div class="logo-title">党建数字化平台</div>
+          <div class="logo-subtitle">Party Building Platform</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">工作台</div>
+          <a href="dashboard.html" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span>数据总览</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">党建基础</div>
+          <a href="org_data.html" class="nav-item">
+            <span class="nav-icon">🏢</span>
+            <span>组织数据管理</span>
+          </a>
+          <a href="org_committee.html" class="nav-item">
+            <span class="nav-icon">👥</span>
+            <span>工委管理</span>
+          </a>
+          <a href="member_management.html" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>党员管理</span>
+          </a>
+          <a href="activity_management.html" class="nav-item">
+            <span class="nav-icon">📅</span>
+            <span>组织活动</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">产业基础</div>
+          <a href="industry_management.html" class="nav-item active">
+            <span class="nav-icon">🏭</span>
+            <span>产业数据管理</span>
+          </a>
+          <a href="enterprise_management.html" class="nav-item">
+            <span class="nav-icon">🏢</span>
+            <span>企业数据管理</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">人才服务</div>
+          <a href="talent_management.html" class="nav-item">
+            <span class="nav-icon">🎓</span>
+            <span>人才数据管理</span>
+          </a>
+          <a href="talent_service.html" class="nav-item">
+            <span class="nav-icon">🛠️</span>
+            <span>人才服务</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">系统管理</div>
+          <a href="user_management.html" class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span>用户管理</span>
+          </a>
+          <a href="role_management.html" class="nav-item">
+            <span class="nav-icon">🔐</span>
+            <span>角色权限</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <!-- 顶部导航 -->
+      <header class="top-header">
+        <div class="header-left">
+          <div class="breadcrumb">
+            <span>首页</span>
+            <span class="breadcrumb-sep">/</span>
+            <span>产业基础</span>
+            <span class="breadcrumb-sep">/</span>
+            <span>产业数据管理</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">新增产业</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="header-icon">🔔</div>
+          <div class="user-info">
+            <div class="user-avatar">管</div>
+            <div class="user-name">管理员</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 内容区 -->
+      <div class="content-area">
+        <!-- 返回链接 -->
+        <div class="page-back" onclick="history.back()">
+          <span>←</span>
+          <span>返回产业列表</span>
+        </div>
+
+        <!-- 基本信息 -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <div class="form-card-title">基本信息</div>
+          </div>
+          <div class="form-card-body">
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-item-label">产业名称 <span class="required">*</span></label>
+                <input type="text" class="form-item-input" placeholder="请输入产业名称">
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">产业编码 <span class="required">*</span></label>
+                <input type="text" class="form-item-input" placeholder="系统自动生成，可手动修改">
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">产业层级 <span class="required">*</span></label>
+                <select class="form-item-input" id="industryLevel" onchange="toggleParentSelect()">
+                  <option value="">请选择产业层级</option>
+                  <option value="1">一级产业</option>
+                  <option value="2">二级产业</option>
+                  <option value="3">三级产业</option>
+                </select>
+              </div>
+              <div class="form-item" id="parentIndustryItem" style="display:none;">
+                <label class="form-item-label">上级产业 <span class="required">*</span></label>
+                <select class="form-item-input">
+                  <option value="">请选择上级产业</option>
+                  <option value="1">高端装备制造</option>
+                  <option value="2">新能源</option>
+                  <option value="3">新材料</option>
+                  <option value="4">智能制造装备</option>
+                  <option value="5">航空航天装备</option>
+                </select>
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">产业分类</label>
+                <select class="form-item-input">
+                  <option value="">请选择分类</option>
+                  <option value="1">战略性新兴产业</option>
+                  <option value="2">传统优势产业</option>
+                  <option value="3">未来产业</option>
+                  <option value="4">现代服务业</option>
+                </select>
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">状态</label>
+                <div class="status-radio-group">
+                  <label class="status-radio">
+                    <input type="radio" name="status" value="active" checked>
+                    <span>启用</span>
+                  </label>
+                  <label class="status-radio">
+                    <input type="radio" name="status" value="inactive">
+                    <span>停用</span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-item full-width">
+                <label class="form-item-label">产业标签</label>
+                <div class="tag-input-area">
+                  <span class="tag-item">
+                    高新技术
+                    <span class="tag-remove">×</span>
+                  </span>
+                  <span class="tag-item">
+                    重点扶持
+                    <span class="tag-remove">×</span>
+                  </span>
+                  <input type="text" class="tag-input" placeholder="输入标签后按回车添加">
+                </div>
+              </div>
+              <div class="form-item full-width">
+                <label class="form-item-label">产业描述</label>
+                <textarea class="form-item-input" placeholder="请输入产业描述信息，包括产业特点、发展方向、覆盖范围等" rows="4"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 产值与规模 -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <div class="form-card-title">产值与规模</div>
+          </div>
+          <div class="form-card-body">
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-item-label">年度产值（亿元）</label>
+                <input type="number" class="form-item-input" placeholder="请输入本年度产值" step="0.1" min="0">
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">同比增长率（%）</label>
+                <input type="number" class="form-item-input" placeholder="请输入同比增长率" step="0.1">
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">关联企业数（家）</label>
+                <input type="number" class="form-item-input" placeholder="关联企业数量" min="0" value="0">
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">规上企业数（家）</label>
+                <input type="number" class="form-item-input" placeholder="规模以上企业数量" min="0" value="0">
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">从业人数（人）</label>
+                <input type="number" class="form-item-input" placeholder="产业从业人员总数" min="0">
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">统计年份</label>
+                <select class="form-item-input">
+                  <option value="2024" selected>2024年</option>
+                  <option value="2023">2023年</option>
+                  <option value="2022">2022年</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 负责人信息 -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <div class="form-card-title">负责人信息</div>
+          </div>
+          <div class="form-card-body">
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-item-label">产业负责人</label>
+                <input type="text" class="form-item-input" placeholder="请输入负责人姓名">
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">联系电话</label>
+                <input type="tel" class="form-item-input" placeholder="请输入联系电话">
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">所属部门</label>
+                <select class="form-item-input">
+                  <option value="">请选择部门</option>
+                  <option value="1">产业发展部</option>
+                  <option value="2">经济运行部</option>
+                  <option value="3">科技创新部</option>
+                  <option value="4">企业服务部</option>
+                </select>
+              </div>
+              <div class="form-item">
+                <label class="form-item-label">电子邮箱</label>
+                <input type="email" class="form-item-input" placeholder="请输入电子邮箱">
+              </div>
+              <div class="form-item full-width">
+                <label class="form-item-label">备注</label>
+                <textarea class="form-item-input" placeholder="请输入备注信息" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部操作按钮 -->
+        <div class="form-footer">
+          <button class="btn btn-outline" onclick="history.back()">取消</button>
+          <button class="btn btn-primary" onclick="submitIndustry()">确认提交</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // 产业层级切换，控制上级产业显示
+    function toggleParentSelect() {
+      const level = document.getElementById('industryLevel').value;
+      const parentItem = document.getElementById('parentIndustryItem');
+      if (level && level !== '1') {
+        parentItem.style.display = 'flex';
+      } else {
+        parentItem.style.display = 'none';
+      }
+    }
+
+    // 校验表单
+    function validateForm() {
+      const name = document.querySelector('input[placeholder="请输入产业名称"]').value.trim();
+      const code = document.querySelector('input[placeholder="系统自动生成，可手动修改"]').value.trim();
+      const level = document.getElementById('industryLevel').value;
+      const parentSelect = document.querySelector('#parentIndustryItem select');
+
+      // 校验产业名称
+      if (!name) {
+        alert('请输入产业名称');
+        return false;
+      }
+      if (name.length > 50) {
+        alert('产业名称不能超过50个字符');
+        return false;
+      }
+
+      // 校验产业编码
+      if (!code) {
+        alert('请输入产业编码');
+        return false;
+      }
+      if (!/^[A-Za-z0-9-]+$/.test(code)) {
+        alert('产业编码只能包含字母、数字和短横线');
+        return false;
+      }
+
+      // 校验产业层级
+      if (!level) {
+        alert('请选择产业层级');
+        return false;
+      }
+
+      // 二三级产业需校验上级产业
+      if (level !== '1' && !parentSelect.value) {
+        alert('请选择上级产业');
+        return false;
+      }
+
+      return true;
+    }
+
+    // 生成产业编码（根据层级自动生成）
+    function generateIndustryCode() {
+      const level = document.getElementById('industryLevel').value;
+      const parentSelect = document.querySelector('#parentIndustryItem select');
+      const codeInput = document.querySelector('input[placeholder="系统自动生成，可手动修改"]');
+
+      // 如果用户已经手动填写了编码，不覆盖
+      if (codeInput.value.trim()) return;
+
+      if (level === '1') {
+        // 一级产业：IND-00X
+        codeInput.value = 'IND-009';
+      } else if (level === '2' && parentSelect.value) {
+        // 二级产业：上级编码-0X
+        codeInput.value = 'IND-001-09';
+      } else if (level === '3' && parentSelect.value) {
+        // 三级产业：上级编码-0X
+        codeInput.value = 'IND-001-01-09';
+      }
+    }
+
+    // 监听产业层级和上级产业变化，自动生成编码
+    document.addEventListener('DOMContentLoaded', function() {
+      const levelSelect = document.getElementById('industryLevel');
+      const parentSelect = document.querySelector('#parentIndustryItem select');
+
+      levelSelect.addEventListener('change', function() {
+        toggleParentSelect();
+        generateIndustryCode();
+      });
+
+      parentSelect.addEventListener('change', generateIndustryCode);
+    });
+
+    // 提交新增产业
+    function submitIndustry() {
+      // 表单校验
+      if (!validateForm()) return;
+
+      const name = document.querySelector('input[placeholder="请输入产业名称"]').value.trim();
+      const code = document.querySelector('input[placeholder="系统自动生成，可手动修改"]').value.trim();
+      const level = document.getElementById('industryLevel').value;
+      const levelText = { '1': '一级产业', '2': '二级产业', '3': '三级产业' }[level];
+      const output = document.querySelector('input[type="number"]').value || '0';
+      const status = document.querySelector('input[name="status"]:checked').value;
+      const statusText = status === 'active' ? '启用' : '停用';
+
+      // 模拟提交中状态
+      const submitBtn = event.target;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = '提交中...';
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.7';
+
+      // 模拟异步提交
+      setTimeout(function() {
+        alert('产业创建成功！\n\n产业名称：' + name + '\n产业编码：' + code + '\n产业层级：' + levelText + '\n产值：' + output + ' 亿元\n状态：' + statusText);
+        window.location.href = 'industry_management.html';
+      }, 800);
+    }
+  </script>
+  <script src="common.js"></script>
+</body>
+</html>
