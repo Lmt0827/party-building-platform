@@ -1,0 +1,1172 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>党建服务一张图 - 党建数字化平台</title>
+  <style>
+    /* ========== 全局重置与基础 ========== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      font-size: 14px;
+      color: #e0e8f0;
+      background: #050d1a;
+      overflow: hidden;
+    }
+
+    /* ========== 背景系统 ========== */
+    .bigscreen-bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(30, 80, 160, 0.25) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 80%, rgba(196, 30, 58, 0.08) 0%, transparent 40%),
+        radial-gradient(ellipse at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 40%),
+        linear-gradient(180deg, #050d1a 0%, #0a1628 50%, #050d1a 100%);
+      z-index: 0;
+    }
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(100, 180, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100, 180, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .scan-line {
+      position: fixed;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.4), transparent);
+      z-index: 2;
+      animation: scanMove 8s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes scanMove {
+      0% { top: 0; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* ========== 顶部标题栏 ========== */
+    .header {
+      position: relative;
+      z-index: 10;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      background: linear-gradient(180deg, rgba(10, 22, 40, 0.9) 0%, rgba(10, 22, 40, 0.3) 100%);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #d4af37, #e6c65c, #d4af37, transparent);
+    }
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      min-width: 280px;
+    }
+    .header-right { justify-content: flex-end; }
+    .header-title {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 6px;
+      background: linear-gradient(180deg, #fff5c8 0%, #e6c65c 40%, #d4af37 60%, #b8941f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+      white-space: nowrap;
+    }
+    .header-title::before,
+    .header-title::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #d4af37);
+    }
+    .header-title::before { left: -80px; }
+    .header-title::after { right: -80px; transform: scaleX(-1); }
+    .date-time {
+      color: #8fa8c8;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .date-time .date { font-size: 14px; color: #b8cfe8; }
+    .mode-switch {
+      display: flex;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .mode-switch button {
+      padding: 6px 16px;
+      background: transparent;
+      border: none;
+      color: #8fa8c8;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+    .mode-switch button.active {
+      background: linear-gradient(180deg, #d4af37, #b8941f);
+      color: #0a1628;
+      font-weight: bold;
+    }
+    .party-badge {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #c41e3a, #9b1b30);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4af37;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 0 15px rgba(196, 30, 58, 0.4);
+    }
+
+    /* ========== 主体三栏布局 ========== */
+    .main-container {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 380px 1fr 380px;
+      gap: 16px;
+      padding: 16px;
+      height: calc(100vh - 70px - 36px);
+    }
+    .col-left, .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .col-center {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ========== 面板通用样式 ========== */
+    .panel {
+      position: relative;
+      background: linear-gradient(135deg, rgba(16, 32, 56, 0.85) 0%, rgba(10, 22, 40, 0.9) 100%);
+      border: 1px solid rgba(100, 150, 200, 0.15);
+      padding: 14px 16px;
+      backdrop-filter: blur(4px);
+    }
+    .panel::before,
+    .panel::after,
+    .panel .corner-bl,
+    .panel .corner-br {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-color: #d4af37;
+      border-style: solid;
+    }
+    .panel::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .panel::after { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+    .panel .corner-bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+    .panel .corner-br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #e6c65c;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      position: relative;
+    }
+    .panel-title::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: linear-gradient(180deg, #e6c65c, #d4af37);
+      border-radius: 2px;
+    }
+    .panel-title .title-en {
+      font-size: 11px;
+      color: rgba(143, 168, 200, 0.5);
+      font-weight: normal;
+      letter-spacing: 1px;
+      margin-left: auto;
+    }
+
+    /* ========== KPI 卡片 ========== */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .kpi-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(30, 60, 100, 0.6) 0%, rgba(16, 32, 56, 0.8) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      padding: 14px 18px;
+      text-align: center;
+    }
+    .kpi-card::before,
+    .kpi-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #d4af37;
+      border-style: solid;
+    }
+    .kpi-card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .kpi-card::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+    .kpi-value {
+      font-size: 28px;
+      font-weight: bold;
+      background: linear-gradient(180deg, #fff5c8, #d4af37);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Consolas', 'Monaco', monospace;
+      line-height: 1.2;
+    }
+    .kpi-label {
+      font-size: 12px;
+      color: #8fa8c8;
+      margin-top: 4px;
+    }
+
+    /* ========== 4项KPI小卡 ========== */
+    .service-kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .service-kpi {
+      text-align: center;
+      padding: 10px;
+      background: rgba(30, 60, 100, 0.3);
+      border: 1px solid rgba(100, 150, 200, 0.15);
+      position: relative;
+    }
+    .service-kpi .num {
+      font-size: 20px;
+      font-weight: bold;
+      color: #e6c65c;
+      font-family: 'Consolas', monospace;
+    }
+    .service-kpi .label {
+      font-size: 11px;
+      color: #8fa8c8;
+      margin-top: 2px;
+    }
+
+    /* ========== 饼图 / 环形图 ========== */
+    .pie-chart-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+    .pie-chart {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      position: relative;
+    }
+    .pie-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 55px; height: 55px;
+      border-radius: 50%;
+      background: #0a1628;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .pie-center .val {
+      font-size: 15px;
+      font-weight: bold;
+      color: #e6c65c;
+    }
+    .pie-center .lbl {
+      font-size: 9px;
+      color: #8fa8c8;
+    }
+    .pie-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 11px;
+    }
+    .pie-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #b8cfe8;
+    }
+    .pie-legend-item .dot {
+      width: 8px; height: 8px;
+      border-radius: 2px;
+    }
+
+    /* ========== 折线图 ========== */
+    .line-chart {
+      width: 100%;
+      height: 100px;
+      position: relative;
+    }
+    .line-chart svg { width: 100%; height: 100%; }
+
+    /* ========== 地图区域 ========== */
+    .map-container {
+      flex: 1;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(30, 80, 160, 0.2) 0%, transparent 70%),
+        rgba(10, 22, 40, 0.5);
+      border: 1px solid rgba(100, 150, 200, 0.15);
+      overflow: hidden;
+    }
+    .map-container::before,
+    .map-container::after,
+    .map-container .corner-bl,
+    .map-container .corner-br {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-color: #d4af37;
+      border-style: solid;
+      z-index: 10;
+    }
+    .map-container::before { top: -1px; left: -1px; border-width: 3px 0 0 3px; }
+    .map-container::after { top: -1px; right: -1px; border-width: 3px 3px 0 0; }
+    .map-container .corner-bl { bottom: -1px; left: -1px; border-width: 0 0 3px 3px; }
+    .map-container .corner-br { bottom: -1px; right: -1px; border-width: 0 3px 3px 0; }
+    .map-container .panel-title {
+      position: absolute;
+      top: 0; left: 16px; right: 16px;
+      z-index: 5;
+    }
+    .map-svg { width: 100%; height: 100%; }
+
+    .map-legend {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      background: rgba(10, 22, 40, 0.85);
+      padding: 10px 14px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      font-size: 11px;
+      z-index: 5;
+      max-width: 360px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* ========== 服务类型横向柱状图 ========== */
+    .service-type-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .service-type-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .service-type-name {
+      font-size: 11px;
+      color: #b8cfe8;
+      width: 72px;
+      flex-shrink: 0;
+    }
+    .service-type-bar {
+      flex: 1;
+      height: 18px;
+      background: rgba(100, 150, 200, 0.1);
+      border-radius: 9px;
+      overflow: hidden;
+      position: relative;
+    }
+    .service-type-fill {
+      height: 100%;
+      border-radius: 9px;
+      position: relative;
+    }
+    .service-type-fill::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 8px;
+      border-radius: 0 9px 9px 0;
+    }
+    .service-type-val {
+      font-size: 11px;
+      color: #e6c65c;
+      font-family: 'Consolas', monospace;
+      width: 50px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ========== 环形进度 ========== */
+    .dual-ring-row {
+      display: flex;
+      justify-content: space-around;
+      margin: 10px 0;
+    }
+    .ring-item {
+      text-align: center;
+    }
+    .ring-chart {
+      width: 85px;
+      height: 85px;
+      position: relative;
+      margin: 0 auto;
+    }
+    .ring-chart svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .ring-bg { fill: none; stroke: rgba(100, 150, 200, 0.15); stroke-width: 7; }
+    .ring-progress { fill: none; stroke-width: 7; stroke-linecap: round; }
+    .ring-value {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      font-weight: bold;
+      color: #e6c65c;
+      font-family: 'Consolas', monospace;
+    }
+    .ring-label {
+      font-size: 11px;
+      color: #8fa8c8;
+      margin-top: 4px;
+    }
+
+    /* ========== 服务队卡片 ========== */
+    .service-team-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .team-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: linear-gradient(90deg, rgba(196, 30, 58, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      position: relative;
+    }
+    .team-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+    }
+    .team-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c41e3a, #d4af37);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .team-info { flex: 1; }
+    .team-name {
+      font-size: 13px;
+      color: #e6c65c;
+      font-weight: bold;
+    }
+    .team-desc {
+      font-size: 10px;
+      color: #8fa8c8;
+      margin-top: 2px;
+    }
+    .team-count {
+      font-size: 16px;
+      font-weight: bold;
+      color: #c41e3a;
+      font-family: 'Consolas', monospace;
+    }
+    .team-count small {
+      font-size: 10px;
+      color: #8fa8c8;
+      font-weight: normal;
+    }
+
+    /* ========== 服务亮点轮播 ========== */
+    .highlight-slider {
+      position: relative;
+      height: 160px;
+      overflow: hidden;
+    }
+    .highlight-item {
+      position: absolute;
+      inset: 0;
+      padding: 4px;
+      animation: highlightFade 16s infinite;
+      opacity: 0;
+    }
+    .highlight-item:nth-child(1) { animation-delay: 0s; }
+    .highlight-item:nth-child(2) { animation-delay: 4s; }
+    .highlight-item:nth-child(3) { animation-delay: 8s; }
+    .highlight-item:nth-child(4) { animation-delay: 12s; }
+    @keyframes highlightFade {
+      0%, 20% { opacity: 0; transform: translateY(10px); }
+      5%, 20% { opacity: 1; transform: translateY(0); }
+      25%, 100% { opacity: 0; transform: translateY(-10px); }
+    }
+    .highlight-img {
+      width: 100%;
+      height: 90px;
+      background: linear-gradient(135deg, rgba(196, 30, 58, 0.3), rgba(212, 175, 55, 0.2));
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .highlight-title {
+      font-size: 13px;
+      color: #e6c65c;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .highlight-desc {
+      font-size: 11px;
+      color: #b8cfe8;
+      line-height: 1.5;
+    }
+
+    /* ========== 底部跑马灯 ========== */
+    .marquee-bar {
+      position: relative;
+      z-index: 5;
+      height: 36px;
+      background: linear-gradient(90deg, rgba(196, 30, 58, 0.3), rgba(10, 22, 40, 0.8), rgba(196, 30, 58, 0.3));
+      border-top: 1px solid rgba(212, 175, 55, 0.3);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .marquee-label {
+      flex-shrink: 0;
+      padding: 0 16px;
+      background: linear-gradient(90deg, #c41e3a, #9b1b30);
+      color: #e6c65c;
+      font-size: 12px;
+      font-weight: bold;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+    }
+    .marquee-content {
+      white-space: nowrap;
+      animation: marquee 30s linear infinite;
+      color: #b8cfe8;
+      font-size: 13px;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    @keyframes numGlow {
+      0%, 100% { text-shadow: 0 0 10px rgba(230, 198, 92, 0.3); }
+      50% { text-shadow: 0 0 20px rgba(230, 198, 92, 0.6); }
+    }
+    .glow-num { animation: numGlow 3s ease-in-out infinite; }
+
+    /* 统计小卡行 */
+    .stat-row {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 10px;
+    }
+    .stat-item { text-align: center; }
+    .stat-item .num {
+      font-size: 18px;
+      font-weight: bold;
+      color: #e6c65c;
+      font-family: 'Consolas', monospace;
+    }
+    .stat-item .label {
+      font-size: 10px;
+      color: #8fa8c8;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 背景 -->
+  <div class="bigscreen-bg"></div>
+  <div class="grid-bg"></div>
+  <div class="scan-line"></div>
+
+  <!-- 顶部标题栏 -->
+  <div class="header">
+    <div class="header-left">
+      <div class="party-badge">党</div>
+      <div class="date-time">
+        <span class="date" id="currentDate">2026年8月18日 星期二</span>
+        <span id="currentTime">09:28:36</span>
+      </div>
+    </div>
+    <div class="header-title">党建服务一张图</div>
+    <div class="header-right">
+      <div class="mode-switch">
+        <button>组织</button>
+        <button>产业</button>
+        <button>人才</button>
+        <button class="active">服务</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主体三栏 -->
+  <div class="main-container">
+    <!-- 左列 -->
+    <div class="col-left">
+      <!-- 两个专项服务成效 -->
+      <div class="panel">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          专项服务成效
+          <span class="title-en">SPECIAL SERVICE</span>
+        </div>
+        <div class="service-kpi-grid">
+          <div class="service-kpi">
+            <div class="num glow-num">8,560</div>
+            <div class="label">企业走访（次）</div>
+          </div>
+          <div class="service-kpi">
+            <div class="num glow-num">12.8万</div>
+            <div class="label">群众服务（次）</div>
+          </div>
+          <div class="service-kpi">
+            <div class="num glow-num">2,580</div>
+            <div class="label">服务企业（家）</div>
+          </div>
+          <div class="service-kpi">
+            <div class="num glow-num">96.8%</div>
+            <div class="label">服务满意度</div>
+          </div>
+        </div>
+        <div style="font-size: 11px; color: #8fa8c8; margin-bottom: 6px;">人员构成</div>
+        <div class="pie-chart-container">
+          <div class="pie-chart" style="width: 90px; height: 90px; background: conic-gradient(#c41e3a 0 35%, #d4af37 35% 60%, #3b82f6 60% 82%, #22c55e 82% 100%);">
+            <div class="pie-center" style="width: 50px; height: 50px;">
+              <span class="val" style="font-size: 14px;">3580</span>
+              <span class="lbl">服务人员</span>
+            </div>
+          </div>
+          <div class="pie-legend">
+            <div class="pie-legend-item"><span class="dot" style="background:#c41e3a;"></span>党员干部 35%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#d4af37;"></span>志愿者 25%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#3b82f6;"></span>社工 22%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#22c55e;"></span>其他 18%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 走访服务统计 -->
+      <div class="panel" style="flex: 1;">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          走访服务统计
+          <span class="title-en">VISIT SERVICE</span>
+        </div>
+        <div class="stat-row">
+          <div class="stat-item">
+            <div class="num glow-num">8,560</div>
+            <div class="label">累计走访（次）</div>
+          </div>
+          <div class="stat-item">
+            <div class="num" style="color: #22c55e;">72.3%</div>
+            <div class="label">覆盖率</div>
+          </div>
+        </div>
+        <div class="line-chart">
+          <svg viewBox="0 0 320 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="visitGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(59, 130, 246, 0.35)"/>
+                <stop offset="100%" stop-color="rgba(59, 130, 246, 0)"/>
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="20" x2="320" y2="20" stroke="rgba(100,150,200,0.1)" stroke-width="1"/>
+            <line x1="0" y1="50" x2="320" y2="50" stroke="rgba(100,150,200,0.1)" stroke-width="1"/>
+            <line x1="0" y1="80" x2="320" y2="80" stroke="rgba(100,150,200,0.1)" stroke-width="1"/>
+            <path d="M0,82 L27,78 L53,72 L80,65 L107,58 L133,52 L160,45 L187,40 L213,32 L240,28 L267,22 L320,15 L320,100 L0,100 Z" fill="url(#visitGrad)"/>
+            <path d="M0,82 L27,78 L53,72 L80,65 L107,58 L133,52 L160,45 L187,40 L213,32 L240,28 L267,22 L320,15"
+              fill="none" stroke="#3b82f6" stroke-width="2"/>
+            <circle cx="0" cy="82" r="2.5" fill="#3b82f6"/>
+            <circle cx="80" cy="65" r="2.5" fill="#3b82f6"/>
+            <circle cx="160" cy="45" r="2.5" fill="#3b82f6"/>
+            <circle cx="240" cy="28" r="2.5" fill="#3b82f6"/>
+            <circle cx="320" cy="15" r="2.5" fill="#3b82f6"/>
+          </svg>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 10px; color: #8fa8c8; padding: 0 4px; margin-top: 4px;">
+          <span>1月</span><span>3月</span><span>5月</span><span>7月</span><span>9月</span><span>11月</span><span>12月</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中间主区 -->
+    <div class="col-center">
+      <!-- KPI行 -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-value glow-num">36,580</div>
+          <div class="kpi-label">服务总次数</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value glow-num">2,580</div>
+          <div class="kpi-label">服务企业</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value glow-num">12.8万</div>
+          <div class="kpi-label">群众服务</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value glow-num">96.8%</div>
+          <div class="kpi-label">满意度</div>
+        </div>
+      </div>
+
+      <!-- 党建服务地图 -->
+      <div class="map-container panel">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          党建服务地图
+          <span class="title-en">SERVICE MAP</span>
+        </div>
+        <svg class="map-svg" viewBox="0 0 800 420" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="mapFill" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="rgba(30, 80, 160, 0.3)"/>
+              <stop offset="100%" stop-color="rgba(20, 50, 100, 0.2)"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <radialGradient id="hotspot1">
+              <stop offset="0%" stop-color="#c41e3a" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#c41e3a" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="hotspot2">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- 区域轮廓 -->
+          <path d="M150,50 L300,30 L450,40 L580,70 L680,130 L720,230 L680,330 L580,380 L420,400 L250,380 L120,320 L80,210 L100,110 Z"
+            fill="url(#mapFill)" stroke="rgba(100, 180, 255, 0.4)" stroke-width="1.5" filter="url(#glow)"/>
+
+          <!-- 热点区域高亮 -->
+          <ellipse cx="470" cy="120" rx="80" ry="50" fill="url(#hotspot1)">
+            <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+          </ellipse>
+          <ellipse cx="230" cy="160" rx="60" ry="40" fill="url(#hotspot2)">
+            <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.5s" repeatCount="indefinite"/>
+          </ellipse>
+
+          <!-- 内部区域划分 -->
+          <path d="M300,30 L350,170 L250,250 L120,320 L80,210 L100,110 Z"
+            fill="rgba(196, 30, 58, 0.04)" stroke="rgba(100, 180, 255, 0.18)" stroke-width="1"/>
+          <path d="M450,40 L580,70 L600,190 L480,250 L350,170 Z"
+            fill="rgba(212, 175, 55, 0.04)" stroke="rgba(100, 180, 255, 0.18)" stroke-width="1"/>
+          <path d="M600,190 L680,130 L720,230 L680,330 L580,380 L520,290 Z"
+            fill="rgba(59, 130, 246, 0.04)" stroke="rgba(100, 180, 255, 0.18)" stroke-width="1"/>
+          <path d="M350,170 L480,250 L520,290 L420,400 L250,380 L250,250 Z"
+            fill="rgba(34, 197, 94, 0.04)" stroke="rgba(100, 180, 255, 0.18)" stroke-width="1"/>
+
+          <!-- 区域标签 -->
+          <text x="200" y="180" fill="#8fa8c8" font-size="11" text-anchor="middle" opacity="0.8">城东区</text>
+          <text x="460" y="140" fill="#8fa8c8" font-size="11" text-anchor="middle" opacity="0.8">城西区</text>
+          <text x="620" y="240" fill="#8fa8c8" font-size="11" text-anchor="middle" opacity="0.8">高新区</text>
+          <text x="380" y="310" fill="#8fa8c8" font-size="11" text-anchor="middle" opacity="0.8">经开区</text>
+
+          <!-- 红色服务点 - 政务服务 -->
+          <g transform="translate(470, 120)">
+            <circle r="14" fill="#c41e3a" opacity="0.3">
+              <animate attributeName="r" values="10;18;10" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="6" fill="#c41e3a"/>
+            <circle r="3" fill="#ff6b6b"/>
+          </g>
+          <g transform="translate(230, 150)">
+            <circle r="12" fill="#c41e3a" opacity="0.3">
+              <animate attributeName="r" values="8;16;8" dur="2.3s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="5" fill="#c41e3a"/>
+            <circle r="2.5" fill="#ff6b6b"/>
+          </g>
+          <g transform="translate(620, 220)">
+            <circle r="10" fill="#c41e3a" opacity="0.3">
+              <animate attributeName="r" values="7;13;7" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="4" fill="#c41e3a"/>
+          </g>
+
+          <!-- 金色服务点 - 企业服务 -->
+          <g transform="translate(550, 180)">
+            <circle r="13" fill="#d4af37" opacity="0.3">
+              <animate attributeName="r" values="9;17;9" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="5.5" fill="#d4af37"/>
+            <circle r="2.5" fill="#ffe066"/>
+          </g>
+          <g transform="translate(300, 100)">
+            <circle r="10" fill="#d4af37" opacity="0.3">
+              <animate attributeName="r" values="7;13;7" dur="2.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="4" fill="#d4af37"/>
+          </g>
+          <g transform="translate(390, 310)">
+            <circle r="11" fill="#d4af37" opacity="0.3">
+              <animate attributeName="r" values="8;14;8" dur="2.7s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="4.5" fill="#d4af37"/>
+          </g>
+
+          <!-- 蓝色服务点 - 民生服务 -->
+          <g transform="translate(160, 230)">
+            <circle r="11" fill="#3b82f6" opacity="0.3">
+              <animate attributeName="r" values="7;15;7" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="5" fill="#3b82f6"/>
+            <circle r="2" fill="#60a5fa"/>
+          </g>
+          <g transform="translate(500, 340)">
+            <circle r="9" fill="#3b82f6" opacity="0.3">
+              <animate attributeName="r" values="6;12;6" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="4" fill="#3b82f6"/>
+          </g>
+          <g transform="translate(660, 280)">
+            <circle r="8" fill="#3b82f6" opacity="0.3">
+              <animate attributeName="r" values="5;11;5" dur="2.1s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="3.5" fill="#3b82f6"/>
+          </g>
+
+          <!-- 绿色服务点 - 志愿法律服务 -->
+          <g transform="translate(280, 340)">
+            <circle r="10" fill="#22c55e" opacity="0.3">
+              <animate attributeName="r" values="6;14;6" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="4.5" fill="#22c55e"/>
+          </g>
+          <g transform="translate(420, 220)">
+            <circle r="9" fill="#22c55e" opacity="0.3">
+              <animate attributeName="r" values="5;12;5" dur="1.9s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="4" fill="#22c55e"/>
+          </g>
+          <g transform="translate(180, 300)">
+            <circle r="7" fill="#22c55e" opacity="0.3">
+              <animate attributeName="r" values="4;10;4" dur="2.3s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="3" fill="#22c55e"/>
+          </g>
+          <g transform="translate(580, 280)">
+            <circle r="8" fill="#22c55e" opacity="0.3">
+              <animate attributeName="r" values="5;11;5" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="3.5" fill="#22c55e"/>
+          </g>
+        </svg>
+
+        <!-- 图例 -->
+        <div class="map-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:#c41e3a; box-shadow:0 0 6px #c41e3a;"></span>政务服务</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#d4af37; box-shadow:0 0 6px #d4af37;"></span>企业服务</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#3b82f6; box-shadow:0 0 6px #3b82f6;"></span>民生服务</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#22c55e; box-shadow:0 0 6px #22c55e;"></span>志愿服务</div>
+        </div>
+      </div>
+
+      <!-- 服务类型分布 -->
+      <div class="panel">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          服务类型分布
+          <span class="title-en">SERVICE TYPES</span>
+        </div>
+        <div class="service-type-chart">
+          <div class="service-type-item">
+            <span class="service-type-name">政策咨询</span>
+            <div class="service-type-bar">
+              <div class="service-type-fill" style="width: 92%; background: linear-gradient(90deg, #c41e3a, #ff6b6b);">
+              </div>
+            </div>
+            <span class="service-type-val">9,860次</span>
+          </div>
+          <div class="service-type-item">
+            <span class="service-type-name">企业帮扶</span>
+            <div class="service-type-bar">
+              <div class="service-type-fill" style="width: 78%; background: linear-gradient(90deg, #d4af37, #ffe066);">
+              </div>
+            </div>
+            <span class="service-type-val">8,560次</span>
+          </div>
+          <div class="service-type-item">
+            <span class="service-type-name">民生服务</span>
+            <div class="service-type-bar">
+              <div class="service-type-fill" style="width: 85%; background: linear-gradient(90deg, #3b82f6, #60a5fa);">
+              </div>
+            </div>
+            <span class="service-type-val">9,120次</span>
+          </div>
+          <div class="service-type-item">
+            <span class="service-type-name">法律援助</span>
+            <div class="service-type-bar">
+              <div class="service-type-fill" style="width: 56%; background: linear-gradient(90deg, #22c55e, #4ade80);">
+              </div>
+            </div>
+            <span class="service-type-val">6,280次</span>
+          </div>
+          <div class="service-type-item">
+            <span class="service-type-name">志愿服务</span>
+            <div class="service-type-bar">
+              <div class="service-type-fill" style="width: 42%; background: linear-gradient(90deg, #8b5cf6, #a78bfa);">
+              </div>
+            </div>
+            <span class="service-type-val">4,560次</span>
+          </div>
+          <div class="service-type-item">
+            <span class="service-type-name">其他服务</span>
+            <div class="service-type-bar">
+              <div class="service-type-fill" style="width: 28%; background: linear-gradient(90deg, #ec4899, #f472b6);">
+              </div>
+            </div>
+            <span class="service-type-val">2,200次</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右列 -->
+    <div class="col-right">
+      <!-- 群众服务分析 -->
+      <div class="panel">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          群众服务分析
+          <span class="title-en">PUBLIC SERVICE</span>
+        </div>
+        <div style="font-size: 11px; color: #8fa8c8; margin-bottom: 6px;">服务类型分布</div>
+        <div class="pie-chart-container">
+          <div class="pie-chart" style="width: 95px; height: 95px; background: conic-gradient(#c41e3a 0 28%, #d4af37 28% 52%, #3b82f6 52% 72%, #22c55e 72% 88%, #8b5cf6 88% 100%);">
+            <div class="pie-center" style="width: 52px; height: 52px;">
+              <span class="val" style="font-size: 16px;">12.8万</span>
+              <span class="lbl">总服务量</span>
+            </div>
+          </div>
+          <div class="pie-legend">
+            <div class="pie-legend-item"><span class="dot" style="background:#c41e3a;"></span>咨询 28%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#d4af37;"></span>办事 24%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#3b82f6;"></span>投诉 20%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#22c55e;"></span>求助 16%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#8b5cf6;"></span>建议 12%</div>
+          </div>
+        </div>
+        <div class="dual-ring-row">
+          <div class="ring-item">
+            <div class="ring-chart">
+              <svg viewBox="0 0 100 100">
+                <circle class="ring-bg" cx="50" cy="50" r="40"></circle>
+                <circle class="ring-progress" cx="50" cy="50" r="40"
+                  stroke="url(#doneGrad)" stroke-dasharray="251" stroke-dashoffset="4"></circle>
+                <defs>
+                  <linearGradient id="doneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#22c55e"/>
+                    <stop offset="100%" stop-color="#16a34a"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="ring-value" style="font-size: 15px;">98.5%</div>
+            </div>
+            <div class="ring-label">办结率</div>
+          </div>
+          <div class="ring-item">
+            <div class="ring-chart">
+              <svg viewBox="0 0 100 100">
+                <circle class="ring-bg" cx="50" cy="50" r="40"></circle>
+                <circle class="ring-progress" cx="50" cy="50" r="40"
+                  stroke="url(#respGrad)" stroke-dasharray="251" stroke-dashoffset="60"></circle>
+                <defs>
+                  <linearGradient id="respGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#e6c65c"/>
+                    <stop offset="100%" stop-color="#d4af37"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="ring-value" style="font-size: 15px;">2.3h</div>
+            </div>
+            <div class="ring-label">响应时长</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 党建服务队伍 -->
+      <div class="panel">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          党建服务队伍
+          <span class="title-en">SERVICE TEAM</span>
+        </div>
+        <div style="text-align: center; margin-bottom: 10px;">
+          <span style="font-size: 24px; font-weight: bold; color: #e6c65c; font-family: Consolas,monospace;">3,580</span>
+          <span style="font-size: 12px; color: #8fa8c8; margin-left: 4px;">名党员志愿者</span>
+        </div>
+        <div class="service-team-cards">
+          <div class="team-card">
+            <div class="team-icon">♥</div>
+            <div class="team-info">
+              <div class="team-name">红帆党员志愿服务队</div>
+              <div class="team-desc">政策宣讲·便民服务</div>
+            </div>
+            <div class="team-count">1,280<small>人</small></div>
+          </div>
+          <div class="team-card">
+            <div class="team-icon" style="background: linear-gradient(135deg, #3b82f6, #d4af37);">⚖</div>
+            <div class="team-info">
+              <div class="team-name">金盾法律服务队</div>
+              <div class="team-desc">法律援助·纠纷调解</div>
+            </div>
+            <div class="team-count" style="color: #3b82f6;">860<small>人</small></div>
+          </div>
+          <div class="team-card">
+            <div class="team-icon" style="background: linear-gradient(135deg, #22c55e, #d4af37);">✦</div>
+            <div class="team-info">
+              <div class="team-name">绿叶民生服务队</div>
+              <div class="team-desc">助老扶幼·社区服务</div>
+            </div>
+            <div class="team-count" style="color: #22c55e;">1,440<small>人</small></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 党建服务亮点 -->
+      <div class="panel" style="flex: 1;">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          党建服务亮点
+          <span class="title-en">SERVICE HIGHLIGHTS</span>
+        </div>
+        <div class="highlight-slider">
+          <div class="highlight-item">
+            <div class="highlight-img">🏆</div>
+            <div class="highlight-title">荣获"全国基层服务示范单位"</div>
+            <div class="highlight-desc">我区党建服务中心获评全国基层服务示范单位，服务模式在全国推广。</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-img">💡</div>
+            <div class="highlight-title">"一站式"服务改革成效显著</div>
+            <div class="highlight-desc">推行"一窗受理、集成服务"，办理时限平均压缩60%，群众满意度达96.8%。</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-img">🤝</div>
+            <div class="highlight-title">党员志愿服务时长破百万</div>
+            <div class="highlight-desc">全区3580名党员志愿者累计服务时长突破100万小时，惠及群众20余万人次。</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-img">📱</div>
+            <div class="highlight-title">"智慧党建"服务平台上线</div>
+            <div class="highlight-desc">打造线上线下融合的智慧服务体系，实现服务事项"掌上办""随时办"。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部跑马灯 -->
+  <div class="marquee-bar">
+    <div class="marquee-label">服务动态</div>
+    <div class="marquee-content">
+      【喜报】我区党建服务中心获评"全国基层服务示范单位" &nbsp;&nbsp;|&nbsp;&nbsp;
+      全区党员志愿服务时长突破100万小时 &nbsp;&nbsp;|&nbsp;&nbsp;
+      "一站式"服务改革成效显著，群众满意度达96.8% &nbsp;&nbsp;|&nbsp;&nbsp;
+      智慧党建服务平台正式上线，实现服务事项"掌上办" &nbsp;&nbsp;|&nbsp;&nbsp;
+      我区首批"红色代办员"上岗，为企业群众提供上门服务 &nbsp;&nbsp;|&nbsp;&nbsp;
+      "党建+网格"治理模式实现社区服务全覆盖
+    </div>
+  </div>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const weeks = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+      const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${weeks[now.getDay()]}`;
+      const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+      document.getElementById('currentDate').textContent = dateStr;
+      document.getElementById('currentTime').textContent = timeStr;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+  </script>
+<script src="bigscreen.js"></script>
+  <script src="common.js"></script>
+</body>
+</html>
+
