@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>党建数字化平台 · 页面设计全集</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="layout">
+  <!-- 左侧边栏 -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">党</div>
+      <div class="brand-text">
+        党建数字化平台
+        <small>智慧党建管理系统</small>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-group">
+        <div class="nav-label">导航</div>
+        <div class="nav-item active">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+            </svg>
+          </span>
+          页面清单
+        </div>
+      </div>
+
+      <div class="nav-group expanded">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </span>
+          首页
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="dashboard.html" class="nav-item">工作台</a>
+          <a href="org_analysis.html" class="nav-item">数据驾驶舱</a>
+          <a href="org_data.html" class="nav-item">党建地图</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </span>
+          党建基础管理
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="org_data.html" class="nav-item">组织数据管理</a>
+          <a href="org_committee.html" class="nav-item">工委管理</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </span>
+          产业基础管理
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="industry_management.html" class="nav-item">产业数据管理</a>
+          <a href="enterprise_analysis.html" class="nav-item">企业分析</a>
+          <a href="enterprise.html" class="nav-item">企业管理</a>
+          <a href="enterprise_publish.html" class="nav-item">企业数据发布</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </span>
+          党员管理
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="member.html" class="nav-item">党员列表</a>
+          <a href="member_analysis.html" class="nav-item">党员分析</a>
+          <a href="member_development.html" class="nav-item">党员发展流程</a>
+          <a href="member_profile.html" class="nav-item">党员详情</a>
+          <a href="activity.html" class="nav-item">党组织活动</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+            </svg>
+          </span>
+          人才培养
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="talent_analysis.html" class="nav-item">人才分析</a>
+          <a href="talent_management.html" class="nav-item">人才管理</a>
+          <a href="talent_profile.html" class="nav-item">人才画像</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </span>
+          信息发布系统
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="info_publish.html" class="nav-item">内容管理</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
+            </svg>
+          </span>
+          标签管理
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="tag_management.html" class="nav-item">标签体系</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+          </span>
+          智能报告管理
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="report.html" class="nav-item">报表中心</a>
+          <a href="report_builder.html" class="nav-item">报表设计器</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </span>
+          系统管理
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="system_management.html" class="nav-item">系统设置</a>
+          <a href="role.html" class="nav-item">角色权限</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg>
+          </span>
+          数据管理
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="data_management.html" class="nav-item">数据管理</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+          </span>
+          报表组件
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="report_builder.html" class="nav-item">报表组件</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-item">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+              <circle cx="12" cy="5" r="2"></circle>
+              <path d="M12 7v4"></path>
+            </svg>
+          </span>
+          智能体
+          <span class="nav-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="agent_workflow.html" class="nav-item">智能体工作流</a>
+          <a href="agent_knowledge.html" class="nav-item">知识库</a>
+          <a href="agent_finetune.html" class="nav-item">模型微调</a>
+        </div>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="main">
+    <!-- 顶部导航栏 -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="breadcrumb">
+          <a href="#">首页</a>
+          <span class="separator">/</span>
+          <span class="current">页面清单</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <div class="topbar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="badge-dot"></span>
+        </div>
+        <div class="avatar">张</div>
+      </div>
+    </header>
+
+    <!-- 内容区 -->
+    <div class="content">
+      <!-- Hero 区域 -->
+      <section class="hero-section">
+        <div class="hero-content">
+          <h1 class="hero-title">党建数字化平台 · 页面设计全集</h1>
+          <p class="hero-subtitle">以数字化赋能基层党建，打造智慧党建管理新范式，涵盖 PC 端、大屏、H5、智能体全场景设计</p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-value">26</div>
+              <div class="hero-stat-label">PC 端页面</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">5</div>
+              <div class="hero-stat-label">数据大屏</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">1</div>
+              <div class="hero-stat-label">H5 移动端</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">3</div>
+              <div class="hero-stat-label">智能体</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">1</div>
+              <div class="hero-stat-label">登录入口</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 首页模块 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              </svg>
+            </span>
+            首页
+            <span class="module-group-count">3 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="dashboard.html" class="page-card red">
+            <div class="page-card-tag"><span class="tag tag-red">工作台</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">工作台</div>
+            <div class="page-card-desc">个人工作台，展示待办事项、KPI数据、快捷入口和最新动态</div>
+          </a>
+          <a href="org_analysis.html" class="page-card blue">
+            <div class="page-card-tag"><span class="tag tag-blue">驾驶舱</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="12 6 16 12 12 12 8 12 12 6"></polygon>
+              </svg>
+            </div>
+            <div class="page-card-title">数据驾驶舱</div>
+            <div class="page-card-desc">综合数据可视化大屏，全局掌控党建工作运行态势</div>
+          </a>
+          <a href="org_data.html" class="page-card green">
+            <div class="page-card-tag"><span class="tag tag-green">地图</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                <line x1="8" y1="2" x2="8" y2="18"></line>
+                <line x1="16" y1="6" x2="16" y2="22"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">党建地图</div>
+            <div class="page-card-desc">基于地理信息的党组织分布可视化，一图掌握全域党建资源</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 党建基础管理 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #2c5282, #1e3a5f);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              </svg>
+            </span>
+            党建基础管理
+            <span class="module-group-count">3 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="org_committee.html" class="page-card">
+            <div class="page-card-tag"><span class="tag">列表</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M3 21h18"></path>
+                <path d="M5 21V7l8-4v18"></path>
+                <path d="M19 21V11l-6-4"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">工委管理</div>
+            <div class="page-card-desc">党组织架构管理，支持层级化组织维护和信息配置</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 产业基础管理 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #2f855a, #276749);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+              </svg>
+            </span>
+            产业基础管理
+            <span class="module-group-count">5 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="industry_management.html" class="page-card green">
+            <div class="page-card-tag"><span class="tag tag-green">管理</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M3 7h18M3 12h18M3 17h18"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">产业与行业管理</div>
+            <div class="page-card-desc">产业类型树形管理、行业标签维护、多层级分类</div>
+          </a>
+          <a href="enterprise_analysis.html" class="page-card green">
+            <div class="page-card-tag"><span class="tag tag-green">分析</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">企业数据分析</div>
+            <div class="page-card-desc">企业总量、产业分布、规模结构、增长趋势</div>
+          </a>
+          <a href="enterprise.html" class="page-card green">
+            <div class="page-card-tag"><span class="tag tag-green">列表</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M3 21h18"></path>
+                <path d="M5 21V7l7-4 7 4v14"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">企业数据管理</div>
+            <div class="page-card-desc">企业基础台账、标签、批量导入与企业画像</div>
+          </a>
+          <a href="enterprise_publish.html" class="page-card green">
+            <div class="page-card-tag"><span class="tag tag-green">发布</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </div>
+            <div class="page-card-title">企业数据发布</div>
+            <div class="page-card-desc">企业信息、招聘数据、产业发布管理与审核</div>
+          </a>
+          <a href="enterprise_profile.html" class="page-card green">
+            <div class="page-card-tag"><span class="tag tag-green">详情</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">企业画像详情</div>
+            <div class="page-card-desc">五维度企业画像：基本/党建/经营/人才/服务</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 党员管理 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #c41e3a, #9b1b30);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+            </span>
+            党员管理
+            <span class="module-group-count">3 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="member.html" class="page-card red">
+            <div class="page-card-tag"><span class="tag tag-red">列表</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">党员列表</div>
+            <div class="page-card-desc">党员信息全量管理，支持组织、状态、入党时间等多维度筛选</div>
+          </a>
+          <a href="member_analysis.html" class="page-card red">
+            <div class="page-card-tag"><span class="tag tag-red">分析</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M4 21v-1a8 8 0 0 1 16 0v1"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">党员分析</div>
+            <div class="page-card-desc">党员队伍结构分析，年龄、学历、党龄、分布多维统计</div>
+          </a>
+          <a href="member_development.html" class="page-card red">
+            <div class="page-card-tag"><span class="tag tag-red">流程</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <div class="page-card-title">党员发展流程</div>
+            <div class="page-card-desc">入党全流程管理，从申请到转正各阶段跟踪记录</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 人才培养 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #d4af37, #b8860b);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+              </svg>
+            </span>
+            人才培养
+            <span class="module-group-count">2 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="talent_analysis.html" class="page-card gold">
+            <div class="page-card-tag"><span class="tag tag-gold">分析</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">人才分析</div>
+            <div class="page-card-desc">人才队伍结构、培养进度、考核成果多维度分析</div>
+          </a>
+          <a href="talent_management.html" class="page-card gold">
+            <div class="page-card-tag"><span class="tag tag-gold">管理</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <path d="M9 15l2 2 4-4"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">人才管理</div>
+            <div class="page-card-desc">人才库管理、培训计划与考核评价全流程</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 信息发布系统 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #2b6cb0, #2c5282);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              </svg>
+            </span>
+            信息发布系统
+            <span class="module-group-count">2 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="info_publish.html" class="page-card blue">
+            <div class="page-card-tag"><span class="tag tag-blue">内容</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">内容管理</div>
+            <div class="page-card-desc">党建新闻、通知公告、学习资料等内容的发布与管理</div>
+          </a>
+          <a href="#" class="page-card blue">
+            <div class="page-card-tag"><span class="tag tag-blue">栏目</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">栏目管理</div>
+            <div class="page-card-desc">信息发布栏目配置，支持多级栏目和权限设置</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 标签管理 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #805ad5, #553c9a);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+              </svg>
+            </span>
+            标签管理
+            <span class="module-group-count">2 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="tag_management.html" class="page-card" style="--tag-color: #805ad5;">
+            <div class="page-card-tag"><span class="tag tag-blue" style="background: rgba(128,90,213,0.1); color: #805ad5; border-color: rgba(128,90,213,0.2);">标签</span></div>
+            <div class="page-card-icon" style="background: linear-gradient(135deg, rgba(128,90,213,0.12), rgba(128,90,213,0.05)); color: #805ad5;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">标签体系</div>
+            <div class="page-card-desc">党员标签分类体系配置，支持多维度标签定义</div>
+          </a>
+          <a href="#" class="page-card" style="--tag-color: #805ad5;">
+            <div class="page-card-tag"><span class="tag tag-blue" style="background: rgba(128,90,213,0.1); color: #805ad5; border-color: rgba(128,90,213,0.2);">分群</span></div>
+            <div class="page-card-icon" style="background: linear-gradient(135deg, rgba(128,90,213,0.12), rgba(128,90,213,0.05)); color: #805ad5;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="18" cy="10" r="3"></circle>
+                <path d="M22 21v-2a3 3 0 0 0-2-2.83"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">人群分群</div>
+            <div class="page-card-desc">基于标签的党员人群分群，精准定位目标群体</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 智能报告管理 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #c05621, #9c4221);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+              </svg>
+            </span>
+            智能报告管理
+            <span class="module-group-count">2 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="report.html" class="page-card" style="--tag-color: #c05621;">
+            <div class="page-card-tag"><span class="tag tag-orange">报告</span></div>
+            <div class="page-card-icon" style="background: linear-gradient(135deg, rgba(192,86,33,0.12), rgba(192,86,33,0.05)); color: var(--warning);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="8" y1="13" x2="16" y2="13"></line>
+                <line x1="8" y1="17" x2="13" y2="17"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">报告列表</div>
+            <div class="page-card-desc">AI 生成的党建工作报告、数据分析报告列表</div>
+          </a>
+          <a href="report_builder.html" class="page-card" style="--tag-color: #c05621;">
+            <div class="page-card-tag"><span class="tag tag-orange">设计器</span></div>
+            <div class="page-card-icon" style="background: linear-gradient(135deg, rgba(192,86,33,0.12), rgba(192,86,33,0.05)); color: var(--warning);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">报告模板</div>
+            <div class="page-card-desc">智能报告模板配置，自定义报告结构和数据指标</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 系统管理 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #4a5568, #2d3748);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </span>
+            系统管理
+            <span class="module-group-count">3 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="role.html" class="page-card">
+            <div class="page-card-tag"><span class="tag">权限</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">角色权限</div>
+            <div class="page-card-desc">系统角色与权限配置，精细化权限管理</div>
+          </a>
+          <a href="system_management.html" class="page-card">
+            <div class="page-card-tag"><span class="tag">用户</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="page-card-title">用户管理</div>
+            <div class="page-card-desc">系统用户账号管理，支持用户增删改查和状态管理</div>
+          </a>
+          <a href="#" class="page-card">
+            <div class="page-card-tag"><span class="tag">日志</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="8" y1="13" x2="16" y2="13"></line>
+                <line x1="8" y1="17" x2="16" y2="17"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">操作日志</div>
+            <div class="page-card-desc">系统操作审计日志，全量记录用户行为轨迹</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 数据管理 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #2b6cb0, #2c5282);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              </svg>
+            </span>
+            数据管理
+            <span class="module-group-count">2 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="data_management.html" class="page-card blue">
+            <div class="page-card-tag"><span class="tag tag-blue">数据</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+              </svg>
+            </div>
+            <div class="page-card-title">数据资产</div>
+            <div class="page-card-desc">党建数据资产目录，数据元信息与血缘关系管理</div>
+          </a>
+          <a href="data_management.html" class="page-card blue">
+            <div class="page-card-tag"><span class="tag tag-blue">质量</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <div class="page-card-title">数据质量</div>
+            <div class="page-card-desc">数据质量监控与治理，确保数据准确性和完整性</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 报表组件 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #2f855a, #276749);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+              </svg>
+            </span>
+            报表组件
+            <span class="module-group-count">2 个页面</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <a href="report_builder.html" class="page-card green">
+            <div class="page-card-tag"><span class="tag tag-green">设计器</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">报表设计器</div>
+            <div class="page-card-desc">可视化报表拖拽设计器，灵活定制各类统计报表</div>
+          </a>
+          <a href="report.html" class="page-card green">
+            <div class="page-card-tag"><span class="tag tag-green">展示</span></div>
+            <div class="page-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <div class="page-card-title">报表展示</div>
+            <div class="page-card-desc">报表数据展示与导出，支持多维度钻取分析</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- 大屏展示 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #0f1e35, #142841);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+              </svg>
+            </span>
+            大屏展示
+            <span class="module-group-count">6 个大屏</span>
+          </div>
+        </div>
+        <div class="bigscreen-grid">
+          <a href="bigscreen_org.html" class="bigscreen-card featured">
+            <div class="bigscreen-decoration"></div>
+            <div class="bigscreen-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="bigscreen-title">组织建设一张图</div>
+            <div class="bigscreen-desc">党员/党组织总数、结构分析、GIS点位、党建品牌与新兴领域成效</div>
+          </a>
+          <a href="bigscreen_industry.html" class="bigscreen-card">
+            <div class="bigscreen-decoration"></div>
+            <div class="bigscreen-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+                <path d="M3 21h18"></path>
+                <path d="M5 21V7l8-4v18"></path>
+                <path d="M19 21V11l-6-4"></path>
+              </svg>
+            </div>
+            <div class="bigscreen-title">融合发展一张图</div>
+            <div class="bigscreen-desc">光伏产业链、产业运行、政策培训、科技创新与先进典型</div>
+          </a>
+          <a href="bigscreen_talent.html" class="bigscreen-card">
+            <div class="bigscreen-decoration"></div>
+            <div class="bigscreen-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+              </svg>
+            </div>
+            <div class="bigscreen-title">人才发展一张图</div>
+            <div class="bigscreen-desc">重点人才分布、A-G类统计、招聘趋势、团队引进与人才生态</div>
+          </a>
+          <a href="bigscreen_service.html" class="bigscreen-card">
+            <div class="bigscreen-decoration"></div>
+            <div class="bigscreen-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </div>
+            <div class="bigscreen-title">党建服务一张图</div>
+            <div class="bigscreen-desc">两个专项服务、群众服务、走访服务、服务队伍与党建服务亮点</div>
+          </a>
+          <a href="bigscreen_report.html" class="bigscreen-card">
+            <div class="bigscreen-decoration"></div>
+            <div class="bigscreen-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </div>
+            <div class="bigscreen-title">智能报告大屏</div>
+            <div class="bigscreen-desc">报告生成统计、质量分析、AI生成效率与审核动态</div>
+          </a>
+          <a href="bigscreen_config.html" class="bigscreen-card">
+            <div class="bigscreen-decoration"></div>
+            <div class="bigscreen-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </div>
+            <div class="bigscreen-title">大屏配置中心</div>
+            <div class="bigscreen-desc">模式切换、数据模组配置、组织层级切换与权限控制</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- H5 / 智能体 / 登录入口 -->
+      <section class="module-group">
+        <div class="module-group-header">
+          <div class="module-group-title">
+            <span class="group-icon" style="background: linear-gradient(135deg, #c41e3a, #d4af37);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+              </svg>
+            </span>
+            多端入口
+            <span class="module-group-count">5 个入口</span>
+          </div>
+        </div>
+        <div class="special-grid">
+          <a href="h5_checkin.html" class="special-card">
+            <div class="special-card-icon mobile">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="26" height="26">
+                <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+              </svg>
+            </div>
+            <div class="special-card-title">H5 移动端</div>
+            <div class="special-card-desc">活动签到：扫码、身份认证、签到操作与实时校验</div>
+            <div class="special-card-count">
+              共 <strong>1</strong> 个 H5 页面
+            </div>
+          </a>
+          <a href="agent_knowledge.html" class="special-card">
+            <div class="special-card-icon ai">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="26" height="26">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v6m0 6v6m11-11h-6m-6 0H1m16.95-6.95l-4.24 4.24M8.29 15.76l-4.24 4.24m0-14.14l4.24 4.24m7.42 7.42l4.24 4.24"></path>
+              </svg>
+            </div>
+            <div class="special-card-title">智能体搭建</div>
+            <div class="special-card-desc">知识库维护、工作流搭建、模型参数微调</div>
+            <div class="special-card-count">
+              共 <strong>3</strong> 个智能体页面
+            </div>
+          </a>
+          <a href="login.html" class="special-card">
+            <div class="special-card-icon login">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="26" height="26">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                <polyline points="10 17 15 12 10 7"></polyline>
+                <line x1="15" y1="12" x2="3" y2="12"></line>
+              </svg>
+            </div>
+            <div class="special-card-title">登录入口</div>
+            <div class="special-card-desc">统一身份认证，支持运营端和企业端双入口</div>
+            <div class="special-card-count">
+              共 <strong>1</strong> 个登录页
+            </div>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // 导航菜单展开/收起
+  document.querySelectorAll('.nav-group > .nav-item').forEach(function(item) {
+    item.addEventListener('click', function(e) {
+      var group = this.closest('.nav-group');
+      var sub = group.querySelector('.nav-sub');
+      if (sub) {
+        e.preventDefault();
+        group.classList.toggle('expanded');
+      }
+    });
+  });
+</script>
+<script src="common.js"></script>
+</body>
+</html>
+
+
