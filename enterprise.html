@@ -1,0 +1,2141 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企业数据管理 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ============================================
+       页面特有样式
+       ============================================ */
+    
+    /* 筛选栏 */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+    }
+    
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .filter-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      white-space: nowrap;
+    }
+    
+    .filter-select {
+      height: 32px;
+      padding: 0 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-size: var(--font-size-sm);
+      outline: none;
+      cursor: pointer;
+      min-width: 140px;
+    }
+    
+    .filter-select:focus {
+      border-color: var(--border-gold);
+    }
+    
+    .search-input {
+      height: 32px;
+      padding: 0 12px 0 36px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-size: var(--font-size-sm);
+      outline: none;
+      width: 220px;
+    }
+    
+    .search-input:focus {
+      border-color: var(--border-gold);
+    }
+    
+    .search-wrapper {
+      position: relative;
+    }
+    
+    .search-wrapper .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      font-size: 12px;
+    }
+    
+    .filter-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+    
+    /* 统计卡 */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+    }
+    
+    .stat-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    
+    .stat-icon.blue {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    .stat-icon.gold {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05));
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .stat-icon.red {
+      background: linear-gradient(135deg, rgba(196, 30, 58, 0.2), rgba(196, 30, 58, 0.05));
+      border: 1px solid rgba(196, 30, 58, 0.3);
+    }
+    
+    .stat-icon.green {
+      background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(46, 204, 113, 0.05));
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+    
+    .stat-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'DIN', 'Arial', sans-serif;
+      line-height: 1.2;
+    }
+    
+    .stat-value .unit {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+    
+    .stat-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+    
+    .stat-trend {
+      font-size: 11px;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .stat-trend.up { color: var(--status-success); }
+    .stat-trend.down { color: var(--status-danger); }
+    
+    /* 工具栏 */
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .toolbar-left {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .toolbar-right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .selected-count {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+      margin-left: 8px;
+    }
+    
+    .selected-count strong {
+      color: var(--color-gold-primary);
+    }
+    
+    /* 企业表格 */
+    .enterprise-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .enterprise-table th,
+    .enterprise-table td {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: var(--font-size-sm);
+    }
+    
+    .enterprise-table th {
+      background: rgba(212, 175, 55, 0.08);
+      color: var(--color-gold-primary);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    
+    .enterprise-table td {
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .enterprise-table tbody tr {
+      position: relative;
+      transition: var(--transition-base);
+    }
+    
+    .enterprise-table tbody tr:hover {
+      background: rgba(212, 175, 55, 0.06);
+    }
+    
+    .enterprise-table tbody tr:hover td {
+      color: var(--text-primary);
+    }
+    
+    .enterprise-table tbody tr:hover .action-link {
+      color: var(--color-gold-primary);
+    }
+    
+    .checkbox-cell {
+      width: 40px;
+    }
+    
+    .custom-checkbox {
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--border-light);
+      border-radius: 3px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+    }
+    
+    .custom-checkbox:hover {
+      border-color: var(--border-gold);
+    }
+    
+    .custom-checkbox.checked {
+      background: linear-gradient(135deg, var(--color-red-primary), var(--color-red-deep));
+      border-color: var(--color-red-primary);
+    }
+    
+    .custom-checkbox.checked::after {
+      content: '✓';
+      color: #fff;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    
+    /* 企业名称单元格 */
+    .enterprise-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .enterprise-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--color-blue-medium), var(--color-blue-deep));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-gold-primary);
+      flex-shrink: 0;
+      border: 1px solid var(--border-gold);
+    }
+    
+    .enterprise-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    
+    .enterprise-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    
+    /* 信用代码 */
+    .credit-code {
+      font-family: 'Consolas', monospace;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    
+    /* 党员人数 */
+    .party-count {
+      font-family: 'DIN', 'Arial', sans-serif;
+      font-weight: 600;
+      color: var(--color-gold-primary);
+    }
+    
+    /* 操作列 */
+    .action-cell {
+      position: relative;
+    }
+    
+    .action-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .action-link {
+      color: var(--color-blue-bright);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      transition: var(--transition-base);
+      white-space: nowrap;
+    }
+    
+    .action-link:hover {
+      color: var(--color-gold-primary);
+    }
+    
+    .action-link.primary {
+      color: var(--color-gold-primary);
+    }
+    
+    .action-link.danger {
+      color: var(--status-danger);
+    }
+    
+    /* 查看画像按钮 */
+    .quick-action {
+      display: inline-block;
+      margin-right: 8px;
+    }
+    
+    .quick-action-btn {
+      background: linear-gradient(135deg, var(--color-red-primary), var(--color-red-deep));
+      color: #fff;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: var(--shadow-red-glow);
+      transition: var(--transition-base);
+    }
+    
+    .quick-action-btn:hover {
+      filter: brightness(1.1);
+    }
+    
+    /* 表格容器 */
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    .table-container::-webkit-scrollbar {
+      height: 6px;
+    }
+    
+    .table-container::-webkit-scrollbar-thumb {
+      background: var(--border-gold);
+      border-radius: 3px;
+    }
+    
+    /* 分页信息 */
+    .pagination-info {
+      font-size: var(--font-size-sm);
+      color: var(--text-tertiary);
+    }
+    
+    .pagination-info strong {
+      color: var(--color-gold-primary);
+    }
+
+    /* GIS 标点弹窗 */
+    .gis-modal .modal-dialog {
+      width: 800px;
+      max-width: 90vw;
+    }
+
+    .gis-search-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .gis-search-bar .form-input {
+      flex: 1;
+    }
+
+    .gis-map-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(135deg, #1a3a5c 0%, #0d2137 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    .gis-map-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212, 175, 55, 0.08) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .gis-map-roads {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .gis-road {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 2px;
+    }
+
+    .gis-road.h {
+      height: 3px;
+      left: 0;
+      right: 0;
+    }
+
+    .gis-road.v {
+      width: 3px;
+      top: 0;
+      bottom: 0;
+    }
+
+    .gis-building {
+      position: absolute;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 3px;
+      pointer-events: none;
+    }
+
+    .gis-marker {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      z-index: 10;
+      pointer-events: none;
+      transition: transform 0.15s ease;
+    }
+
+    .gis-marker-icon {
+      width: 36px;
+      height: 48px;
+      position: relative;
+    }
+
+    .gis-marker-pin {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--color-red-primary), var(--color-red-deep));
+      border: 3px solid #fff;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 4px 12px rgba(196, 30, 58, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gis-marker-pin::after {
+      content: '📍';
+      transform: rotate(45deg);
+      font-size: 14px;
+    }
+
+    .gis-marker-pulse {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(196, 30, 58, 0.3);
+      animation: gis-pulse 2s ease-out infinite;
+    }
+
+    @keyframes gis-pulse {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+    }
+
+    .gis-coords-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(212, 175, 55, 0.06);
+      border: 1px solid var(--border-gold);
+      border-radius: 6px;
+      font-size: var(--font-size-sm);
+    }
+
+    .gis-coords-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+    }
+
+    .gis-coords-item strong {
+      color: var(--color-gold-primary);
+      font-family: 'Consolas', monospace;
+      font-weight: 600;
+    }
+
+    .gis-coords-hint {
+      margin-left: auto;
+      color: var(--text-tertiary);
+      font-size: 11px;
+    }
+
+    .gis-zoom-controls {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 5;
+    }
+
+    .gis-zoom-btn {
+      width: 32px;
+      height: 32px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+    }
+
+    .gis-zoom-btn:hover {
+      background: rgba(212, 175, 55, 0.3);
+      border-color: var(--border-gold);
+    }
+
+    .gis-map-scale {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      padding: 4px 10px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 4px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 11px;
+      font-family: 'Consolas', monospace;
+      z-index: 5;
+    }
+
+    .gis-map-compass {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-gold-primary);
+      font-size: 14px;
+      font-weight: bold;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html" class="active">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="#">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">产业基础</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">企业数据管理</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+        <!-- 筛选栏 -->
+        <div class="filter-bar">
+          <div class="filter-item">
+            <span class="filter-label">产业类型：</span>
+            <select class="filter-select" id="filterIndustry" onchange="updateFilterTradeOptions()">
+              <option value="">全部产业</option>
+              <option value="高端装备制造">高端装备制造</option>
+              <option value="新一代信息技术">新一代信息技术</option>
+              <option value="新材料">新材料</option>
+              <option value="生物医药">生物医药</option>
+              <option value="新能源">新能源</option>
+              <option value="节能环保">节能环保</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <span class="filter-label">所属行业：</span>
+            <select class="filter-select" id="filterTrade">
+              <option value="">全部行业</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <span class="filter-label">企业规模：</span>
+            <select class="filter-select">
+              <option>全部规模</option>
+              <option>大型企业</option>
+              <option>中型企业</option>
+              <option>小型企业</option>
+              <option>微型企业</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <span class="filter-label">所属区域：</span>
+            <select class="filter-select">
+              <option>全部区域</option>
+              <option>高新区</option>
+              <option>经开区</option>
+              <option>临空区</option>
+              <option>滨江新区</option>
+              <option>科教园</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <span class="filter-label">状态：</span>
+            <select class="filter-select">
+              <option>全部状态</option>
+              <option>正常</option>
+              <option>注销</option>
+              <option>迁出</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button class="btn btn-secondary">查询</button>
+            <button class="btn btn-outline">重置</button>
+          </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">🏢</div>
+            <div class="stat-info">
+              <div class="stat-value">12,580<span class="unit">家</span></div>
+              <div class="stat-label">企业总数</div>
+              <div class="stat-trend up">
+                <span>▲</span>
+                <span>较上月 +86 家</span>
+              </div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon gold">📊</div>
+            <div class="stat-info">
+              <div class="stat-value">856<span class="unit">家</span></div>
+              <div class="stat-label">规上企业</div>
+              <div class="stat-trend up">
+                <span>▲</span>
+                <span>较上月 +32 家</span>
+              </div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red">🔬</div>
+            <div class="stat-info">
+              <div class="stat-value">342<span class="unit">家</span></div>
+              <div class="stat-label">高新技术企业</div>
+              <div class="stat-trend up">
+                <span>▲</span>
+                <span>较上月 +18 家</span>
+              </div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">🚩</div>
+            <div class="stat-info">
+              <div class="stat-value">10,876<span class="unit">家</span></div>
+              <div class="stat-label">有党组织企业</div>
+              <div class="stat-trend up">
+                <span>▲</span>
+                <span>覆盖率 86.5%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 企业列表卡片 -->
+        <div class="card">
+          <div class="card-body">
+            <!-- 工具栏 -->
+            <div class="table-toolbar">
+              <div class="toolbar-left">
+                <button class="btn btn-primary" onclick="openEnterpriseModal()">+ 新增企业</button>
+                <button class="btn btn-outline">批量导入</button>
+                <button class="btn btn-secondary">导出数据</button>
+                <span class="selected-count">已选 <strong>3</strong> 项</span>
+              </div>
+              <div class="toolbar-right">
+                <button class="btn-icon btn btn-outline">🔄</button>
+                <button class="btn-icon btn btn-outline">⚙</button>
+              </div>
+            </div>
+
+            <!-- 表格 -->
+            <div class="table-container">
+              <table class="enterprise-table">
+                <thead>
+                  <tr>
+                    <th class="checkbox-cell">
+                      <span class="custom-checkbox checked"></span>
+                    </th>
+                    <th>企业名称</th>
+                    <th>统一社会信用代码</th>
+                    <th>所属产业</th>
+                    <th>所属行业</th>
+                    <th>企业规模</th>
+                    <th>员工人数</th>
+                    <th>党员人数</th>
+                    <th>党组织状态</th>
+                    <th>标签</th>
+                    <th>联系人</th>
+                    <th>联系电话</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="checkbox-cell"><span class="custom-checkbox checked"></span></td>
+                    <td>
+                      <div class="enterprise-cell">
+                        <div>
+                          <div class="enterprise-name">华芯微电子科技有限公司</div>
+                          <div class="enterprise-sub">规上企业</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="credit-code">91310000MA1FL2XX5P</span></td>
+                    <td><span class="tag tag-blue">新一代信息技术</span></td>
+                    <td>集成电路设计</td>
+                    <td>大型</td>
+                    <td><span class="party-count">1,280</span> 人</td>
+                    <td><span class="party-count">128</span> 人</td>
+                    <td><span class="tag tag-green">已建党委</span></td><td>`r`n                      <div class="industry-tags">
+                        <span class="industry-tag">高新技术企业</span>
+                        <span class="industry-tag">专精特新</span>
+                      </div>
+                    </td>
+                    <td>李建国</td>
+                    <td>138****5678</td>
+                    <td class="action-cell">
+                      <div class="action-links">
+                        <div class="quick-action">
+                          <button class="quick-action-btn" onclick="viewEnterpriseProfile()">👁 画像</button>
+                        </div>
+                        <span class="action-link primary" onclick="viewEnterpriseProfile()">查看</span>
+                        <span class="action-link" onclick="editEnterprise(this)">编辑</span>
+                        <span class="action-link danger">删除</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="checkbox-cell"><span class="custom-checkbox checked"></span></td>
+                    <td>
+                      <div class="enterprise-cell">
+                        <div>
+                          <div class="enterprise-name">中航空天装备制造集团</div>
+                          <div class="enterprise-sub">规上企业</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="credit-code">91310000MA1FL3YY6Q</span></td>
+                    <td><span class="tag tag-gold">高端装备制造</span></td>
+                    <td>航空发动机</td>
+                    <td>大型</td>
+                    <td><span class="party-count">3,560</span> 人</td>
+                    <td><span class="party-count">356</span> 人</td>
+                    <td><span class="tag tag-green">已建党委</span></td><td>`r`n                      <div class="industry-tags">
+                        <span class="industry-tag">高新技术企业</span>
+                        <span class="industry-tag">龙头企业</span>
+                      </div>
+                    </td>
+                    <td>王志强</td>
+                    <td>139****2345</td>
+                    <td class="action-cell">
+                      <div class="action-links">
+                        <div class="quick-action">
+                          <button class="quick-action-btn" onclick="viewEnterpriseProfile()">👁 画像</button>
+                        </div>
+                        <span class="action-link primary" onclick="viewEnterpriseProfile()">查看</span>
+                        <span class="action-link" onclick="editEnterprise(this)">编辑</span>
+                        <span class="action-link danger">删除</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="checkbox-cell"><span class="custom-checkbox checked"></span></td>
+                    <td>
+                      <div class="enterprise-cell">
+                        <div>
+                          <div class="enterprise-name">国科新材料研究院有限公司</div>
+                          
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="credit-code">91310000MA1FL4ZZ7R</span></td>
+                    <td><span class="tag tag-orange">新材料</span></td>
+                    <td>先进金属材料</td>
+                    <td>大型</td>
+                    <td><span class="party-count">890</span> 人</td>
+                    <td><span class="party-count">89</span> 人</td>
+                    <td><span class="tag tag-green">已建党总支</span></td><td>`r`n                      <div class="industry-tags">
+                        <span class="industry-tag">高新技术企业</span>
+                      </div>
+                    </td>
+                    <td>陈明华</td>
+                    <td>137****8901</td>
+                    <td class="action-cell">
+                      <div class="action-links">
+                        <div class="quick-action">
+                          <button class="quick-action-btn" onclick="viewEnterpriseProfile()">👁 画像</button>
+                        </div>
+                        <span class="action-link primary" onclick="viewEnterpriseProfile()">查看</span>
+                        <span class="action-link" onclick="editEnterprise(this)">编辑</span>
+                        <span class="action-link danger">删除</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="checkbox-cell"><span class="custom-checkbox"></span></td>
+                    <td>
+                      <div class="enterprise-cell">
+                        <div>
+                          <div class="enterprise-name">智能制造装备集团股份公司</div>
+                          <div class="enterprise-sub">规上企业</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="credit-code">91310000MA1FL5AA8S</span></td>
+                    <td><span class="tag tag-gold">高端装备制造</span></td>
+                    <td>工业机器人</td>
+                    <td>大型</td>
+                    <td><span class="party-count">2,100</span> 人</td>
+                    <td><span class="party-count">210</span> 人</td>
+                    <td><span class="tag tag-green">已建党委</span></td><td>`r`n                      <div class="industry-tags">
+                        <span class="industry-tag">高新技术企业</span>
+                        <span class="industry-tag">上市企业</span>
+                      </div>
+                    </td>
+                    <td>赵伟明</td>
+                    <td>136****3456</td>
+                    <td class="action-cell">
+                      <div class="action-links">
+                        <div class="quick-action">
+                          <button class="quick-action-btn" onclick="viewEnterpriseProfile()">👁 画像</button>
+                        </div>
+                        <span class="action-link primary" onclick="viewEnterpriseProfile()">查看</span>
+                        <span class="action-link" onclick="editEnterprise(this)">编辑</span>
+                        <span class="action-link danger">删除</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="checkbox-cell"><span class="custom-checkbox"></span></td>
+                    <td>
+                      <div class="enterprise-cell">
+                        <div>
+                          <div class="enterprise-name">生物制药科技有限公司</div>
+                          
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="credit-code">91310000MA1FL6BB9T</span></td>
+                    <td><span class="tag tag-green">生物医药</span></td>
+                    <td>生物制药</td>
+                    <td>中型</td>
+                    <td><span class="party-count">420</span> 人</td>
+                    <td><span class="party-count">68</span> 人</td>
+                    <td><span class="tag tag-green">已建党支部</span></td>
+                    <td>
+                      <div class="industry-tags">
+                        <span class="industry-tag">高新技术企业</span>
+                        <span class="industry-tag">独角兽企业</span>
+                      </div>
+                    </td>
+                    <td>孙丽华</td>
+                    <td>135****6789</td>
+                    <td class="action-cell">
+                      <div class="action-links">
+                        <div class="quick-action">
+                          <button class="quick-action-btn" onclick="viewEnterpriseProfile()">👁 画像</button>
+                        </div>
+                        <span class="action-link primary" onclick="viewEnterpriseProfile()">查看</span>
+                        <span class="action-link" onclick="editEnterprise(this)">编辑</span>
+                        <span class="action-link danger">删除</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="checkbox-cell"><span class="custom-checkbox"></span></td>
+                    <td>
+                      <div class="enterprise-cell">
+                        <div>
+                          <div class="enterprise-name">新能动力科技股份公司</div>
+                          <div class="enterprise-sub">规上企业</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="credit-code">91310000MA1FL7CC0U</span></td>
+                    <td><span class="tag tag-primary" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3);">新能源</span></td>
+                    <td>锂电池</td>
+                    <td>中型</td>
+                    <td><span class="party-count">380</span> 人</td>
+                    <td><span class="party-count">45</span> 人</td>
+                    <td><span class="tag tag-green">已建党支部</span></td><td>`r`n                      <div class="industry-tags">
+                        <span class="industry-tag">高新技术企业</span>
+                        <span class="industry-tag">瞪羚企业</span>
+                      </div>
+                    </td>
+                    <td>周大伟</td>
+                    <td>134****9012</td>
+                    <td class="action-cell">
+                      <div class="action-links">
+                        <div class="quick-action">
+                          <button class="quick-action-btn" onclick="viewEnterpriseProfile()">👁 画像</button>
+                        </div>
+                        <span class="action-link primary" onclick="viewEnterpriseProfile()">查看</span>
+                        <span class="action-link" onclick="editEnterprise(this)">编辑</span>
+                        <span class="action-link danger">删除</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="checkbox-cell"><span class="custom-checkbox"></span></td>
+                    <td>
+                      <div class="enterprise-cell">
+                        <div>
+                          <div class="enterprise-name">海洋工程装备有限公司</div>
+                          <div class="enterprise-sub">规上企业</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="credit-code">91310000MA1FL8DD1V</span></td>
+                    <td><span class="tag tag-gold">高端装备制造</span></td>
+                    <td>海洋工程装备</td>
+                    <td>中型</td>
+                    <td><span class="party-count">520</span> 人</td>
+                    <td><span class="party-count">92</span> 人</td>
+                    <td><span class="tag tag-green">已建党总支</span></td><td>`r`n                      <div class="industry-tags">
+                        <span class="industry-tag">国有企业</span>
+                      </div>
+                    </td>
+                    <td>吴海洋</td>
+                    <td>133****4567</td>
+                    <td class="action-cell">
+                      <div class="action-links">
+                        <div class="quick-action">
+                          <button class="quick-action-btn" onclick="viewEnterpriseProfile()">👁 画像</button>
+                        </div>
+                        <span class="action-link primary" onclick="viewEnterpriseProfile()">查看</span>
+                        <span class="action-link" onclick="editEnterprise(this)">编辑</span>
+                        <span class="action-link danger">删除</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="checkbox-cell"><span class="custom-checkbox"></span></td>
+                    <td>
+                      <div class="enterprise-cell">
+                        <div>
+                          <div class="enterprise-name">云启人工智能科技有限公司</div>
+                          
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="credit-code">91310000MA1FL9EE2W</span></td>
+                    <td><span class="tag tag-blue">新一代信息技术</span></td>
+                    <td>人工智能算法</td>
+                    <td>小型</td>
+                    <td><span class="party-count">180</span> 人</td>
+                    <td><span class="party-count">32</span> 人</td>
+                    <td><span class="tag tag-blue">联合支部</span></td>
+                    <td>
+                      <div class="industry-tags">
+                        <span class="industry-tag">民营企业</span>
+                        <span class="industry-tag">独角兽企业</span>
+                      </div>
+                    </td>
+                    <td>郑云峰</td>
+                    <td>132****7890</td>
+                    <td class="action-cell">
+                      <div class="action-links">
+                        <div class="quick-action">
+                          <button class="quick-action-btn" onclick="viewEnterpriseProfile()">👁 画像</button>
+                        </div>
+                        <span class="action-link primary" onclick="viewEnterpriseProfile()">查看</span>
+                        <span class="action-link" onclick="editEnterprise(this)">编辑</span>
+                        <span class="action-link danger">删除</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="checkbox-cell"><span class="custom-checkbox"></span></td>
+                    <td>
+                      <div class="enterprise-cell">
+                        <div>
+                          <div class="enterprise-name">环宇节能环保技术公司</div>
+                          
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="credit-code">91310000MA1FLAFF3X</span></td>
+                    <td><span class="tag tag-gray" style="color: #2ecc71; border-color: rgba(46, 204, 113, 0.3); background: rgba(46, 204, 113, 0.1);">节能环保</span></td>
+                    <td>节能环保服务</td>
+                    <td>小型</td>
+                    <td><span class="party-count">150</span> 人</td>
+                    <td><span class="party-count">28</span> 人</td>
+                    <td><span class="tag tag-blue">联合支部</span></td>
+                    <td>
+                      <div class="industry-tags">
+                        <span class="industry-tag">科技型中小企业</span>
+                      </div>
+                    </td>
+                    <td>钱环保</td>
+                    <td>131****1234</td>
+                    <td class="action-cell">
+                      <div class="action-links">
+                        <div class="quick-action">
+                          <button class="quick-action-btn" onclick="viewEnterpriseProfile()">👁 画像</button>
+                        </div>
+                        <span class="action-link primary" onclick="viewEnterpriseProfile()">查看</span>
+                        <span class="action-link" onclick="editEnterprise(this)">编辑</span>
+                        <span class="action-link danger">删除</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="checkbox-cell"><span class="custom-checkbox"></span></td>
+                    <td>
+                      <div class="enterprise-cell">
+                        <div>
+                          <div class="enterprise-name">精密仪器制造有限公司</div>
+                          <div class="enterprise-sub">规上企业</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="credit-code">91310000MA1FLBGG4Y</span></td>
+                    <td><span class="tag tag-gold">高端装备制造</span></td>
+                    <td>高端数控机床</td>
+                    <td>中型</td>
+                    <td><span class="party-count">260</span> 人</td>
+                    <td><span class="party-count">36</span> 人</td>
+                    <td><span class="tag tag-green">已建党支部</span></td>
+                    <td>
+                      <div class="industry-tags">
+                        <span class="industry-tag">外资企业</span>
+                        <span class="industry-tag">专精特新</span>
+                      </div>
+                    </td>
+                    <td>冯精密</td>
+                    <td>130****5678</td>
+                    <td class="action-cell">
+                      <div class="action-links">
+                        <div class="quick-action">
+                          <button class="quick-action-btn" onclick="viewEnterpriseProfile()">👁 画像</button>
+                        </div>
+                        <span class="action-link primary" onclick="viewEnterpriseProfile()">查看</span>
+                        <span class="action-link" onclick="editEnterprise(this)">编辑</span>
+                        <span class="action-link danger">删除</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 分页器 -->
+            <div class="pagination">
+              <div class="pagination-item">«</div>
+              <div class="pagination-item active">1</div>
+              <div class="pagination-item">2</div>
+              <div class="pagination-item">3</div>
+              <div class="pagination-item">4</div>
+              <div class="pagination-item">5</div>
+              <div class="pagination-item">...</div>
+              <div class="pagination-item">126</div>
+              <div class="pagination-item">»</div>
+              <span style="color: var(--text-tertiary); font-size: 12px; margin-left: 20px;">
+                共 <strong style="color: var(--color-gold-primary);">12,580</strong> 条，每页 
+                <select style="background: transparent; border: 1px solid var(--border-light); color: var(--text-secondary); border-radius: 3px; padding: 2px 6px; font-size: 12px;">
+                  <option>10</option>
+                  <option>20</option>
+                  <option>50</option>
+                </select>
+                 条
+              </span>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- 新增企业弹窗 -->
+      <div class="modal-mask" id="enterpriseModal">
+        <div class="modal-dialog" style="width:640px;">
+          <div class="modal-header">
+            <h3 class="modal-title" id="enterpriseModalTitle">新增企业</h3>
+            <button type="button" class="modal-close" onclick="event.stopPropagation();closeEnterpriseModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <!-- 基础信息 -->
+            <div class="form-section">
+              <div class="form-section-title">基础信息</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">企业名称 <span class="required">*</span></label>
+                <input type="text" name="enterpriseName" class="form-input" placeholder="请输入企业名称">
+              </div>
+              <div class="form-group">
+                <label class="form-label">统一社会信用代码 <span class="required">*</span></label>
+                <input type="text" name="creditCode" class="form-input" placeholder="请输入18位信用代码">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">所属产业 <span class="required">*</span></label>
+                <select class="form-select" name="industry" id="enterpriseIndustry" onchange="updateEnterpriseTradeOptions()">
+                  <option value="">请选择所属产业</option>
+                  <option value="高端装备制造">高端装备制造</option>
+                  <option value="新一代信息技术">新一代信息技术</option>
+                  <option value="新材料">新材料</option>
+                  <option value="新能源">新能源</option>
+                  <option value="生物医药">生物医药</option>
+                  <option value="节能环保">节能环保</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">所属行业 <span class="required">*</span></label>
+                <select class="form-select" name="trade" id="enterpriseTrade">
+                  <option value="">请先选择所属产业</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">企业规模 <span class="required">*</span></label>
+                <select class="form-select" name="scale">
+                  <option value="">请选择企业规模</option>
+                  <option value="大型">大型</option>
+                  <option value="中型">中型</option>
+                  <option value="小型">小型</option>
+                  <option value="微型">微型</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">员工人数 <span class="required">*</span></label>
+                <input type="number" name="employeeCount" class="form-input" placeholder="请输入员工总人数" min="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">党员人数 <span class="required">*</span></label>
+                <input type="number" name="partyCount" class="form-input" placeholder="请输入党员人数" min="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">党组织状态 <span class="required">*</span></label>
+                <select class="form-select" name="partyStatus" onchange="togglePartyOrgSelect()">
+                  <option value="未建党组织">未建党组织</option>
+                  <option value="已建党支部">已建党支部</option>
+                  <option value="已建党总支">已建党总支</option>
+                  <option value="已建党委">已建党委</option>
+                  <option value="联合支部">联合支部</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" id="partyOrgItem" style="display:none;">
+              <label class="form-label">所属党组织 <span class="required">*</span></label>
+              <select class="form-select" name="partyOrg">
+                <option value="">请选择所属党组织</option>
+              </select>
+            </div>
+            </div>
+
+            <!-- 联系信息 -->
+            <div class="form-section">
+              <div class="form-section-title">联系信息</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">联系人 <span class="required">*</span></label>
+                <input type="text" name="contact" class="form-input" placeholder="请输入联系人姓名">
+              </div>
+              <div class="form-group">
+                <label class="form-label">联系人职位</label>
+                <input type="text" name="contactPosition" class="form-input" placeholder="请输入联系人职位">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">联系电话 <span class="required">*</span></label>
+                <input type="tel" name="phone" class="form-input" placeholder="请输入固定电话">
+              </div>
+              <div class="form-group">
+                <label class="form-label">手机号码</label>
+                <input type="tel" name="mobile" class="form-input" placeholder="请输入手机号码">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">电子邮箱</label>
+                <input type="email" name="email" class="form-input" placeholder="请输入电子邮箱">
+              </div>
+              <div class="form-group">
+                <label class="form-label">官方网站</label>
+                <input type="text" name="website" class="form-input" placeholder="请输入官方网站">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">办公地址 <span class="required">*</span></label>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" name="address" class="form-input" id="enterpriseAddress" placeholder="请输入办公地址或点击右侧标点" readonly>
+                <button type="button" class="btn btn-outline" onclick="openGisPicker()" style="white-space:nowrap;flex-shrink:0;">📍 GIS标点</button>
+              </div>
+            </div>
+            </div>
+
+            <!-- 其他 -->
+            <div class="form-section">
+              <div class="form-section-title">其他</div>
+            <div class="form-group">
+              <label class="form-label">是否为规上企业 <span class="required">*</span></label>
+              <div class="form-radio-group">
+                <label>
+                  <input type="radio" name="isAboveScale" value="是">
+                  <span>是</span>
+                </label>
+                <label>
+                  <input type="radio" name="isAboveScale" value="否" checked>
+                  <span>否</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">企业标签</label>
+              <div class="tag-selector">
+                <div class="selected-tags" id="enterpriseSelectedTags">
+                  <span class="tag-placeholder">暂无标签，点击下方可选标签添加</span>
+                </div>
+                <div class="tag-add-row">
+                  <input type="text" id="enterpriseNewTagInput" class="form-input" placeholder="输入新标签名称，按回车添加" style="flex:1;">
+                  <button type="button" class="btn btn-primary" onclick="addEnterpriseNewTag()" style="white-space:nowrap;">新增标签</button>
+                </div>
+                <div class="available-tags">
+                  <div class="available-tags-title">可选标签（点击选择）</div>
+                  <div class="available-tags-list" id="enterpriseAvailableTagsList">
+                    <!-- 动态渲染 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="event.stopPropagation();closeEnterpriseModal()">取消</button>
+            <button type="button" class="btn btn-primary" onclick="event.stopPropagation();submitEnterpriseForm()">确认提交</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GIS 标点弹窗 -->
+      <div class="modal-mask gis-modal" id="gisPickerModal">
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3 class="modal-title">📍 GIS 标点定位</h3>
+            <button type="button" class="modal-close" onclick="event.stopPropagation();closeGisPicker()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <!-- 搜索栏 -->
+            <div class="gis-search-bar">
+              <input type="text" id="gisSearchInput" class="form-input" placeholder="搜索地址、地标或企业名称...">
+              <button type="button" class="btn btn-primary" onclick="gisSearch()">搜索</button>
+              <button type="button" class="btn btn-outline" onclick="resetGisView()">重置视图</button>
+            </div>
+
+            <!-- 地图区域 -->
+            <div class="gis-map-container" id="gisMapContainer" onclick="handleGisMapClick(event)">
+              <div class="gis-map-grid"></div>
+              <div class="gis-map-roads" id="gisMapRoads">
+                <!-- 模拟道路 -->
+                <div class="gis-road h" style="top: 30%;"></div>
+                <div class="gis-road h" style="top: 60%;"></div>
+                <div class="gis-road h" style="top: 85%;"></div>
+                <div class="gis-road v" style="left: 25%;"></div>
+                <div class="gis-road v" style="left: 50%;"></div>
+                <div class="gis-road v" style="left: 75%;"></div>
+              </div>
+              <!-- 模拟建筑 -->
+              <div class="gis-building" style="left: 10%; top: 10%; width: 80px; height: 50px;"></div>
+              <div class="gis-building" style="left: 30%; top: 15%; width: 60px; height: 70px;"></div>
+              <div class="gis-building" style="left: 55%; top: 8%; width: 100px; height: 45px;"></div>
+              <div class="gis-building" style="left: 80%; top: 12%; width: 50px; height: 60px;"></div>
+              <div class="gis-building" style="left: 15%; top: 40%; width: 70px; height: 55px;"></div>
+              <div class="gis-building" style="left: 35%; top: 42%; width: 90px; height: 40px;"></div>
+              <div class="gis-building" style="left: 60%; top: 38%; width: 55px; height: 75px;"></div>
+              <div class="gis-building" style="left: 82%; top: 45%; width: 65px; height: 50px;"></div>
+              <div class="gis-building" style="left: 8%; top: 68%; width: 85px; height: 60px;"></div>
+              <div class="gis-building" style="left: 32%; top: 70%; width: 50px; height: 65px;"></div>
+              <div class="gis-building" style="left: 52%; top: 72%; width: 75px; height: 45px;"></div>
+              <div class="gis-building" style="left: 78%; top: 68%; width: 90px; height: 55px;"></div>
+
+              <!-- 标点 -->
+              <div class="gis-marker" id="gisMarker" style="left: 50%; top: 50%; display: none;">
+                <div class="gis-marker-pulse"></div>
+                <div class="gis-marker-icon">
+                  <div class="gis-marker-pin"></div>
+                </div>
+              </div>
+
+              <!-- 缩放控件 -->
+              <div class="gis-zoom-controls">
+                <button type="button" class="gis-zoom-btn" onclick="gisZoomIn()" title="放大">+</button>
+                <button type="button" class="gis-zoom-btn" onclick="gisZoomOut()" title="缩小">−</button>
+              </div>
+
+              <!-- 比例尺 -->
+              <div class="gis-map-scale" id="gisMapScale">比例尺: 100m</div>
+
+              <!-- 指南针 -->
+              <div class="gis-map-compass" title="正北方向">N</div>
+            </div>
+
+            <!-- 坐标信息栏 -->
+            <div class="gis-coords-bar">
+              <div class="gis-coords-item">
+                <span>经度：</span>
+                <strong id="gisLongitude">--</strong>
+              </div>
+              <div class="gis-coords-item">
+                <span>纬度：</span>
+                <strong id="gisLatitude">--</strong>
+              </div>
+              <div class="gis-coords-item">
+                <span>地址：</span>
+                <strong id="gisAddress">--</strong>
+              </div>
+              <span class="gis-coords-hint">点击地图任意位置进行标点</span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="event.stopPropagation();closeGisPicker()">取消</button>
+            <button type="button" class="btn btn-primary" onclick="event.stopPropagation();confirmGisLocation()" id="gisConfirmBtn" disabled style="opacity: 0.5;">确认选择</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 侧边栏菜单展开/收起
+    document.querySelectorAll('.menu-title').forEach(title => {
+      title.addEventListener('click', function() {
+        const group = this.closest('.menu-group');
+        group.classList.toggle('expanded');
+      });
+    });
+
+    // 复选框
+    document.querySelectorAll('.custom-checkbox').forEach(cb => {
+      cb.addEventListener('click', function() {
+        this.classList.toggle('checked');
+        updateSelectedCount();
+      });
+    });
+
+    function updateSelectedCount() {
+      const count = document.querySelectorAll('.custom-checkbox.checked').length;
+      const countEl = document.querySelector('.selected-count strong');
+      if (countEl) {
+        countEl.textContent = count;
+      }
+    }
+
+    // ======================
+    // 新增企业弹窗 & 标签管理
+    // ======================
+
+    // 企业标签库
+    let enterpriseTagPool = [
+      '高新技术企业', '高新技术', '专精特新', '独角兽企业',
+      '瞪羚企业', '上市企业', '国有企业', '民营企业',
+      '外资企业', '龙头企业', '科技型中小企业',
+      '国家级创新平台', '省级创新平台', '市级创新平台'
+    ];
+
+    // 当前选中的企业标签
+    let currentEnterpriseTags = [];
+
+    // 党组织数据（按类型分组）
+    const partyOrgData = {
+      '已建党支部': [
+        '华芯微电子党支部', '中航空天装备党支部', '国科新材料党支部',
+        '智能制造装备党支部', '生物制药党支部', '新能动力党支部',
+        '海洋工程装备党支部', '精密仪器制造党支部'
+      ],
+      '已建党总支': [
+        '高端装备制造产业园党总支', '生物医药产业园党总支',
+        '新一代信息技术产业园党总支'
+      ],
+      '已建党委': [
+        '中航空天装备集团党委', '智能制造装备集团党委',
+        '国科新材料研究院党委'
+      ],
+      '联合支部': [
+        '节能环保产业联合支部', '小微企业联合支部',
+        '外资企业联合支部'
+      ]
+    };
+
+    // 切换党组织状态时，显示/隐藏所属党组织选择
+    function togglePartyOrgSelect() {
+      const status = document.querySelector('#enterpriseModal select[name="partyStatus"]').value;
+      const item = document.getElementById('partyOrgItem');
+      const select = document.querySelector('#enterpriseModal select[name="partyOrg"]');
+
+      const builtTypes = ['已建党支部', '已建党总支', '已建党委', '联合支部'];
+      if (builtTypes.includes(status)) {
+        // 显示并填充选项
+        item.style.display = '';
+        const orgs = partyOrgData[status] || [];
+        select.innerHTML = '<option value="">请选择所属党组织</option>' +
+          orgs.map(o => `<option value="${o}">${o}</option>`).join('');
+      } else {
+        // 隐藏并清空
+        item.style.display = 'none';
+        select.selectedIndex = 0;
+      }
+    }
+
+    // 打开新增企业弹窗
+    function openEnterpriseModal() {
+      const modal = document.getElementById('enterpriseModal');
+      currentEnterpriseTags = [];
+      renderEnterpriseSelectedTags();
+      renderEnterpriseAvailableTags();
+      // 重置表单
+      document.querySelectorAll('#enterpriseModal .form-input').forEach(input => input.value = '');
+      document.querySelectorAll('#enterpriseModal .form-select').forEach(sel => sel.selectedIndex = 0);
+      document.querySelectorAll('#enterpriseModal input[type="radio"]').forEach(r => r.checked = r.value === '否');
+      // 重置GIS位置数据
+      currentGisLocation = { longitude: null, latitude: null, address: '' };
+      // 重置党组织联动
+      togglePartyOrgSelect();
+      // 恢复标题
+      document.getElementById('enterpriseModalTitle').textContent = '新增企业';
+      // 恢复企业名称和信用代码可编辑
+      const nameInput = document.querySelector('#enterpriseModal input[name="enterpriseName"]');
+      const creditCodeInput = document.querySelector('#enterpriseModal input[name="creditCode"]');
+      nameInput.readOnly = false;
+      creditCodeInput.readOnly = false;
+      nameInput.style.background = '';
+      creditCodeInput.style.background = '';
+      nameInput.style.cursor = '';
+      creditCodeInput.style.cursor = '';
+      modal.classList.add('show');
+    }
+
+    // 关闭新增企业弹窗
+    function closeEnterpriseModal() {
+      document.getElementById('enterpriseModal').classList.remove('show');
+    }
+
+    // 渲染已选标签
+    function renderEnterpriseSelectedTags() {
+      const container = document.getElementById('enterpriseSelectedTags');
+      if (!container) return;
+      if (currentEnterpriseTags.length === 0) {
+        container.innerHTML = '<span class="tag-placeholder">暂无标签，点击下方可选标签添加</span>';
+        return;
+      }
+      container.innerHTML = currentEnterpriseTags.map(tag => `
+        <span class="industry-tag removable">
+          ${tag}
+          <span class="tag-close" onclick="removeEnterpriseTag('${tag}')">&times;</span>
+        </span>
+      `).join('');
+    }
+
+    // 渲染可选标签
+    function renderEnterpriseAvailableTags() {
+      const container = document.getElementById('enterpriseAvailableTagsList');
+      if (!container) return;
+      const available = enterpriseTagPool.filter(tag => !currentEnterpriseTags.includes(tag));
+      if (available.length === 0) {
+        container.innerHTML = '<span class="tag-placeholder">所有标签已选中</span>';
+        return;
+      }
+      container.innerHTML = available.map(tag => `
+        <span class="industry-tag available" onclick="selectEnterpriseTag('${tag}')">
+          + ${tag}
+        </span>
+      `).join('');
+    }
+
+    // 选择标签
+    function selectEnterpriseTag(tag) {
+      if (!currentEnterpriseTags.includes(tag)) {
+        currentEnterpriseTags.push(tag);
+        renderEnterpriseSelectedTags();
+        renderEnterpriseAvailableTags();
+      }
+    }
+
+    // 移除已选标签
+    function removeEnterpriseTag(tag) {
+      currentEnterpriseTags = currentEnterpriseTags.filter(t => t !== tag);
+      renderEnterpriseSelectedTags();
+      renderEnterpriseAvailableTags();
+    }
+
+    // 新增自定义标签
+    function addEnterpriseNewTag() {
+      const input = document.getElementById('enterpriseNewTagInput');
+      const tagName = input.value.trim();
+      if (!tagName) {
+        alert('请输入标签名称');
+        return;
+      }
+      if (enterpriseTagPool.includes(tagName)) {
+        if (!currentEnterpriseTags.includes(tagName)) {
+          selectEnterpriseTag(tagName);
+        } else {
+          alert('该标签已存在且已选中');
+        }
+        input.value = '';
+        return;
+      }
+      // 添加到标签库
+      enterpriseTagPool.push(tagName);
+      // 自动选中
+      currentEnterpriseTags.push(tagName);
+      renderEnterpriseSelectedTags();
+      renderEnterpriseAvailableTags();
+      input.value = '';
+    }
+
+    // 回车添加标签
+    document.addEventListener('DOMContentLoaded', function() {
+      const input = document.getElementById('enterpriseNewTagInput');
+      if (input) {
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            addEnterpriseNewTag();
+          }
+        });
+      }
+    });
+
+    // ======================
+    // GIS 标点功能
+    // ======================
+
+    // 当前选中的GIS坐标
+    let currentGisLocation = {
+      longitude: null,
+      latitude: null,
+      address: ''
+    };
+
+    // 地图中心点基准坐标（模拟）
+    const gisMapCenter = { lng: 121.4737, lat: 31.2304 }; // 上海基准
+    let gisZoomLevel = 15;
+
+    // 打开GIS标点弹窗
+    function openGisPicker() {
+      const modal = document.getElementById('gisPickerModal');
+      modal.classList.add('show');
+
+      // 如果已有地址，尝试定位
+      const addressInput = document.getElementById('enterpriseAddress').value;
+      if (addressInput && currentGisLocation.address) {
+        // 恢复已选位置
+        showGisMarker(currentGisLocation.longitude, currentGisLocation.latitude, currentGisLocation.address);
+      } else {
+        // 重置为默认中心
+        resetGisView();
+      }
+    }
+
+    // 关闭GIS标点弹窗
+    function closeGisPicker() {
+      document.getElementById('gisPickerModal').classList.remove('show');
+    }
+
+    // 处理地图点击
+    function handleGisMapClick(event) {
+      const mapContainer = document.getElementById('gisMapContainer');
+      const rect = mapContainer.getBoundingClientRect();
+
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      const width = rect.width;
+      const height = rect.height;
+
+      // 计算相对位置百分比
+      const xPercent = (x / width) * 100;
+      const yPercent = (y / height) * 100;
+
+      // 模拟坐标计算（基于基准点偏移）
+      const lngOffset = (xPercent - 50) * 0.002;
+      const latOffset = (50 - yPercent) * 0.0015;
+
+      const longitude = gisMapCenter.lng + lngOffset;
+      const latitude = gisMapCenter.lat + latOffset;
+
+      // 生成模拟地址
+      const address = generateMockAddress(xPercent, yPercent);
+
+      showGisMarker(longitude, latitude, address);
+    }
+
+    // 显示标点
+    function showGisMarker(longitude, latitude, address) {
+      const marker = document.getElementById('gisMarker');
+      const lngEl = document.getElementById('gisLongitude');
+      const latEl = document.getElementById('gisLatitude');
+      const addrEl = document.getElementById('gisAddress');
+      const confirmBtn = document.getElementById('gisConfirmBtn');
+
+      // 计算在地图上的位置
+      const mapContainer = document.getElementById('gisMapContainer');
+      const rect = mapContainer.getBoundingClientRect();
+
+      const xPercent = ((longitude - gisMapCenter.lng) / 0.002 + 50);
+      const yPercent = (50 - (latitude - gisMapCenter.lat) / 0.0015);
+
+      marker.style.left = Math.max(0, Math.min(100, xPercent)) + '%';
+      marker.style.top = Math.max(0, Math.min(100, yPercent)) + '%';
+      marker.style.display = 'block';
+
+      // 更新坐标显示
+      lngEl.textContent = longitude.toFixed(6);
+      latEl.textContent = latitude.toFixed(6);
+      addrEl.textContent = address;
+
+      // 保存当前选择
+      currentGisLocation = {
+        longitude: parseFloat(longitude.toFixed(6)),
+        latitude: parseFloat(latitude.toFixed(6)),
+        address: address
+      };
+
+      // 启用确认按钮
+      confirmBtn.disabled = false;
+      confirmBtn.style.opacity = '1';
+    }
+
+    // 生成模拟地址
+    function generateMockAddress(xPercent, yPercent) {
+      const roadsH = ['创新大道', '科技路', '产业大道', '滨江路'];
+      const roadsV = ['科苑路', '学府路', '兴业街', '和谐路', '腾飞路'];
+
+      const hIndex = Math.min(roadsH.length - 1, Math.floor(yPercent / 25));
+      const vIndex = Math.min(roadsV.length - 1, Math.floor(xPercent / 20));
+
+      const number = Math.floor(Math.random() * 999) + 1;
+
+      return `${roadsH[hIndex]}与${roadsV[vIndex]}交叉口 ${number}号`;
+    }
+
+    // GIS搜索
+    function gisSearch() {
+      const keyword = document.getElementById('gisSearchInput').value.trim();
+      if (!keyword) {
+        alert('请输入搜索关键词');
+        return;
+      }
+
+      // 模拟搜索 - 随机定位一个位置
+      const randomLng = gisMapCenter.lng + (Math.random() - 0.5) * 0.05;
+      const randomLat = gisMapCenter.lat + (Math.random() - 0.5) * 0.03;
+
+      const address = `搜索结果：${keyword}（附近地址）`;
+      showGisMarker(randomLng, randomLat, address);
+    }
+
+    // 重置GIS视图
+    function resetGisView() {
+      document.getElementById('gisMarker').style.display = 'none';
+      document.getElementById('gisLongitude').textContent = '--';
+      document.getElementById('gisLatitude').textContent = '--';
+      document.getElementById('gisAddress').textContent = '--';
+      document.getElementById('gisSearchInput').value = '';
+
+      const confirmBtn = document.getElementById('gisConfirmBtn');
+      confirmBtn.disabled = true;
+      confirmBtn.style.opacity = '0.5';
+
+      currentGisLocation = { longitude: null, latitude: null, address: '' };
+    }
+
+    // 缩放控制
+    function gisZoomIn() {
+      if (gisZoomLevel < 20) {
+        gisZoomLevel++;
+        updateGisScale();
+      }
+    }
+
+    function gisZoomOut() {
+      if (gisZoomLevel > 10) {
+        gisZoomLevel--;
+        updateGisScale();
+      }
+    }
+
+    function updateGisScale() {
+      const scaleEl = document.getElementById('gisMapScale');
+      const scales = {
+        10: '5km', 11: '2km', 12: '1km', 13: '500m', 14: '200m',
+        15: '100m', 16: '50m', 17: '20m', 18: '10m', 19: '5m', 20: '2m'
+      };
+      scaleEl.textContent = '比例尺: ' + (scales[gisZoomLevel] || '100m');
+    }
+
+    // 确认GIS位置
+    function confirmGisLocation() {
+      if (!currentGisLocation.longitude || !currentGisLocation.latitude) {
+        alert('请先在地图上选择位置');
+        return;
+      }
+
+      // 将地址填入表单
+      document.getElementById('enterpriseAddress').value = currentGisLocation.address;
+
+      // 可以将经纬度存储在隐藏字段或数据属性中
+      const addressInput = document.getElementById('enterpriseAddress');
+      addressInput.dataset.longitude = currentGisLocation.longitude;
+      addressInput.dataset.latitude = currentGisLocation.latitude;
+
+      closeGisPicker();
+    }
+
+    // 提交新增企业表单
+    function submitEnterpriseForm() {
+      const name = document.querySelector('#enterpriseModal input[name="enterpriseName"]').value.trim();
+      const creditCode = document.querySelector('#enterpriseModal input[name="creditCode"]').value.trim();
+      const industry = document.querySelector('#enterpriseModal select[name="industry"]').value;
+      const trade = document.querySelector('#enterpriseModal select[name="trade"]').value;
+      const scale = document.querySelector('#enterpriseModal select[name="scale"]').value;
+      const employeeCount = document.querySelector('#enterpriseModal input[name="employeeCount"]').value;
+      const partyCount = document.querySelector('#enterpriseModal input[name="partyCount"]').value;
+      const partyStatus = document.querySelector('#enterpriseModal select[name="partyStatus"]').value;
+      const contact = document.querySelector('#enterpriseModal input[name="contact"]').value.trim();
+      const phone = document.querySelector('#enterpriseModal input[name="phone"]').value.trim();
+      const address = document.querySelector('#enterpriseModal input[name="address"]').value.trim();
+      const isAboveScale = document.querySelector('#enterpriseModal input[name="isAboveScale"]:checked');
+
+      // 必填项校验
+      if (!name) { alert('请输入企业名称'); return; }
+      if (!creditCode) { alert('请输入统一社会信用代码'); return; }
+      if (!industry) { alert('请选择所属产业'); return; }
+      if (!trade) { alert('请选择所属行业'); return; }
+      if (!scale) { alert('请选择企业规模'); return; }
+      if (employeeCount === '' || employeeCount < 0) { alert('请输入有效的员工人数'); return; }
+      if (partyCount === '' || partyCount < 0) { alert('请输入有效的党员人数'); return; }
+      if (!partyStatus) { alert('请选择党组织状态'); return; }
+      if (!contact) { alert('请输入联系人姓名'); return; }
+      if (!phone) { alert('请输入联系电话'); return; }
+      if (!address) { alert('请选择办公地址（通过GIS标点定位）'); return; }
+      if (!isAboveScale) { alert('请选择是否为规上企业'); return; }
+
+      // 校验：已建党组织类型必须选择所属党组织
+      const builtTypes = ['已建党支部', '已建党总支', '已建党委', '联合支部'];
+      if (builtTypes.includes(partyStatus)) {
+        const partyOrg = document.querySelector('#enterpriseModal select[name="partyOrg"]').value;
+        if (!partyOrg) { alert('请选择所属党组织'); return; }
+      }
+
+      const btn = event.target;
+      const originalText = btn.textContent;
+      btn.textContent = '提交中...';
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        alert('企业创建成功！已配置标签：' + (currentEnterpriseTags.length ? currentEnterpriseTags.join('、') : '无'));
+        closeEnterpriseModal();
+      }, 600);
+    }
+
+    // 查看企业画像
+    function viewEnterpriseProfile() {
+      window.location.href = 'enterprise_profile.html';
+    }
+
+    // 编辑企业
+    function editEnterprise(el) {
+      const row = el.closest('tr');
+      const cells = row.querySelectorAll('td');
+
+      // 提取行数据
+      const name = row.querySelector('.enterprise-name').textContent.trim();
+      const subText = row.querySelector('.enterprise-sub') ? row.querySelector('.enterprise-sub').textContent.trim() : '';
+      const creditCode = row.querySelector('.credit-code') ? row.querySelector('.credit-code').textContent.trim() : '';
+      const industry = cells[3].querySelector('.tag') ? cells[3].querySelector('.tag').textContent.trim() : '';
+      const trade = cells[4].textContent.trim();
+      const scale = cells[5].textContent.trim();
+      const employeeCount = cells[6].querySelector('.party-count') ? cells[6].querySelector('.party-count').textContent.trim().replace(/,/g, '') : '';
+      const partyCount = cells[7].querySelector('.party-count') ? cells[7].querySelector('.party-count').textContent.trim().replace(/,/g, '') : '';
+      const partyStatus = cells[8].querySelector('.tag') ? cells[8].querySelector('.tag').textContent.trim() : '';
+      const contact = cells[10].textContent.trim();
+      const phone = cells[11].textContent.trim();
+
+      // 提取标签
+      const tagEls = row.querySelectorAll('.industry-tag');
+      const tags = Array.from(tagEls).map(t => t.textContent.trim());
+
+      // 打开弹窗并填充数据
+      openEnterpriseModal();
+
+      // 修改标题
+      document.getElementById('enterpriseModalTitle').textContent = '编辑企业';
+
+      // 填充表单
+      const nameInput = document.querySelector('#enterpriseModal input[name="enterpriseName"]');
+      const creditCodeInput = document.querySelector('#enterpriseModal input[name="creditCode"]');
+      nameInput.value = name;
+      creditCodeInput.value = creditCode;
+      nameInput.readOnly = true;
+      creditCodeInput.readOnly = true;
+      nameInput.style.background = '#f5f7fa';
+      creditCodeInput.style.background = '#f5f7fa';
+      nameInput.style.cursor = 'not-allowed';
+      creditCodeInput.style.cursor = 'not-allowed';
+
+      // 设置产业并联动行业
+      const industrySel = document.querySelector('#enterpriseModal select[name="industry"]');
+      industrySel.value = industry;
+      updateEnterpriseTradeOptions();
+
+      // 设置行业
+      setTimeout(() => {
+        const tradeSel = document.querySelector('#enterpriseModal select[name="trade"]');
+        tradeSel.value = trade;
+      }, 10);
+
+      document.querySelector('#enterpriseModal select[name="scale"]').value = scale;
+      document.querySelector('#enterpriseModal input[name="employeeCount"]').value = employeeCount;
+      document.querySelector('#enterpriseModal input[name="partyCount"]').value = partyCount;
+      document.querySelector('#enterpriseModal select[name="partyStatus"]').value = partyStatus;
+      togglePartyOrgSelect();
+
+      // 联系人信息
+      document.querySelector('#enterpriseModal input[name="contact"]').value = contact;
+      document.querySelector('#enterpriseModal input[name="phone"]').value = phone;
+
+      // 规上企业
+      const isAbove = subText === '规上企业';
+      const radios = document.querySelectorAll('#enterpriseModal input[name="isAboveScale"]');
+      radios.forEach(r => r.checked = (r.value === (isAbove ? '是' : '否')));
+
+      // 填充标签
+      currentEnterpriseTags = tags.slice();
+      renderEnterpriseSelectedTags();
+      renderEnterpriseAvailableTags();
+    }
+
+    // ============================================
+    // 产业 → 行业 联动逻辑
+    // ============================================
+
+    // 产业对应的行业列表
+    const industryTradeMap = {
+      '高端装备制造': ['工业机器人', '高端数控机床', '航空发动机', '海洋工程装备', '轨道交通装备', '智能制造装备'],
+      '新一代信息技术': ['集成电路设计', '人工智能算法', '5G通信设备', '软件与信息服务', '大数据', '物联网'],
+      '新材料': ['先进金属材料', '新型无机非金属', '高分子材料', '复合材料', '前沿新材料'],
+      '生物医药': ['生物制药', '化学制药', '中药', '医疗器械', '医药流通'],
+      '新能源': ['锂电池', '光伏装备', '风电装备', '氢能', '新能源汽车'],
+      '节能环保': ['节能环保服务', '节能装备', '环保装备', '资源循环利用']
+    };
+
+    // 更新企业表单的行业选项
+    function updateEnterpriseTradeOptions() {
+      const industry = document.getElementById('enterpriseIndustry').value;
+      const tradeSelect = document.getElementById('enterpriseTrade');
+      tradeSelect.innerHTML = '';
+
+      if (!industry) {
+        tradeSelect.innerHTML = '<option value="">请先选择所属产业</option>';
+        return;
+      }
+
+      const trades = industryTradeMap[industry] || [];
+      tradeSelect.innerHTML = '<option value="">请选择所属行业</option>' +
+        trades.map(t => `<option value="${t}">${t}</option>`).join('');
+    }
+
+    // 更新筛选栏的行业选项
+    function updateFilterTradeOptions() {
+      const industry = document.getElementById('filterIndustry').value;
+      const tradeSelect = document.getElementById('filterTrade');
+      tradeSelect.innerHTML = '<option value="">全部行业</option>';
+
+      if (!industry) return;
+
+      const trades = industryTradeMap[industry] || [];
+      trades.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        tradeSelect.appendChild(opt);
+      });
+    }
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
+
+
+
+
