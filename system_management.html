@@ -1,0 +1,1338 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系统管理中心 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .kpi-row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .kpi-row-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .login-switch {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+      width: fit-content;
+    }
+    .login-switch-item {
+      padding: 8px 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .login-switch-item.active {
+      background: var(--surface);
+      color: var(--accent-red);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+    /* 字典管理左右分栏 */
+    .dict-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 16px;
+    }
+    .dict-left, .dict-right {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .dict-left { display: flex; flex-direction: column; }
+    .dict-right { display: flex; flex-direction: column; }
+    .dict-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dict-header-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .dict-body {
+      flex: 1;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html" class="active">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+      <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航栏 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            <span>🔔</span>
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">
+            <span>⚙</span>
+          </div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="index.html">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">系统管理</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">用户管理</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+
+        <div class="section-title">
+          系统管理中心
+          <span class="section-subtitle">管理系统账号、权限、菜单、日志等基础配置</span>
+        </div>
+
+        <!-- Tab 切换 -->
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="tabs" id="sysTabs">
+            <div class="tab-item active" data-tab="account">账号管理</div>
+            <div class="tab-item" data-tab="menu">菜单管理</div>
+            <div class="tab-item" data-tab="login">登录管理</div>
+            <div class="tab-item" data-tab="log">日志管理</div>
+            <div class="tab-item" data-tab="dict">字典管理</div>
+          </div>
+        </div>
+
+        <!-- Tab 1：账号管理 -->
+        <div class="tab-panel active" id="panel-account">
+          <!-- KPI 统计卡 -->
+          <div class="kpi-row-3">
+            <div class="kpi-card">
+              <div class="kpi-label">账号总数</div>
+              <div class="kpi-value">328<span class="unit">个</span></div>
+              <div class="kpi-trend up">↑ 12 个本月新增</div>
+              <div class="kpi-icon icon-red">👥</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">在线人数</div>
+              <div class="kpi-value">46<span class="unit">人</span></div>
+              <div class="kpi-trend up">↑ 较上小时 +8</div>
+              <div class="kpi-icon icon-green">●</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">今日登录</div>
+              <div class="kpi-value">156<span class="unit">次</span></div>
+              <div class="kpi-trend up">↑ 18.5% 较昨日</div>
+              <div class="kpi-icon icon-blue">🔐</div>
+            </div>
+          </div>
+
+          <!-- 筛选区 -->
+          <div class="filter-bar">
+            <div class="filter-left">
+              <div class="filter-item">
+                <label>部门</label>
+                <select class="filter-select">
+                  <option>全部部门</option>
+                  <option>党委办公室</option>
+                  <option>组织部</option>
+                  <option>宣传部</option>
+                  <option>纪检部</option>
+                  <option>企业服务部</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>角色</label>
+                <select class="filter-select">
+                  <option>全部角色</option>
+                  <option>系统管理员</option>
+                  <option>部门管理员</option>
+                  <option>普通用户</option>
+                  <option>企业用户</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>状态</label>
+                <select class="filter-select">
+                  <option>全部状态</option>
+                  <option>启用</option>
+                  <option>禁用</option>
+                </select>
+              </div>
+            </div>
+            <div class="filter-right">
+              <button class="btn btn-secondary">
+                <span>↓</span> 导出
+              </button>
+              <button class="btn btn-secondary">
+                <span>↑</span> 导入
+              </button>
+              <button class="btn btn-primary">
+                <span>+</span> 新增账号
+              </button>
+            </div>
+          </div>
+
+          <!-- 账号表格 -->
+          <div class="card">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">
+                    <div class="checkbox"></div>
+                  </th>
+                  <th>姓名</th>
+                  <th style="width: 140px;">登录账号</th>
+                  <th style="width: 140px;">部门</th>
+                  <th style="width: 120px;">角色</th>
+                  <th style="width: 130px;">手机号</th>
+                  <th style="width: 80px;">状态</th>
+                  <th style="width: 150px;">最后登录</th>
+                  <th style="width: 200px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="checkbox"></div></td>
+                  <td>
+                    
+                    张建国
+                  </td>
+                  <td>zhangjianguo</td>
+                  <td>党委办公室</td>
+                  <td><span class="tag tag-red">系统管理员</span></td>
+                  <td>138****8888</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>2024-01-31 14:25</td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">重置密码</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">禁用</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="checkbox"></div></td>
+                  <td>
+                    
+                    李明华
+                  </td>
+                  <td>liminghua</td>
+                  <td>组织部</td>
+                  <td><span class="tag tag-blue">部门管理员</span></td>
+                  <td>139****6666</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>2024-01-31 13:40</td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">重置密码</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">禁用</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="checkbox"></div></td>
+                  <td>
+                    
+                    王晓芳
+                  </td>
+                  <td>wangxiaofang</td>
+                  <td>宣传部</td>
+                  <td><span class="tag tag-gold">普通用户</span></td>
+                  <td>137****5555</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>2024-01-31 10:15</td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">重置密码</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">禁用</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="checkbox"></div></td>
+                  <td>
+                    
+                    赵志强
+                  </td>
+                  <td>zhizhiqiang</td>
+                  <td>纪检部</td>
+                  <td><span class="tag tag-blue">部门管理员</span></td>
+                  <td>136****7777</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>2024-01-30 16:30</td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">重置密码</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">禁用</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="checkbox"></div></td>
+                  <td>
+                    
+                    陈美玲
+                  </td>
+                  <td>chenmeiling</td>
+                  <td>企业服务部</td>
+                  <td><span class="tag tag-gold">普通用户</span></td>
+                  <td>135****9999</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>2024-01-31 09:20</td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">重置密码</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">禁用</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="checkbox"></div></td>
+                  <td>
+                    
+                    刘大伟
+                  </td>
+                  <td>liudawei</td>
+                  <td>组织部</td>
+                  <td><span class="tag tag-gold">普通用户</span></td>
+                  <td>138****3333</td>
+                  <td><span class="badge badge-orange">禁用</span></td>
+                  <td>2024-01-20 14:50</td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">重置密码</span>
+                      <span class="divider"></span>
+                      <span class="action-link">启用</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="checkbox"></div></td>
+                  <td>
+                    
+                    孙雅婷
+                  </td>
+                  <td>sunyating</td>
+                  <td>党委办公室</td>
+                  <td><span class="tag tag-blue">部门管理员</span></td>
+                  <td>139****2222</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>2024-01-31 11:45</td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">重置密码</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">禁用</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="checkbox"></div></td>
+                  <td>
+                    
+                    周建华
+                  </td>
+                  <td>zhoujianhua</td>
+                  <td>纪检部</td>
+                  <td><span class="tag tag-gold">普通用户</span></td>
+                  <td>137****4444</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>2024-01-30 15:10</td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">重置密码</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">禁用</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="card-footer" style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:13px;color:var(--text-muted);">共 328 条记录，每页显示 10 条</span>
+              <div class="pagination" style="padding:0;">
+                <div class="pagination-item">‹</div>
+                <div class="pagination-item active">1</div>
+                <div class="pagination-item">2</div>
+                <div class="pagination-item">3</div>
+                <div class="pagination-item">4</div>
+                <div class="pagination-item">...</div>
+                <div class="pagination-item">33</div>
+                <div class="pagination-item">›</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2：菜单管理 -->
+        <div class="tab-panel" id="panel-menu">
+          <!-- 工具栏 -->
+          <div class="filter-bar">
+            <div class="filter-left">
+            </div>
+            <div class="filter-right">
+              <button class="btn btn-secondary">
+                <span>⤢</span> 展开全部
+              </button>
+              <button class="btn btn-primary">
+                <span>+</span> 新增菜单
+              </button>
+            </div>
+          </div>
+
+          <!-- 菜单树形表格 -->
+          <div class="card">
+            <table class="table menu-tree-table">
+              <thead>
+                <tr>
+                  <th>菜单名称</th>
+                  <th style="width: 80px;">图标</th>
+                  <th style="width: 200px;">路径</th>
+                  <th style="width: 80px;">排序</th>
+                  <th style="width: 80px;">状态</th>
+                  <th style="width: 200px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="level-0">
+                    <div class="menu-name-cell">
+                      <span class="tree-arrow" style="transform:rotate(90deg);">›</span>
+                      <span class="menu-icon">⌂</span>
+                      <span>工作台</span>
+                    </div>
+                  </td>
+                  <td>⌂</td>
+                  <td><code style="font-size:12px;color:var(--text-muted);">/dashboard</code></td>
+                  <td>1</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">添加子菜单</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">删除</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="level-1">
+                    <div class="menu-name-cell">
+                      <span class="tree-arrow">›</span>
+                      <span class="menu-icon">📊</span>
+                      <span>首页概览</span>
+                    </div>
+                  </td>
+                  <td>📊</td>
+                  <td><code style="font-size:12px;color:var(--text-muted);">/dashboard/home</code></td>
+                  <td>1</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">添加子菜单</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">删除</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="level-0">
+                    <div class="menu-name-cell">
+                      <span class="tree-arrow" style="transform:rotate(90deg);">›</span>
+                      <span class="menu-icon">☷</span>
+                      <span>党建基础</span>
+                    </div>
+                  </td>
+                  <td>☷</td>
+                  <td><code style="font-size:12px;color:var(--text-muted);">/party</code></td>
+                  <td>2</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">添加子菜单</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">删除</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="level-1">
+                    <div class="menu-name-cell">
+                      <span class="tree-arrow" style="transform:rotate(90deg);">›</span>
+                      <span class="menu-icon">🏢</span>
+                      <span>组织管理</span>
+                    </div>
+                  </td>
+                  <td>🏢</td>
+                  <td><code style="font-size:12px;color:var(--text-muted);">/party/org</code></td>
+                  <td>1</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">添加子菜单</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">删除</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="level-2">
+                    <div class="menu-name-cell">
+                      <span class="menu-icon">·</span>
+                      <span>组织列表</span>
+                    </div>
+                  </td>
+                  <td>·</td>
+                  <td><code style="font-size:12px;color:var(--text-muted);">/party/org/list</code></td>
+                  <td>1</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">添加子菜单</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">删除</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="level-2">
+                    <div class="menu-name-cell">
+                      <span class="menu-icon">·</span>
+                      <span>组织分析</span>
+                    </div>
+                  </td>
+                  <td>·</td>
+                  <td><code style="font-size:12px;color:var(--text-muted);">/party/org/analysis</code></td>
+                  <td>2</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">添加子菜单</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">删除</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="level-1">
+                    <div class="menu-name-cell">
+                      <span class="tree-arrow" style="transform:rotate(90deg);">›</span>
+                      <span class="menu-icon">☺</span>
+                      <span>党员管理</span>
+                    </div>
+                  </td>
+                  <td>☺</td>
+                  <td><code style="font-size:12px;color:var(--text-muted);">/party/member</code></td>
+                  <td>2</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">添加子菜单</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">删除</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="level-0">
+                    <div class="menu-name-cell">
+                      <span class="tree-arrow" style="transform:rotate(90deg);">›</span>
+                      <span class="menu-icon">⚙</span>
+                      <span>系统管理</span>
+                    </div>
+                  </td>
+                  <td>⚙</td>
+                  <td><code style="font-size:12px;color:var(--text-muted);">/system</code></td>
+                  <td>6</td>
+                  <td><span class="badge badge-green">启用</span></td>
+                  <td>
+                    <div class="action-links">
+                      <span class="action-link">编辑</span>
+                      <span class="divider"></span>
+                      <span class="action-link">添加子菜单</span>
+                      <span class="divider"></span>
+                      <span class="action-link danger">删除</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 3：登录管理 -->
+        <div class="tab-panel" id="panel-login">
+          <!-- 切换 -->
+          <div class="login-switch">
+            <div class="login-switch-item active">运营登录</div>
+            <div class="login-switch-item">企业登录</div>
+          </div>
+
+          <!-- KPI 统计卡 -->
+          <div class="kpi-row-4">
+            <div class="kpi-card">
+              <div class="kpi-label">今日登录数</div>
+              <div class="kpi-value">156<span class="unit">次</span></div>
+              <div class="kpi-trend up">↑ 12.5% 较昨日</div>
+              <div class="kpi-icon icon-red">📅</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">本周登录数</div>
+              <div class="kpi-value">986<span class="unit">次</span></div>
+              <div class="kpi-trend up">↑ 8.3% 较上周</div>
+              <div class="kpi-icon icon-blue">📆</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">本月登录数</div>
+              <div class="kpi-value">3,842<span class="unit">次</span></div>
+              <div class="kpi-trend up">↑ 15.2% 较上月</div>
+              <div class="kpi-icon icon-gold">📊</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">活跃用户数</div>
+              <div class="kpi-value">218<span class="unit">人</span></div>
+              <div class="kpi-trend up">↑ 5.8% 较上月</div>
+              <div class="kpi-icon icon-green">👥</div>
+            </div>
+          </div>
+
+          <!-- 筛选区 -->
+          <div class="filter-bar">
+            <div class="filter-left">
+              <div class="filter-item">
+                <label>用户类型</label>
+                <select class="filter-select">
+                  <option>全部类型</option>
+                  <option>管理员</option>
+                  <option>普通用户</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>登录状态</label>
+                <select class="filter-select">
+                  <option>全部状态</option>
+                  <option>登录成功</option>
+                  <option>登录失败</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>时间范围</label>
+                <input type="date" class="filter-select" style="width: auto; min-width: 140px;">
+              </div>
+            </div>
+            <div class="filter-right">
+              <button class="btn btn-secondary">
+                <span>↓</span> 导出
+              </button>
+            </div>
+          </div>
+
+          <!-- 登录记录表格 -->
+          <div class="card">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width: 140px;">账号</th>
+                  <th style="width: 100px;">姓名</th>
+                  <th style="width: 100px;">用户类型</th>
+                  <th style="width: 160px;">登录时间</th>
+                  <th style="width: 120px;">IP地址</th>
+                  <th style="width: 120px;">登录地点</th>
+                  <th style="width: 150px;">设备信息</th>
+                  <th style="width: 80px;">状态</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>zhangjianguo</td>
+                  <td>张建国</td>
+                  <td><span class="tag tag-red">系统管理员</span></td>
+                  <td>2024-01-31 14:25:36</td>
+                  <td>192.168.1.100</td>
+                  <td>江苏·苏州</td>
+                  <td>Chrome / Windows</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                </tr>
+                <tr>
+                  <td>liminghua</td>
+                  <td>李明华</td>
+                  <td><span class="tag tag-blue">部门管理员</span></td>
+                  <td>2024-01-31 13:40:12</td>
+                  <td>192.168.1.105</td>
+                  <td>江苏·苏州</td>
+                  <td>Edge / Windows</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                </tr>
+                <tr>
+                  <td>unknown</td>
+                  <td>-</td>
+                  <td><span class="tag">未知</span></td>
+                  <td>2024-01-31 13:25:08</td>
+                  <td>203.0.113.45</td>
+                  <td>北京·朝阳</td>
+                  <td>Firefox / Linux</td>
+                  <td><span class="badge badge-red">失败</span></td>
+                </tr>
+                <tr>
+                  <td>wangxiaofang</td>
+                  <td>王晓芳</td>
+                  <td><span class="tag tag-gold">普通用户</span></td>
+                  <td>2024-01-31 10:15:42</td>
+                  <td>192.168.1.108</td>
+                  <td>江苏·苏州</td>
+                  <td>Safari / macOS</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                </tr>
+                <tr>
+                  <td>zhizhiqiang</td>
+                  <td>赵志强</td>
+                  <td><span class="tag tag-blue">部门管理员</span></td>
+                  <td>2024-01-30 16:30:55</td>
+                  <td>192.168.1.110</td>
+                  <td>江苏·苏州</td>
+                  <td>Chrome / Windows</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                </tr>
+                <tr>
+                  <td>chenmeiling</td>
+                  <td>陈美玲</td>
+                  <td><span class="tag tag-gold">普通用户</span></td>
+                  <td>2024-01-31 09:20:18</td>
+                  <td>192.168.1.112</td>
+                  <td>江苏·苏州</td>
+                  <td>Chrome / Windows</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                </tr>
+                <tr>
+                  <td>test_user</td>
+                  <td>测试账号</td>
+                  <td><span class="tag">测试</span></td>
+                  <td>2024-01-31 08:45:33</td>
+                  <td>198.51.100.23</td>
+                  <td>上海·浦东</td>
+                  <td>Chrome / Android</td>
+                  <td><span class="badge badge-red">失败</span></td>
+                </tr>
+                <tr>
+                  <td>sunyating</td>
+                  <td>孙雅婷</td>
+                  <td><span class="tag tag-blue">部门管理员</span></td>
+                  <td>2024-01-31 11:45:27</td>
+                  <td>192.168.1.115</td>
+                  <td>江苏·苏州</td>
+                  <td>Edge / Windows</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="card-footer" style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:13px;color:var(--text-muted);">共 3,842 条记录，每页显示 10 条</span>
+              <div class="pagination" style="padding:0;">
+                <div class="pagination-item">‹</div>
+                <div class="pagination-item active">1</div>
+                <div class="pagination-item">2</div>
+                <div class="pagination-item">3</div>
+                <div class="pagination-item">4</div>
+                <div class="pagination-item">...</div>
+                <div class="pagination-item">385</div>
+                <div class="pagination-item">›</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4：日志管理 -->
+        <div class="tab-panel" id="panel-log">
+          <!-- 筛选区 -->
+          <div class="filter-bar">
+            <div class="filter-left">
+              <div class="filter-item">
+                <label>日志类型</label>
+                <select class="filter-select">
+                  <option>全部类型</option>
+                  <option>登录日志</option>
+                  <option>操作日志</option>
+                  <option>系统日志</option>
+                  <option>错误日志</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>操作人</label>
+                <select class="filter-select">
+                  <option>全部操作人</option>
+                  <option>张建国</option>
+                  <option>李明华</option>
+                  <option>王晓芳</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>时间范围</label>
+                <input type="date" class="filter-select" style="width: auto; min-width: 140px;">
+              </div>
+            </div>
+            <div class="filter-right">
+              <button class="btn btn-secondary">
+                <span>🗑</span> 清空
+              </button>
+              <button class="btn btn-secondary">
+                <span>↓</span> 导出
+              </button>
+            </div>
+          </div>
+
+          <!-- 日志表格 -->
+          <div class="card">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">编号</th>
+                  <th style="width: 100px;">类型</th>
+                  <th style="width: 120px;">操作模块</th>
+                  <th>操作内容</th>
+                  <th style="width: 100px;">操作人</th>
+                  <th style="width: 160px;">操作时间</th>
+                  <th style="width: 120px;">IP地址</th>
+                  <th style="width: 80px;">状态</th>
+                  <th style="width: 80px;">详情</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#10086</td>
+                  <td><span class="tag tag-blue">操作日志</span></td>
+                  <td>账号管理</td>
+                  <td>新增用户账号 "liudehua"</td>
+                  <td>张建国</td>
+                  <td>2024-01-31 14:30:25</td>
+                  <td>192.168.1.100</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                  <td><span class="action-link">查看</span></td>
+                </tr>
+                <tr>
+                  <td>#10085</td>
+                  <td><span class="tag tag-green">登录日志</span></td>
+                  <td>系统登录</td>
+                  <td>用户 "zhangjianguo" 登录系统</td>
+                  <td>张建国</td>
+                  <td>2024-01-31 14:25:36</td>
+                  <td>192.168.1.100</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                  <td><span class="action-link">查看</span></td>
+                </tr>
+                <tr>
+                  <td>#10084</td>
+                  <td><span class="tag tag-red">错误日志</span></td>
+                  <td>数据同步</td>
+                  <td>党员数据同步失败：连接超时</td>
+                  <td>系统</td>
+                  <td>2024-01-31 14:20:18</td>
+                  <td>127.0.0.1</td>
+                  <td><span class="badge badge-red">失败</span></td>
+                  <td><span class="action-link">查看</span></td>
+                </tr>
+                <tr>
+                  <td>#10083</td>
+                  <td><span class="tag tag-blue">操作日志</span></td>
+                  <td>信息发布</td>
+                  <td>发布文章 "2024年1月党建工作月报"</td>
+                  <td>李明华</td>
+                  <td>2024-01-31 14:15:42</td>
+                  <td>192.168.1.105</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                  <td><span class="action-link">查看</span></td>
+                </tr>
+                <tr>
+                  <td>#10082</td>
+                  <td><span class="tag tag-gold">系统日志</span></td>
+                  <td>定时任务</td>
+                  <td>执行每日数据备份任务</td>
+                  <td>系统</td>
+                  <td>2024-01-31 02:00:00</td>
+                  <td>127.0.0.1</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                  <td><span class="action-link">查看</span></td>
+                </tr>
+                <tr>
+                  <td>#10081</td>
+                  <td><span class="tag tag-blue">操作日志</span></td>
+                  <td>角色管理</td>
+                  <td>修改角色 "部门管理员" 权限配置</td>
+                  <td>张建国</td>
+                  <td>2024-01-31 11:30:15</td>
+                  <td>192.168.1.100</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                  <td><span class="action-link">查看</span></td>
+                </tr>
+                <tr>
+                  <td>#10080</td>
+                  <td><span class="tag tag-blue">操作日志</span></td>
+                  <td>标签管理</td>
+                  <td>新增标签分类 "志愿者标签"</td>
+                  <td>王晓芳</td>
+                  <td>2024-01-31 10:45:33</td>
+                  <td>192.168.1.108</td>
+                  <td><span class="badge badge-green">成功</span></td>
+                  <td><span class="action-link">查看</span></td>
+                </tr>
+                <tr>
+                  <td>#10079</td>
+                  <td><span class="tag tag-green">登录日志</span></td>
+                  <td>系统登录</td>
+                  <td>用户 "test" 登录失败：密码错误</td>
+                  <td>未知</td>
+                  <td>2024-01-31 08:45:33</td>
+                  <td>198.51.100.23</td>
+                  <td><span class="badge badge-red">失败</span></td>
+                  <td><span class="action-link">查看</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="card-footer" style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:13px;color:var(--text-muted);">共 12,856 条记录，每页显示 10 条</span>
+              <div class="pagination" style="padding:0;">
+                <div class="pagination-item">‹</div>
+                <div class="pagination-item active">1</div>
+                <div class="pagination-item">2</div>
+                <div class="pagination-item">3</div>
+                <div class="pagination-item">4</div>
+                <div class="pagination-item">...</div>
+                <div class="pagination-item">1286</div>
+                <div class="pagination-item">›</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 5：字典管理 -->
+        <div class="tab-panel" id="panel-dict">
+          <!-- 顶部操作栏 -->
+          <div class="filter-bar">
+            <div class="filter-left">
+              <span style="font-size:14px;color:var(--text-secondary);">字典管理：维护系统全局数据字典</span>
+            </div>
+            <div class="filter-right">
+              <button class="btn btn-secondary">
+                <span>↻</span> 刷新缓存
+              </button>
+              <button class="btn btn-secondary">
+                <span>↓</span> 导出
+              </button>
+              <button class="btn btn-secondary">
+                <span>↑</span> 导入
+              </button>
+              <button class="btn btn-primary">
+                <span>+</span> 新增字典
+              </button>
+            </div>
+          </div>
+
+          <!-- 左右分栏 -->
+          <div class="dict-layout">
+            <!-- 左侧：字典类型列表 -->
+            <div class="dict-left">
+              <div class="dict-header">
+                <div class="dict-header-title">字典类型</div>
+                <button class="btn btn-sm btn-primary">+</button>
+              </div>
+              <div class="dict-body">
+                <div class="category-tree">
+                  <div class="tree-item active">
+                    <span class="tree-icon">📋</span>
+                    <span class="tree-name">党员状态</span>
+                    <span class="tree-count">6</span>
+                  </div>
+                  <div class="tree-item">
+                    <span class="tree-icon">🏢</span>
+                    <span class="tree-name">组织类型</span>
+                    <span class="tree-count">8</span>
+                  </div>
+                  <div class="tree-item">
+                    <span class="tree-icon">💼</span>
+                    <span class="tree-name">企业类型</span>
+                    <span class="tree-count">12</span>
+                  </div>
+                  <div class="tree-item">
+                    <span class="tree-icon">📊</span>
+                    <span class="tree-name">产业分类</span>
+                    <span class="tree-count">15</span>
+                  </div>
+                  <div class="tree-item">
+                    <span class="tree-icon">🎓</span>
+                    <span class="tree-name">学历字典</span>
+                    <span class="tree-count">9</span>
+                  </div>
+                  <div class="tree-item">
+                    <span class="tree-icon">💎</span>
+                    <span class="tree-name">人才等级</span>
+                    <span class="tree-count">7</span>
+                  </div>
+                  <div class="tree-item">
+                    <span class="tree-icon">🎉</span>
+                    <span class="tree-name">活动类型</span>
+                    <span class="tree-count">10</span>
+                  </div>
+                  <div class="tree-item">
+                    <span class="tree-icon">📄</span>
+                    <span class="tree-name">文章分类</span>
+                    <span class="tree-count">8</span>
+                  </div>
+                  <div class="tree-item">
+                    <span class="tree-icon">⚙</span>
+                    <span class="tree-name">系统配置</span>
+                    <span class="tree-count">20</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 右侧：字典数据列表 -->
+            <div class="dict-right">
+              <div class="dict-header">
+                <div class="dict-header-title">
+                  党员状态
+                  <span class="tag tag-blue" style="margin-left:8px;">6 项</span>
+                </div>
+                <div class="flex" style="gap:8px;">
+                  <button class="btn btn-sm btn-primary">+ 新增字典项</button>
+                </div>
+              </div>
+              <div class="dict-body">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th style="width: 60px;">排序</th>
+                      <th>字典标签</th>
+                      <th style="width: 140px;">字典键值</th>
+                      <th style="width: 100px;">样式属性</th>
+                      <th style="width: 80px;">状态</th>
+                      <th style="width: 160px;">备注</th>
+                      <th style="width: 140px;">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>正式党员</td>
+                      <td><code style="font-size:12px;color:var(--text-muted);">formal</code></td>
+                      <td><span class="tag tag-red">红色</span></td>
+                      <td><span class="badge badge-green">启用</span></td>
+                      <td style="color:var(--text-muted);font-size:12px;">-</td>
+                      <td>
+                        <div class="action-links">
+                          <span class="action-link">编辑</span>
+                          <span class="divider"></span>
+                          <span class="action-link danger">删除</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>预备党员</td>
+                      <td><code style="font-size:12px;color:var(--text-muted);">probation</code></td>
+                      <td><span class="tag tag-blue">蓝色</span></td>
+                      <td><span class="badge badge-green">启用</span></td>
+                      <td style="color:var(--text-muted);font-size:12px;">-</td>
+                      <td>
+                        <div class="action-links">
+                          <span class="action-link">编辑</span>
+                          <span class="divider"></span>
+                          <span class="action-link danger">删除</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>发展对象</td>
+                      <td><code style="font-size:12px;color:var(--text-muted);">candidate</code></td>
+                      <td><span class="tag tag-green">绿色</span></td>
+                      <td><span class="badge badge-green">启用</span></td>
+                      <td style="color:var(--text-muted);font-size:12px;">-</td>
+                      <td>
+                        <div class="action-links">
+                          <span class="action-link">编辑</span>
+                          <span class="divider"></span>
+                          <span class="action-link danger">删除</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>入党积极分子</td>
+                      <td><code style="font-size:12px;color:var(--text-muted);">active</code></td>
+                      <td><span class="tag tag-gold">金色</span></td>
+                      <td><span class="badge badge-green">启用</span></td>
+                      <td style="color:var(--text-muted);font-size:12px;">-</td>
+                      <td>
+                        <div class="action-links">
+                          <span class="action-link">编辑</span>
+                          <span class="divider"></span>
+                          <span class="action-link danger">删除</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td>入党申请人</td>
+                      <td><code style="font-size:12px;color:var(--text-muted);">applicant</code></td>
+                      <td><span class="tag tag-orange">橙色</span></td>
+                      <td><span class="badge badge-green">启用</span></td>
+                      <td style="color:var(--text-muted);font-size:12px;">-</td>
+                      <td>
+                        <div class="action-links">
+                          <span class="action-link">编辑</span>
+                          <span class="divider"></span>
+                          <span class="action-link danger">删除</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>6</td>
+                      <td>群众</td>
+                      <td><code style="font-size:12px;color:var(--text-muted);">mass</code></td>
+                      <td><span class="tag">灰色</span></td>
+                      <td><span class="badge badge-green">启用</span></td>
+                      <td style="color:var(--text-muted);font-size:12px;">非党员</td>
+                      <td>
+                        <div class="action-links">
+                          <span class="action-link">编辑</span>
+                          <span class="divider"></span>
+                          <span class="action-link danger">删除</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+            </main>
+    </div>
+  </div>
+
+  <script>
+    // Tab 切换
+    document.querySelectorAll('#sysTabs .tab-item').forEach(tab => {
+      tab.addEventListener('click', function() {
+        const tabId = this.getAttribute('data-tab');
+        document.querySelectorAll('#sysTabs .tab-item').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-' + tabId).classList.add('active');
+      });
+    });
+
+    // 复选框切换
+    document.querySelectorAll('.checkbox').forEach(cb => {
+      cb.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.classList.toggle('checked');
+      });
+    });
+
+    // 树节点选中（字典左侧）
+    document.querySelectorAll('.dict-left .tree-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.dict-left .tree-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
+
