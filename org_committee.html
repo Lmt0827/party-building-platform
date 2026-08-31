@@ -1,0 +1,2076 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>工委管理 - 党建数字化平台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* 白色内容区覆盖样式 */
+    .main-wrapper {
+      background: #f5f7fa;
+    }
+    .header {
+      background: #fff;
+      border-bottom: 1px solid #e4e7ed;
+    }
+    .header-search input {
+      background: #f5f7fa;
+      border: 1px solid #dcdfe6;
+      color: #303133;
+    }
+    .header-search input::placeholder {
+      color: #909399;
+    }
+    .header-search input:focus {
+      border-color: #c41e3a;
+      background: #fff;
+    }
+    .header-search .search-icon {
+      color: #909399;
+    }
+    .header-icon {
+      color: #606266;
+    }
+    .header-icon:hover {
+      color: #c41e3a;
+      background: rgba(196, 30, 58, 0.05);
+    }
+    .header-username {
+      color: #303133;
+    }
+    .breadcrumb {
+      background: #fff;
+      border-bottom: 1px solid #e4e7ed;
+    }
+    .breadcrumb-item {
+      color: #606266;
+    }
+    .breadcrumb-item a {
+      color: #606266;
+    }
+    .breadcrumb-item a:hover {
+      color: #c41e3a;
+    }
+    .breadcrumb-item.active {
+      color: #c41e3a;
+    }
+    .breadcrumb-separator {
+      color: #c0c4cc;
+    }
+    .main-content {
+      background: #f5f7fa;
+    }
+
+    /* 白色主题卡片 */
+    .card {
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+    .card::before {
+      background: linear-gradient(90deg, transparent, #c41e3a, transparent);
+      opacity: 0.8;
+    }
+    .card-header {
+      border-bottom: 1px solid #ebeef5;
+    }
+    .card-title {
+      color: #303133;
+    }
+    .card-title::before {
+      background: linear-gradient(180deg, #d4af37, #c41e3a);
+    }
+    .card-body {
+      color: #606266;
+    }
+
+    /* 表格 */
+    .table th {
+      background: #fafafa;
+      color: #606266;
+      border-bottom: 1px solid #ebeef5;
+    }
+    .table td {
+      color: #606266;
+      border-bottom: 1px solid #ebeef5;
+    }
+    .table tbody tr:hover {
+      background: #fafafa;
+    }
+    .table tbody tr:hover td {
+      color: #303133;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    /* Tabs 白色主题 */
+    .tabs {
+      border-bottom: 2px solid #ebeef5;
+      background: #fff;
+      padding: 0 20px;
+      border-radius: 8px 8px 0 0;
+    }
+    .tab-item {
+      color: #606266;
+      padding: 14px 28px;
+    }
+    .tab-item:hover {
+      color: #c41e3a;
+    }
+    .tab-item.active {
+      color: #c41e3a;
+    }
+    .tab-item.active::after {
+      background: linear-gradient(90deg, #c41e3a, #d4af37);
+    }
+
+    /* 统计卡片行 */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 8px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .stat-card:hover {
+      box-shadow: 0 4px 20px rgba(196, 30, 58, 0.1);
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+    }
+    .stat-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .stat-icon.red {
+      background: linear-gradient(135deg, #e63946, #c41e3a);
+      box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+    }
+    .stat-icon.gold {
+      background: linear-gradient(135deg, #f4d03f, #d4af37);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+    .stat-icon.blue {
+      background: linear-gradient(135deg, #5dade2, #2a5a8a);
+      box-shadow: 0 4px 12px rgba(42, 90, 138, 0.3);
+    }
+    .stat-info {
+      flex: 1;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: #909399;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #303133;
+      font-family: 'DIN', 'Arial', sans-serif;
+      line-height: 1.2;
+    }
+    .stat-value .unit {
+      font-size: 14px;
+      color: #909399;
+      font-weight: 400;
+      margin-left: 4px;
+    }
+    .stat-trend {
+      font-size: 12px;
+      color: #909399;
+      margin-top: 4px;
+    }
+    .stat-trend .up { color: #2ecc71; }
+    .stat-trend .down { color: #e74c3c; }
+
+    /* 筛选栏 */
+    .filter-bar {
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-label {
+      font-size: 13px;
+      color: #606266;
+      white-space: nowrap;
+    }
+    .filter-select {
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      color: #606266;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      min-width: 120px;
+    }
+    .filter-select:focus {
+      border-color: #c41e3a;
+    }
+    .filter-input {
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      color: #606266;
+      font-size: 13px;
+      outline: none;
+      width: 200px;
+    }
+    .filter-input:focus {
+      border-color: #c41e3a;
+    }
+    .filter-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    /* 操作链接 */
+    .action-link {
+      color: #c41e3a;
+      font-size: 13px;
+      cursor: pointer;
+      margin-right: 12px;
+      text-decoration: none;
+    }
+    .action-link:hover {
+      text-decoration: underline;
+    }
+    .action-link.secondary {
+      color: #606266;
+    }
+
+    /* 更多下拉菜单 */
+    .more-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .more-dropdown-toggle {
+      color: #606266;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .more-dropdown-toggle:hover {
+      color: #c41e3a;
+    }
+    .more-dropdown-menu {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      min-width: 140px;
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 6px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      padding: 6px 0;
+      z-index: 100;
+      display: none;
+    }
+    .more-dropdown-menu.show {
+      display: block;
+    }
+    .more-dropdown-item {
+      padding: 8px 16px;
+      font-size: 13px;
+      color: #606266;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .more-dropdown-item:hover {
+      background: #f5f7fa;
+      color: #c41e3a;
+    }
+
+    /* 班子成员列表 */
+    .team-member-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .team-member-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: #fafafa;
+      border: 1px solid #ebeef5;
+      border-radius: 6px;
+    }
+    .team-member-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c41e3a, #d4af37);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .team-member-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .team-member-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #303133;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .team-member-role {
+      font-size: 11px;
+      padding: 2px 8px;
+      background: rgba(196, 30, 58, 0.1);
+      color: #c41e3a;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    .team-member-contact {
+      font-size: 12px;
+      color: #909399;
+      display: flex;
+      gap: 16px;
+    }
+    .team-member-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .team-member-actions .action-icon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #909399;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .team-member-actions .action-icon:hover {
+      background: #fff;
+      color: #c41e3a;
+    }
+
+    /* 添加成员表单 */
+    .add-member-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #ebeef5;
+    }
+    .add-member-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #303133;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .add-member-title::before {
+      content: '';
+      width: 3px;
+      height: 14px;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+      border-radius: 2px;
+    }
+
+    /* 列表容器 */
+    .list-container {
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 0 0 8px 8px;
+      border-top: none;
+    }
+
+    /* 带Tab的卡片容器 */
+    .tab-card {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    .tab-card::before {
+      display: none;
+    }
+
+    /* 弹窗样式 */
+    .modal-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    .modal-mask.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-dialog {
+      background: #fff;
+      border-radius: 8px;
+      width: 600px;
+      max-width: 90vw;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(20px);
+      transition: transform 0.3s;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+    .modal-mask.show .modal-dialog {
+      transform: translateY(0);
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #ebeef5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #303133;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: linear-gradient(180deg, #c41e3a, #d4af37);
+      border-radius: 2px;
+    }
+    .modal-close {
+      font-size: 20px;
+      color: #909399;
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .modal-close:hover {
+      background: #f5f7fa;
+      color: #c41e3a;
+    }
+    .modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      color: #606266;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .form-label .required {
+      color: #f56c6c;
+      margin-right: 2px;
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #303133;
+      background: #fff;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: #c41e3a;
+    }
+    .form-textarea {
+      height: 80px;
+      padding: 8px 12px;
+      resize: vertical;
+      font-family: inherit;
+    }
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+    .modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid #ebeef5;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .btn {
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #c41e3a, #d4af37);
+      color: #fff;
+      border: none;
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+    }
+    .btn-default {
+      background: #fff;
+      color: #606266;
+      border-color: #dcdfe6;
+    }
+    .btn-default:hover {
+      color: #c41e3a;
+      border-color: #c41e3a;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- 侧边栏 -->
+        <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">党</div>
+        <span class="logo-text">党建数字化平台</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏠</span>
+            <span>首页概览</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="dashboard.html">工作台</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group expanded">
+          <div class="menu-title">
+            <span class="menu-icon">🏛️</span>
+            <span>党建基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html" class="active">工委管理</a></li>
+
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🏭</span>
+            <span>产业基础</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="industry_management.html">产业数据管理</a></li>
+            <li><a href="enterprise_analysis.html">企业分析</a></li>
+            <li><a href="enterprise.html">企业管理</a></li>
+            
+            <li><a href="enterprise_publish.html">企业数据发布</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">👥</span>
+            <span>党员管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="member_analysis.html">党员分析</a></li>
+            <li><a href="member.html">党员管理</a></li>
+            <li><a href="member_development.html">党员发展</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🎓</span>
+            <span>人才培养</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="talent_analysis.html">人才分析</a></li>
+            <li><a href="talent_management.html">人才管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📢</span>
+            <span>信息发布</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="info_publish.html">信息发布</a></li>
+            <li><a href="activity.html">活动管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📊</span>
+            <span>智能报告</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="report.html">报表管理</a></li>
+            <li><a href="report_builder.html">报表构建器</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">📁</span>
+            <span>数据管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="data_management.html">数据管理</a></li>
+            <li><a href="tag_management.html">标签管理</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">⚙️</span>
+            <span>系统管理</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="system_management.html">用户管理</a></li>
+            <li><a href="role.html">角色权限</a></li>
+          </ul>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">
+            <span class="menu-icon">🤖</span>
+            <span>AI智能体</span>
+            <span class="menu-arrow">▶</span>
+          </div>
+          <ul class="menu-sub">
+            <li><a href="agent_knowledge.html">知识库</a></li>
+            <li><a href="agent_workflow.html">工作流</a></li>
+            <li><a href="agent_finetune.html">微调训练</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+      <!-- 顶部导航 -->
+      <header class="header">
+        <div class="header-left">
+          
+        </div>
+        <div class="header-right">
+          <div class="header-icon">
+            🔔
+            <span class="badge">5</span>
+          </div>
+          <div class="header-icon">⚙</div>
+          <div class="header-user">
+            <div class="header-avatar">张</div>
+            <span class="header-username">张管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <div class="breadcrumb-item"><a href="#">首页</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item"><a href="#">党建基础</a></div>
+        <div class="breadcrumb-separator">/</div>
+        <div class="breadcrumb-item active">工委管理</div>
+      </div>
+
+      <!-- 主内容 -->
+      <main class="main-content">
+        <div class="card tab-card">
+          <!-- Tab 切换 -->
+          <div class="tabs">
+            <div class="tab-item active" onclick="switchTab(0)">机关党委</div>
+            <div class="tab-item" onclick="switchTab(1)">企业工委</div>
+          </div>
+
+          <!-- Tab 1: 党工委数据 -->
+          <div class="tab-content active">
+            <!-- 统计卡片 -->
+            <div class="stat-row">
+              <div class="stat-card">
+                <div class="stat-icon red">🏛</div>
+                <div class="stat-info">
+                  <div class="stat-label">机关党委总数</div>
+                  <div class="stat-value">42<span class="unit">个</span></div>
+                  <div class="stat-trend"><span class="up">↑ 2.4%</span> 较上年同期</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon gold">📈</div>
+                <div class="stat-info">
+                  <div class="stat-label">本年新增</div>
+                  <div class="stat-value">3<span class="unit">个</span></div>
+                  <div class="stat-trend"><span class="up">↑ 50%</span> 较上年同期</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon blue">📊</div>
+                <div class="stat-info">
+                  <div class="stat-label">组织覆盖率</div>
+                  <div class="stat-value">96.8<span class="unit">%</span></div>
+                  <div class="stat-trend"><span class="up">↑ 3.2%</span> 较上年同期</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 筛选栏 -->
+            <div class="filter-bar">
+              <div class="filter-group">
+                <span class="filter-label">类型：</span>
+                <select class="filter-select">
+                  <option>全部类型</option>
+                  <option>街道党工委</option>
+                  <option>园区党工委</option>
+                  <option>机关党工委</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <span class="filter-label">状态：</span>
+                <select class="filter-select">
+                  <option>全部状态</option>
+                  <option>正常</option>
+                  <option>筹建中</option>
+                  <option>撤销</option>
+                </select>
+              </div>
+              <div class="filter-actions">
+                <button class="btn btn-primary btn-sm" onclick="openAddOrgModal('机关党委')">+ 新增机关党委</button>
+                <button class="btn btn-secondary btn-sm">批量导入</button>
+                <button class="btn btn-outline btn-sm">导出</button>
+              </div>
+            </div>
+
+            <!-- 列表表格 -->
+            <div class="list-container">
+              <div class="table-wrapper">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th style="width:40px"><input type="checkbox" /></th>
+                      <th>名称</th>
+                      <th>书记</th>
+                      <th>委员数</th>
+                      <th>下属组织数</th>
+                      <th>党员数</th>
+                      <th>成立时间</th>
+                      <th>地址</th>
+                      <th>状态</th>
+                      <th style="width:160px">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">高新区党工委</td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>李建国</span>
+                        </div>
+                      </td>
+                      <td>15</td>
+                      <td>186</td>
+                      <td>3,256</td>
+                      <td>2003-06-15</td>
+                      <td>高新区科技大道88号</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">经开区党工委</td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>王志强</span>
+                        </div>
+                      </td>
+                      <td>13</td>
+                      <td>168</td>
+                      <td>2,890</td>
+                      <td>2005-03-20</td>
+                      <td>经开区开发大道168号</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">城东街道党工委</td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>张为民</span>
+                        </div>
+                      </td>
+                      <td>11</td>
+                      <td>142</td>
+                      <td>2,450</td>
+                      <td>1998-10-01</td>
+                      <td>城东区东风路126号</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">城西街道党工委</td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>刘红梅</span>
+                        </div>
+                      </td>
+                      <td>10</td>
+                      <td>134</td>
+                      <td>2,180</td>
+                      <td>1999-05-18</td>
+                      <td>城西区西城路58号</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">城南街道党工委</td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>陈向东</span>
+                        </div>
+                      </td>
+                      <td>9</td>
+                      <td>115</td>
+                      <td>1,920</td>
+                      <td>2001-08-22</td>
+                      <td>城南区南湖路200号</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">城北街道党工委</td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>赵晓燕</span>
+                        </div>
+                      </td>
+                      <td>9</td>
+                      <td>103</td>
+                      <td>1,750</td>
+                      <td>2002-04-10</td>
+                      <td>城北区北环路88号</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">商贸园党工委</td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>孙海涛</span>
+                        </div>
+                      </td>
+                      <td>8</td>
+                      <td>89</td>
+                      <td>1,460</td>
+                      <td>2008-11-05</td>
+                      <td>商贸园区商贸大道1号</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">科教园区党工委</td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>周文斌</span>
+                        </div>
+                      </td>
+                      <td>8</td>
+                      <td>75</td>
+                      <td>1,280</td>
+                      <td>2010-09-01</td>
+                      <td>科教园区学院路99号</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">物流园党工委</td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>吴德胜</span>
+                        </div>
+                      </td>
+                      <td>7</td>
+                      <td>62</td>
+                      <td>980</td>
+                      <td>2015-06-18</td>
+                      <td>物流园区物流大道66号</td>
+                      <td><span class="tag tag-orange">筹建中</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">文旅区党工委</td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>郑美玲</span>
+                        </div>
+                      </td>
+                      <td>6</td>
+                      <td>26</td>
+                      <td>520</td>
+                      <td>2018-12-25</td>
+                      <td>文旅区文化路168号</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer" style="border-top:1px solid #ebeef5;background:#fafafa">
+                <div class="pagination">
+                  <div class="pagination-item">«</div>
+                  <div class="pagination-item">‹</div>
+                  <div class="pagination-item active">1</div>
+                  <div class="pagination-item">2</div>
+                  <div class="pagination-item">3</div>
+                  <div class="pagination-item">4</div>
+                  <div class="pagination-item">5</div>
+                  <div class="pagination-item">›</div>
+                  <div class="pagination-item">»</div>
+                  <span style="font-size:12px;color:#909399;margin-left:12px">共 42 条，每页 10 条</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: 企业工委 -->
+          <div class="tab-content">
+            <!-- 统计卡片 -->
+            <div class="stat-row">
+              <div class="stat-card">
+                <div class="stat-icon red">🏢</div>
+                <div class="stat-info">
+                  <div class="stat-label">企业工委总数</div>
+                  <div class="stat-value">28<span class="unit">个</span></div>
+                  <div class="stat-trend"><span class="up">↑ 7.7%</span> 较上年同期</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon gold">📈</div>
+                <div class="stat-info">
+                  <div class="stat-label">本年新增</div>
+                  <div class="stat-value">5<span class="unit">个</span></div>
+                  <div class="stat-trend"><span class="up">↑ 150%</span> 较上年同期</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon blue">📊</div>
+                <div class="stat-info">
+                  <div class="stat-label">企业覆盖率</div>
+                  <div class="stat-value">82.5<span class="unit">%</span></div>
+                  <div class="stat-trend"><span class="up">↑ 8.5%</span> 较上年同期</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 筛选栏 -->
+            <div class="filter-bar">
+              <div class="filter-group">
+                <span class="filter-label">行业：</span>
+                <select class="filter-select">
+                  <option>全部行业</option>
+                  <option>制造业</option>
+                  <option>建筑业</option>
+                  <option>服务业</option>
+                  <option>金融业</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <span class="filter-label">状态：</span>
+                <select class="filter-select">
+                  <option>全部状态</option>
+                  <option>正常</option>
+                  <option>筹建中</option>
+                  <option>撤销</option>
+                </select>
+              </div>
+              <div class="filter-actions">
+                <button class="btn btn-primary btn-sm" onclick="openAddOrgModal('企业工委')">+ 新增企业工委</button>
+                <button class="btn btn-secondary btn-sm">批量导入</button>
+                <button class="btn btn-outline btn-sm">导出</button>
+              </div>
+            </div>
+
+            <!-- 列表表格 -->
+            <div class="list-container">
+              <div class="table-wrapper">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th style="width:40px"><input type="checkbox" /></th>
+                      <th>名称</th>
+                      <th>企业名称</th>
+                      <th>行业</th>
+                      <th>书记</th>
+                      <th>委员数</th>
+                      <th>下属组织数</th>
+                      <th>党员数</th>
+                      <th>成立时间</th>
+                      <th>状态</th>
+                      <th style="width:160px">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">华能集团工委</td>
+                      <td>华能能源集团有限公司</td>
+                      <td><span class="tag tag-blue">能源电力</span></td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>黄国强</span>
+                        </div>
+                      </td>
+                      <td>12</td>
+                      <td>56</td>
+                      <td>1,280</td>
+                      <td>1995-08-10</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">中信建工工委</td>
+                      <td>中信建设工程集团</td>
+                      <td><span class="tag tag-orange">建筑工程</span></td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>马建华</span>
+                        </div>
+                      </td>
+                      <td>10</td>
+                      <td>42</td>
+                      <td>980</td>
+                      <td>2000-03-15</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">科创电子工委</td>
+                      <td>科创电子科技股份公司</td>
+                      <td><span class="tag tag-green">电子信息</span></td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>林晓峰</span>
+                        </div>
+                      </td>
+                      <td>9</td>
+                      <td>38</td>
+                      <td>856</td>
+                      <td>2005-11-20</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">金控集团工委</td>
+                      <td>金融控股集团有限公司</td>
+                      <td><span class="tag tag-gold">金融服务</span></td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>钱文博</span>
+                        </div>
+                      </td>
+                      <td>8</td>
+                      <td>28</td>
+                      <td>620</td>
+                      <td>2008-06-18</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">盛达机械工委</td>
+                      <td>盛达重型机械制造公司</td>
+                      <td><span class="tag tag-blue">装备制造</span></td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>冯大伟</span>
+                        </div>
+                      </td>
+                      <td>7</td>
+                      <td>22</td>
+                      <td>480</td>
+                      <td>2010-04-22</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">恒通物流工委</td>
+                      <td>恒通物流股份有限公司</td>
+                      <td><span class="tag tag-orange">交通运输</span></td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>韩志刚</span>
+                        </div>
+                      </td>
+                      <td>6</td>
+                      <td>18</td>
+                      <td>390</td>
+                      <td>2012-09-08</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">新世纪医药工委</td>
+                      <td>新世纪医药集团</td>
+                      <td><span class="tag tag-green">生物医药</span></td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>杨丽华</span>
+                        </div>
+                      </td>
+                      <td>6</td>
+                      <td>15</td>
+                      <td>320</td>
+                      <td>2015-02-14</td>
+                      <td><span class="tag tag-green">正常</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><input type="checkbox" /></td>
+                      <td style="color:#303133;font-weight:500">锐新科技工委</td>
+                      <td>锐新智能科技公司</td>
+                      <td><span class="tag tag-blue">人工智能</span></td>
+                      <td>
+                        <div class="flex items-center gap-8">
+                          <span>许明远</span>
+                        </div>
+                      </td>
+                      <td>5</td>
+                      <td>12</td>
+                      <td>256</td>
+                      <td>2019-07-01</td>
+                      <td><span class="tag tag-orange">筹建中</span></td>
+                      <td>
+                        <a class="action-link">查看</a>
+                        <a class="action-link">编辑</a>
+                        <div class="more-dropdown">
+                          <a class="more-dropdown-toggle" onclick="toggleMoreDropdown(this, event)">更多 ▾</a>
+                          <div class="more-dropdown-menu">
+                            <div class="more-dropdown-item" onclick="openTeamMemberModal(this, event)">👥 班子成员</div>
+                            <div class="more-dropdown-item" onclick="openGisPickerFromList(this, event)">📍 GIS标点</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer" style="border-top:1px solid #ebeef5;background:#fafafa">
+                <div class="pagination">
+                  <div class="pagination-item">«</div>
+                  <div class="pagination-item">‹</div>
+                  <div class="pagination-item active">1</div>
+                  <div class="pagination-item">2</div>
+                  <div class="pagination-item">3</div>
+                  <div class="pagination-item">›</div>
+                  <div class="pagination-item">»</div>
+                  <span style="font-size:12px;color:#909399;margin-left:12px">共 28 条，每页 10 条</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- 新增党组织弹窗 -->
+      <div class="modal-mask" id="addOrgModal">
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">新增党组织</h3>
+            <button type="button" class="modal-close" onclick="event.stopPropagation();closeAddOrgModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="addOrgForm">
+              <div class="form-group">
+                <label class="form-label"><span class="required">*</span>组织名称</label>
+                <input type="text" class="form-input" id="orgName" placeholder="请输入党组织名称" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span>组织类型</label>
+                  <select class="form-select" id="orgType">
+                    <option value="">请选择组织类型</option>
+                    <option value="党工委">党工委</option>
+                    <option value="党委">党委</option>
+                    <option value="党总支">党总支</option>
+                    <option value="党支部">党支部</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span>上级组织</label>
+                  <select class="form-select" id="parentOrg">
+                    <option value="">请选择上级组织</option>
+                    <option value="高新区党工委">高新区党工委</option>
+                    <option value="经开区党工委">经开区党工委</option>
+                    <option value="机关党委">机关党委</option>
+                    <option value="科技园区党委">科技园区党委</option>
+                    <option value="创业园党总支">创业园党总支</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span>书记</label>
+                  <input type="text" class="form-input" id="orgSecretary" placeholder="请输入书记姓名" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">副书记</label>
+                  <input type="text" class="form-input" id="deputySecretary" placeholder="请输入副书记姓名" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">委员数</label>
+                  <input type="number" class="form-input" id="committeeCount" placeholder="请输入委员人数" min="0" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">党员数</label>
+                  <input type="number" class="form-input" id="memberCount" placeholder="请输入党员人数" min="0" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span>成立时间</label>
+                  <input type="date" class="form-input" id="establishDate" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">组织状态</label>
+                  <select class="form-select" id="orgStatus">
+                    <option value="正常">正常</option>
+                    <option value="筹建中">筹建中</option>
+                    <option value="撤销">撤销</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">联系电话</label>
+                <input type="text" class="form-input" id="orgPhone" placeholder="请输入联系电话" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">办公地址</label>
+                <div style="display:flex;gap:8px;">
+                  <input type="text" class="form-input" id="orgAddress" placeholder="请输入办公地址" style="flex:1;" />
+                  <button type="button" class="btn btn-default" onclick="openGisPicker()" style="white-space:nowrap;">
+                    📍 GIS标点
+                  </button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">备注</label>
+                <textarea class="form-textarea" id="orgRemark" placeholder="请输入备注信息"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="event.stopPropagation();closeAddOrgModal()">取消</button>
+            <button type="button" class="btn btn-primary" onclick="event.stopPropagation();submitAddOrg()">确认提交</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GIS标点弹窗 -->
+      <div class="modal-mask" id="gisPickerModal">
+        <div class="modal-dialog" style="width:720px;">
+          <div class="modal-header">
+            <h3 class="modal-title">GIS标点</h3>
+            <button type="button" class="modal-close" onclick="event.stopPropagation();closeGisPicker()">&times;</button>
+          </div>
+          <div class="modal-body" style="padding:0;">
+            <!-- 模拟地图区域 -->
+            <div style="position:relative;height:360px;background:linear-gradient(135deg,#e8f4f8,#d4e8ed);overflow:hidden;">
+              <!-- 地图网格背景 -->
+              <svg width="100%" height="100%" style="position:absolute;top:0;left:0;">
+                <defs>
+                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#c5d8dd" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+              </svg>
+              <!-- 模拟道路 -->
+              <div style="position:absolute;top:40%;left:0;right:0;height:8px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.1);"></div>
+              <div style="position:absolute;top:0;bottom:0;left:30%;width:6px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.1);"></div>
+              <div style="position:absolute;top:0;bottom:0;left:65%;width:6px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.1);"></div>
+              <div style="position:absolute;top:70%;left:0;right:0;height:6px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.1);"></div>
+              <!-- 标记点 -->
+              <div id="gisMarker" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);cursor:grab;">
+                <div style="font-size:32px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));">📍</div>
+              </div>
+              <!-- 提示文字 -->
+              <div style="position:absolute;top:12px;left:12px;background:rgba(255,255,255,0.9);padding:6px 12px;border-radius:4px;font-size:12px;color:#606266;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                拖动标记点选择位置，或点击地图标点
+              </div>
+            </div>
+            <!-- 坐标信息 -->
+            <div style="padding:16px 20px;border-top:1px solid #ebeef5;display:flex;gap:16px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:120px;">
+                <div style="font-size:12px;color:#909399;margin-bottom:4px;">经度</div>
+                <input type="text" class="form-input" id="gisLng" value="120.1551" readonly />
+              </div>
+              <div style="flex:1;min-width:120px;">
+                <div style="font-size:12px;color:#909399;margin-bottom:4px;">纬度</div>
+                <input type="text" class="form-input" id="gisLat" value="30.2741" readonly />
+              </div>
+              <div style="flex:2;min-width:200px;">
+                <div style="font-size:12px;color:#909399;margin-bottom:4px;">详细地址</div>
+                <input type="text" class="form-input" id="gisAddress" value="高新区科技大道88号高新大厦18楼" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="event.stopPropagation();closeGisPicker()">取消</button>
+            <button type="button" class="btn btn-primary" onclick="event.stopPropagation();confirmGisPoint()">确认标点</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 班子成员管理弹窗 -->
+      <div class="modal-mask" id="teamMemberModal">
+        <div class="modal-dialog" style="width:680px;">
+          <div class="modal-header">
+            <h3 class="modal-title" id="teamMemberModalTitle">👥 班子成员管理</h3>
+            <button type="button" class="modal-close" onclick="event.stopPropagation();closeTeamMemberModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div style="font-size:13px;color:#909399;margin-bottom:16px;">
+              当前党组织：<span id="currentCommitteeName" style="color:#303133;font-weight:500;">--</span>
+            </div>
+
+            <!-- 已有成员列表 -->
+            <div class="add-member-title">班子成员列表</div>
+            <div class="team-member-list" id="teamMemberList">
+              <!-- 动态渲染 -->
+            </div>
+
+            <!-- 添加新成员 -->
+            <div class="add-member-section">
+              <div class="add-member-title">添加班子成员</div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 职务</label>
+                  <select class="form-select" id="newMemberRole">
+                    <option value="">请选择职务</option>
+                    <option value="党委书记">党委书记</option>
+                    <option value="党委副书记">党委副书记</option>
+                    <option value="组织委员">组织委员</option>
+                    <option value="宣传委员">宣传委员</option>
+                    <option value="纪检委员">纪检委员</option>
+                    <option value="统战委员">统战委员</option>
+                    <option value="青年委员">青年委员</option>
+                    <option value="保密委员">保密委员</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><span class="required">*</span> 姓名</label>
+                  <input type="text" class="form-input" id="newMemberName" placeholder="请输入姓名" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">联系电话</label>
+                  <input type="tel" class="form-input" id="newMemberPhone" placeholder="请输入固定电话" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">手机号码</label>
+                  <input type="tel" class="form-input" id="newMemberMobile" placeholder="请输入手机号码" />
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <button type="button" class="btn btn-primary btn-sm" onclick="addTeamMember()">+ 添加成员</button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" onclick="event.stopPropagation();closeTeamMemberModal()">关闭</button>
+            <button type="button" class="btn btn-primary" onclick="event.stopPropagation();saveTeamMembers()">保存</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function switchTab(index) {
+      const tabs = document.querySelectorAll('.tab-item');
+      const contents = document.querySelectorAll('.tab-content');
+      tabs.forEach((t, i) => t.classList.toggle('active', i === index));
+      contents.forEach((c, i) => c.classList.toggle('active', i === index));
+    }
+
+    // 新增党组织弹窗
+    function openAddOrgModal(orgTypeLabel) {
+      var modal = document.getElementById('addOrgModal');
+      var title = document.getElementById('modalTitle');
+      var orgTypeSelect = document.getElementById('orgType');
+      
+      title.textContent = '新增' + orgTypeLabel;
+      
+      // 根据类型预设组织类型
+      var typeMap = {
+        '机关党委': '党工委',
+        '企业工委': '党工委'
+      };
+      if (typeMap[orgTypeLabel]) {
+        orgTypeSelect.value = typeMap[orgTypeLabel];
+      }
+      
+      // 重置表单
+      document.getElementById('addOrgForm').reset();
+      if (typeMap[orgTypeLabel]) {
+        orgTypeSelect.value = typeMap[orgTypeLabel];
+      }
+      
+      modal.classList.add('show');
+      // 阻止背景滚动
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeAddOrgModal() {
+      var modal = document.getElementById('addOrgModal');
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function submitAddOrg() {
+      var name = document.getElementById('orgName').value.trim();
+      var type = document.getElementById('orgType').value;
+      var secretary = document.getElementById('orgSecretary').value.trim();
+      var establishDate = document.getElementById('establishDate').value;
+
+      // 简单校验
+      if (!name) {
+        alert('请输入组织名称');
+        document.getElementById('orgName').focus();
+        return;
+      }
+      if (!type) {
+        alert('请选择组织类型');
+        document.getElementById('orgType').focus();
+        return;
+      }
+      if (!secretary) {
+        alert('请输入书记姓名');
+        document.getElementById('orgSecretary').focus();
+        return;
+      }
+      if (!establishDate) {
+        alert('请选择成立时间');
+        document.getElementById('establishDate').focus();
+        return;
+      }
+
+      // 模拟提交成功
+      alert('新增成功！\n组织名称：' + name + '\n组织类型：' + type + '\n书记：' + secretary);
+      closeAddOrgModal();
+    }
+
+    // GIS标点弹窗
+    function openGisPicker() {
+      var modal = document.getElementById('gisPickerModal');
+      modal.classList.add('show');
+      // 初始化地址为当前办公地址的值
+      var orgAddress = document.getElementById('orgAddress').value;
+      if (orgAddress) {
+        document.getElementById('gisAddress').value = orgAddress;
+      }
+    }
+
+    // 从列表更多菜单打开GIS标点
+    var gisPickerSource = 'form'; // 'form' 或 'list'
+    var currentGisOrgName = '';
+
+    function openGisPickerFromList(el, event) {
+      event.stopPropagation();
+      // 关闭下拉菜单
+      document.querySelectorAll('.more-dropdown-menu.show').forEach(function(m) {
+        m.classList.remove('show');
+      });
+
+      // 获取当前行信息
+      var row = el.closest('tr');
+      var tds = row.querySelectorAll('td');
+      var orgName = '';
+      var address = '';
+      if (tds.length >= 2) {
+        orgName = tds[1].textContent.trim().split('\n')[0].trim();
+      }
+      // 地址在第7列（索引6）- 根据表格结构调整
+      var addressTd = row.querySelector('td:nth-child(7)');
+      if (addressTd) {
+        address = addressTd.textContent.trim();
+      }
+
+      currentGisOrgName = orgName;
+      gisPickerSource = 'list';
+
+      // 更新弹窗标题
+      var titleEl = document.querySelector('#gisPickerModal .modal-title');
+      if (titleEl) {
+        titleEl.textContent = '📍 GIS标点 - ' + orgName;
+      }
+
+      // 回填地址
+      document.getElementById('gisAddress').value = address;
+
+      document.getElementById('gisPickerModal').classList.add('show');
+    }
+
+    function closeGisPicker() {
+      document.getElementById('gisPickerModal').classList.remove('show');
+      // 恢复标题
+      var titleEl = document.querySelector('#gisPickerModal .modal-title');
+      if (titleEl) {
+        titleEl.textContent = 'GIS标点';
+      }
+      gisPickerSource = 'form';
+    }
+
+    function confirmGisPoint() {
+      var address = document.getElementById('gisAddress').value;
+      var lng = document.getElementById('gisLng').value;
+      var lat = document.getElementById('gisLat').value;
+
+      if (gisPickerSource === 'list') {
+        // 从列表打开：提示保存成功
+        alert('GIS标点保存成功！\n\n组织：' + currentGisOrgName + '\n地址：' + address + '\n经度：' + lng + '\n纬度：' + lat);
+      } else {
+        // 从表单打开：回填到办公地址
+        document.getElementById('orgAddress').value = address;
+      }
+
+      closeGisPicker();
+    }
+
+    // 点击遮罩层关闭弹窗
+    document.addEventListener('DOMContentLoaded', function() {
+      var addModal = document.getElementById('addOrgModal');
+      var gisModal = document.getElementById('gisPickerModal');
+      var teamModal = document.getElementById('teamMemberModal');
+      if (addModal) {
+        addModal.addEventListener('click', function(e) {
+          if (e.target === addModal) {
+            closeAddOrgModal();
+          }
+        });
+      }
+      if (gisModal) {
+        gisModal.addEventListener('click', function(e) {
+          if (e.target === gisModal) {
+            closeGisPicker();
+          }
+        });
+      }
+      if (teamModal) {
+        teamModal.addEventListener('click', function(e) {
+          if (e.target === teamModal) {
+            closeTeamMemberModal();
+          }
+        });
+      }
+      // ESC键关闭弹窗
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          var tm = document.getElementById('teamMemberModal');
+          var gm = document.getElementById('gisPickerModal');
+          var am = document.getElementById('addOrgModal');
+          if (tm && tm.classList.contains('show')) {
+            closeTeamMemberModal();
+          } else if (gm && gm.classList.contains('show')) {
+            closeGisPicker();
+          } else if (am && am.classList.contains('show')) {
+            closeAddOrgModal();
+          }
+        }
+      });
+
+      // 查看和编辑按钮跳转
+      document.querySelectorAll('tr').forEach(function(row) {
+        var links = row.querySelectorAll('.action-link');
+        if (links.length < 2) return;
+        // 获取组织名称（第2个td）
+        var tds = row.querySelectorAll('td');
+        if (tds.length < 2) return;
+        var orgNameTd = tds[1];
+        var orgName = orgNameTd.textContent.trim();
+        if (!orgName || orgName === '') return;
+
+        links.forEach(function(link) {
+          var text = link.textContent.trim();
+          if (text === '查看') {
+            link.style.cursor = 'pointer';
+            link.addEventListener('click', function() {
+              window.location.href = 'org_detail.html?org=' + encodeURIComponent(orgName);
+            });
+          } else if (text === '编辑') {
+            link.style.cursor = 'pointer';
+            link.addEventListener('click', function() {
+              window.location.href = 'org_form.html?org=' + encodeURIComponent(orgName);
+            });
+          }
+        });
+      });
+    });
+
+    // ======================
+    // 更多下拉菜单
+    // ======================
+    function toggleMoreDropdown(el, event) {
+      event.stopPropagation();
+      var menu = el.nextElementSibling;
+      // 关闭其他所有下拉
+      document.querySelectorAll('.more-dropdown-menu.show').forEach(function(m) {
+        if (m !== menu) m.classList.remove('show');
+      });
+      menu.classList.toggle('show');
+    }
+
+    // 点击页面其他地方关闭下拉
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.more-dropdown-menu.show').forEach(function(m) {
+        m.classList.remove('show');
+      });
+    });
+
+    // ======================
+    // 班子成员管理
+    // ======================
+    var currentTeamMembers = [];
+    var currentCommitteeName = '';
+
+    function openTeamMemberModal(el, event) {
+      event.stopPropagation();
+      // 关闭下拉菜单
+      document.querySelectorAll('.more-dropdown-menu.show').forEach(function(m) {
+        m.classList.remove('show');
+      });
+
+      // 获取当前行的党组织名称
+      var row = el.closest('tr');
+      var tds = row.querySelectorAll('td');
+      if (tds.length >= 2) {
+        currentCommitteeName = tds[1].textContent.trim().split('\n')[0].trim();
+      }
+      document.getElementById('currentCommitteeName').textContent = currentCommitteeName;
+
+      // 初始化模拟数据（书记已存在）
+      var secretaryName = '';
+      if (tds.length >= 3) {
+        var nameEl = tds[2].querySelector('span');
+        if (nameEl) secretaryName = nameEl.textContent.trim();
+      }
+      currentTeamMembers = [
+        { role: '党委书记', name: secretaryName || '张书记', phone: '0571-88888888', mobile: '138****1234' }
+      ];
+
+      renderTeamMemberList();
+      // 重置表单
+      document.getElementById('newMemberRole').value = '';
+      document.getElementById('newMemberName').value = '';
+      document.getElementById('newMemberPhone').value = '';
+      document.getElementById('newMemberMobile').value = '';
+
+      document.getElementById('teamMemberModal').classList.add('show');
+    }
+
+    function closeTeamMemberModal() {
+      document.getElementById('teamMemberModal').classList.remove('show');
+    }
+
+    // 渲染班子成员列表
+    function renderTeamMemberList() {
+      var container = document.getElementById('teamMemberList');
+      if (currentTeamMembers.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:30px;color:#909399;font-size:13px;">暂无班子成员，请在下方添加</div>';
+        return;
+      }
+      container.innerHTML = currentTeamMembers.map(function(m, index) {
+        var firstChar = m.name.charAt(0);
+        var phoneText = m.phone || '—';
+        var mobileText = m.mobile || '—';
+        return `
+          <div class="team-member-card">
+            <div class="team-member-info">
+              <div class="team-member-name">
+                ${m.name}
+                <span class="team-member-role">${m.role}</span>
+              </div>
+              <div class="team-member-contact">
+                <span>☎ ${phoneText}</span>
+                <span>📱 ${mobileText}</span>
+              </div>
+            </div>
+            <div class="team-member-actions">
+              <span class="action-icon" title="编辑" onclick="editTeamMember(${index})">✎</span>
+              <span class="action-icon" title="删除" onclick="removeTeamMember(${index})">✕</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 添加班子成员
+    function addTeamMember() {
+      var role = document.getElementById('newMemberRole').value;
+      var name = document.getElementById('newMemberName').value.trim();
+      var phone = document.getElementById('newMemberPhone').value.trim();
+      var mobile = document.getElementById('newMemberMobile').value.trim();
+
+      if (!role) { alert('请选择职务'); return; }
+      if (!name) { alert('请输入姓名'); return; }
+
+      // 检查职务是否已存在
+      var exists = currentTeamMembers.some(function(m) { return m.role === role; });
+      if (exists && role !== '党委副书记') {
+        alert('该职务已存在班子成员中');
+        return;
+      }
+
+      currentTeamMembers.push({
+        role: role,
+        name: name,
+        phone: phone,
+        mobile: mobile
+      });
+
+      renderTeamMemberList();
+
+      // 重置表单
+      document.getElementById('newMemberRole').value = '';
+      document.getElementById('newMemberName').value = '';
+      document.getElementById('newMemberPhone').value = '';
+      document.getElementById('newMemberMobile').value = '';
+    }
+
+    // 删除班子成员
+    function removeTeamMember(index) {
+      if (currentTeamMembers[index].role === '党委书记') {
+        alert('党委书记不能删除');
+        return;
+      }
+      if (confirm('确定要删除该班子成员吗？')) {
+        currentTeamMembers.splice(index, 1);
+        renderTeamMemberList();
+      }
+    }
+
+    // 编辑班子成员（简化版：弹出 prompt 修改）
+    function editTeamMember(index) {
+      var member = currentTeamMembers[index];
+      if (member.role === '党委书记') {
+        alert('党委书记信息请在组织编辑中修改');
+        return;
+      }
+      var newName = prompt('修改姓名：', member.name);
+      if (newName === null) return;
+      newName = newName.trim();
+      if (!newName) { alert('姓名不能为空'); return; }
+      member.name = newName;
+
+      var newPhone = prompt('修改联系电话：', member.phone || '');
+      if (newPhone !== null) member.phone = newPhone.trim();
+
+      var newMobile = prompt('修改手机号码：', member.mobile || '');
+      if (newMobile !== null) member.mobile = newMobile.trim();
+
+      renderTeamMemberList();
+    }
+
+    // 保存班子成员
+    function saveTeamMembers() {
+      if (currentTeamMembers.length === 0) {
+        alert('请至少添加一名班子成员');
+        return;
+      }
+      alert('班子成员保存成功！\n\n当前组织：' + currentCommitteeName + '\n班子成员数：' + currentTeamMembers.length + '人');
+      closeTeamMemberModal();
+    }
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
+
+
+
