@@ -1369,7 +1369,7 @@
       { section: '所属信息' },
       { row: [
         { label: '所属党组织', type: 'select', options: ['请选择', '高新区党工委', '经开区党工委', '国企党委', '教育系统党委', '卫生系统党委'], value: data.org, required: true },
-        { label: '所在公司', type: 'text', placeholder: '请输入公司名称', value: data.company }
+        { label: '所属企业', type: 'text', placeholder: '请输入所属企业', value: data.company }
       ]},
       { row: [
         { label: '党员类型', type: 'select', options: ['请选择', '正式党员', '预备党员', '发展对象', '积极分子'], value: data.memberType },
@@ -1415,7 +1415,7 @@
           { section: '所属信息' },
           { row: [
             { label: '所属党组织', type: 'select', options: ['请选择', '高新区党工委', '经开区党工委', '国企党委', '教育系统党委', '卫生系统党委'], required: true },
-            { label: '所在公司', type: 'text', placeholder: '请输入公司名称' }
+            { label: '所属企业', type: 'text', placeholder: '请输入所属企业' }
           ]},
           { row: [
             { label: '党员类型', type: 'select', options: ['请选择', '正式党员', '预备党员', '发展对象', '积极分子'] },
