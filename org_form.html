@@ -306,6 +306,155 @@
       font-weight: 500;
     }
 
+    /* 班子成员编辑 */
+    .team-edit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .team-edit-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ebeef5;
+      transition: all 0.2s;
+    }
+    .team-edit-item:hover {
+      background: #f5f7fa;
+      border-color: #dcdfe6;
+    }
+    .team-edit-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c41e3a, #e63946);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .team-edit-avatar.vice {
+      background: linear-gradient(135deg, #d4af37, #b8941f);
+    }
+    .team-edit-avatar.committee {
+      background: linear-gradient(135deg, #409eff, #66b1ff);
+    }
+    .team-edit-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .team-edit-name {
+      font-size: 13px;
+      color: #303133;
+      font-weight: 500;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .team-edit-role {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .team-edit-role.secretary {
+      background: rgba(196, 30, 58, 0.1);
+      color: #c41e3a;
+    }
+    .team-edit-role.vice {
+      background: rgba(212, 175, 55, 0.15);
+      color: #b8941f;
+    }
+    .team-edit-role.committee {
+      background: rgba(64, 158, 255, 0.1);
+      color: #409eff;
+    }
+    .team-edit-phone {
+      font-size: 11px;
+      color: #909399;
+      font-family: 'Consolas', monospace;
+    }
+    .team-edit-delete {
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: transparent;
+      color: #c0c4cc;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .team-edit-delete:hover {
+      background: rgba(196, 30, 58, 0.08);
+      color: #c41e3a;
+    }
+    .team-edit-add {
+      width: 100%;
+      margin-top: 10px;
+      padding: 9px;
+      border: 1px dashed #dcdfe6;
+      border-radius: 6px;
+      background: #fafbfc;
+      color: #606266;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .team-edit-add:hover {
+      border-color: #c41e3a;
+      color: #c41e3a;
+      background: rgba(196, 30, 58, 0.02);
+    }
+    .team-edit-form {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 12px;
+      background: #fafbfc;
+      border: 1px solid #ebeef5;
+      border-radius: 6px;
+    }
+    .team-edit-form.active {
+      display: flex;
+    }
+    .team-edit-form .form-input {
+      height: 32px;
+      font-size: 13px;
+    }
+    .team-edit-form-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .team-edit-form-actions .btn {
+      flex: 1;
+      justify-content: center;
+      height: 32px;
+      font-size: 13px;
+      padding: 0 12px;
+    }
+    .team-edit-empty {
+      padding: 20px 0;
+      text-align: center;
+      color: #909399;
+      font-size: 13px;
+    }
+
     /* GIS地图编辑 */
     .gis-edit-section {
       padding: 0 24px 20px;
@@ -524,7 +673,7 @@
             <span class="menu-arrow">▶</span>
           </div>
           <ul class="menu-sub">
-            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">党委工委管理</a></li>
           </ul>
         </div>
 
@@ -682,7 +831,6 @@
               <span class="tag tag-gold">编辑模式</span>
             </div>
             <div class="detail-actions">
-              <button class="btn btn-secondary">保存草稿</button>
               <button class="btn btn-primary">提交保存</button>
             </div>
           </div>
@@ -848,7 +996,6 @@
             <div class="form-footer">
               <button class="btn btn-ghost">取消</button>
               <button class="btn btn-secondary">重置</button>
-              <button class="btn btn-secondary">保存草稿</button>
               <button class="btn btn-primary">提交保存</button>
             </div>
           </div>
@@ -873,19 +1020,35 @@
               </div>
             </div>
             <div class="side-card">
-              <div class="side-title">编辑速览</div>
-              <div class="side-info-list">
-                <div class="side-info-item">
-                  <span class="side-info-label">最后编辑人</span>
-                  <span class="side-info-value">张管理员</span>
-                </div>
-                <div class="side-info-item">
-                  <span class="side-info-label">最后编辑时间</span>
-                  <span class="side-info-value">2024-03-15</span>
-                </div>
-                <div class="side-info-item">
-                  <span class="side-info-label">当前版本</span>
-                  <span class="side-info-value">V2.3</span>
+              <div class="side-title">
+                班子成员
+                <span style="margin-left:auto;font-size:12px;color:#909399;font-weight:400;" id="teamEditCount">共7人</span>
+              </div>
+              <div class="team-edit-list" id="teamEditList">
+                <!-- 由 JavaScript 动态渲染 -->
+              </div>
+              <button class="team-edit-add" id="teamEditAddBtn" onclick="toggleTeamForm()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                添加班子成员
+              </button>
+              <div class="team-edit-form" id="teamEditForm">
+                <input type="text" class="form-input" id="teamEditName" placeholder="姓名">
+                <select class="form-input" id="teamEditRole">
+                  <option value="书记">书记</option>
+                  <option value="副书记">副书记</option>
+                  <option value="组织委员">组织委员</option>
+                  <option value="宣传委员">宣传委员</option>
+                  <option value="纪检委员">纪检委员</option>
+                  <option value="统战委员">统战委员</option>
+                  <option value="委员">委员</option>
+                </select>
+                <input type="text" class="form-input" id="teamEditPhone" placeholder="联系电话">
+                <div class="team-edit-form-actions">
+                  <button class="btn btn-primary" onclick="saveTeamMember()">保存</button>
+                  <button class="btn btn-ghost" onclick="toggleTeamForm()">取消</button>
                 </div>
               </div>
             </div>
@@ -902,6 +1065,115 @@
       return null;
     }
 
+    // 初始班子成员数据
+    var teamMembers = [
+      { name: '李建国', role: '书记', phone: '138****8888' },
+      { name: '王志强', role: '副书记', phone: '139****6666' },
+      { name: '张红梅', role: '副书记', phone: '137****5555' },
+      { name: '赵伟明', role: '组织委员', phone: '136****4444' },
+      { name: '刘芳', role: '宣传委员', phone: '135****3333' },
+      { name: '陈正义', role: '纪检委员', phone: '134****2222' },
+      { name: '孙丽华', role: '统战委员', phone: '133****1111' }
+    ];
+
+    function getRoleClass(role) {
+      if (role === '书记') return 'secretary';
+      if (role === '副书记') return 'vice';
+      return 'committee';
+    }
+
+    function getAvatarClass(role) {
+      if (role === '书记') return '';
+      if (role === '副书记') return 'vice';
+      return 'committee';
+    }
+
+    function renderTeamMembers() {
+      var listEl = document.getElementById('teamEditList');
+      var countEl = document.getElementById('teamEditCount');
+      if (!listEl) return;
+
+      if (countEl) countEl.textContent = '共' + teamMembers.length + '人';
+
+      if (teamMembers.length === 0) {
+        listEl.innerHTML = '<div class="team-edit-empty">暂无班子成员，请点击下方按钮添加</div>';
+        updateMemberCount();
+        return;
+      }
+
+      var html = '';
+      teamMembers.forEach(function(member, index) {
+        var roleClass = getRoleClass(member.role);
+        var avatarClass = getAvatarClass(member.role);
+        html += '<div class="team-edit-item">' +
+          '<div class="team-edit-avatar ' + avatarClass + '">' + member.name.charAt(0) + '</div>' +
+          '<div class="team-edit-info">' +
+            '<div class="team-edit-name">' + member.name + ' <span class="team-edit-role ' + roleClass + '">' + member.role + '</span></div>' +
+            '<div class="team-edit-phone">' + member.phone + '</div>' +
+          '</div>' +
+          '<button class="team-edit-delete" onclick="deleteTeamMember(' + index + ')" title="删除">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">' +
+              '<line x1="18" y1="6" x2="6" y2="18"></line>' +
+              '<line x1="6" y1="6" x2="18" y2="18"></line>' +
+            '</svg>' +
+          '</button>' +
+        '</div>';
+      });
+      listEl.innerHTML = html;
+      updateMemberCount();
+    }
+
+    function updateMemberCount() {
+      // 同步更新统计卡片中的委员数
+      var statValue = document.querySelector('.stat-card:nth-child(3) .stat-value');
+      if (statValue) statValue.textContent = teamMembers.length;
+      // 同步更新表单中的委员数字段
+      var memberInput = document.querySelector('.form-input[value*="人"][disabled]');
+      if (memberInput) memberInput.value = teamMembers.length + ' 人';
+    }
+
+    function toggleTeamForm() {
+      var form = document.getElementById('teamEditForm');
+      var btn = document.getElementById('teamEditAddBtn');
+      if (!form) return;
+      var isActive = form.classList.contains('active');
+      if (isActive) {
+        form.classList.remove('active');
+        if (btn) btn.style.display = 'flex';
+        document.getElementById('teamEditName').value = '';
+        document.getElementById('teamEditPhone').value = '';
+        document.getElementById('teamEditRole').selectedIndex = 0;
+      } else {
+        form.classList.add('active');
+        if (btn) btn.style.display = 'none';
+        document.getElementById('teamEditName').focus();
+      }
+    }
+
+    function saveTeamMember() {
+      var name = document.getElementById('teamEditName').value.trim();
+      var role = document.getElementById('teamEditRole').value;
+      var phone = document.getElementById('teamEditPhone').value.trim();
+      if (!name) {
+        alert('请输入姓名');
+        return;
+      }
+      if (!phone) {
+        alert('请输入联系电话');
+        return;
+      }
+      teamMembers.push({ name: name, role: role, phone: phone });
+      renderTeamMembers();
+      toggleTeamForm();
+    }
+
+    function deleteTeamMember(index) {
+      if (confirm('确定删除该班子成员吗？')) {
+        teamMembers.splice(index, 1);
+        renderTeamMembers();
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       var orgName = getUrlParam('org');
       if (orgName) {
@@ -914,6 +1186,8 @@
         var nameInput = document.querySelector('.form-input[placeholder="请输入组织名称"]');
         if (nameInput) nameInput.value = orgName;
       }
+      // 初始化班子成员列表
+      renderTeamMembers();
     });
   </script>
   <script src="common.js"></script>
