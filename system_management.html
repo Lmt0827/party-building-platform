@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -952,12 +952,7 @@
               </div>
               <div class="filter-item">
                 <label>操作人</label>
-                <select class="filter-select">
-                  <option>全部操作人</option>
-                  <option>张建国</option>
-                  <option>李明华</option>
-                  <option>王晓芳</option>
-                </select>
+                <input type="text" class="filter-select" placeholder="请输入操作人" style="width: auto; min-width: 140px;">
               </div>
               <div class="filter-item">
                 <label>时间范围</label>
@@ -987,7 +982,7 @@
                   <th style="width: 160px;">操作时间</th>
                   <th style="width: 120px;">IP地址</th>
                   <th style="width: 80px;">状态</th>
-                  <th style="width: 80px;">详情</th>
+                  <th style="width: 80px;">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -1000,7 +995,7 @@
                   <td>2024-01-31 14:30:25</td>
                   <td>192.168.1.100</td>
                   <td><span class="badge badge-green">成功</span></td>
-                  <td><span class="action-link">查看</span></td>
+                  <td><span class="action-link danger" onclick="if(confirm('确定删除该日志吗？')) this.closest('tr').remove()">删除</span></td>
                 </tr>
                 <tr>
                   <td>#10085</td>
@@ -1011,7 +1006,7 @@
                   <td>2024-01-31 14:25:36</td>
                   <td>192.168.1.100</td>
                   <td><span class="badge badge-green">成功</span></td>
-                  <td><span class="action-link">查看</span></td>
+                  <td><span class="action-link danger" onclick="if(confirm('确定删除该日志吗？')) this.closest('tr').remove()">删除</span></td>
                 </tr>
                 <tr>
                   <td>#10084</td>
@@ -1022,7 +1017,7 @@
                   <td>2024-01-31 14:20:18</td>
                   <td>127.0.0.1</td>
                   <td><span class="badge badge-red">失败</span></td>
-                  <td><span class="action-link">查看</span></td>
+                  <td><span class="action-link danger" onclick="if(confirm('确定删除该日志吗？')) this.closest('tr').remove()">删除</span></td>
                 </tr>
                 <tr>
                   <td>#10083</td>
@@ -1033,7 +1028,7 @@
                   <td>2024-01-31 14:15:42</td>
                   <td>192.168.1.105</td>
                   <td><span class="badge badge-green">成功</span></td>
-                  <td><span class="action-link">查看</span></td>
+                  <td><span class="action-link danger" onclick="if(confirm('确定删除该日志吗？')) this.closest('tr').remove()">删除</span></td>
                 </tr>
                 <tr>
                   <td>#10082</td>
@@ -1044,7 +1039,7 @@
                   <td>2024-01-31 02:00:00</td>
                   <td>127.0.0.1</td>
                   <td><span class="badge badge-green">成功</span></td>
-                  <td><span class="action-link">查看</span></td>
+                  <td><span class="action-link danger" onclick="if(confirm('确定删除该日志吗？')) this.closest('tr').remove()">删除</span></td>
                 </tr>
                 <tr>
                   <td>#10081</td>
@@ -1055,7 +1050,7 @@
                   <td>2024-01-31 11:30:15</td>
                   <td>192.168.1.100</td>
                   <td><span class="badge badge-green">成功</span></td>
-                  <td><span class="action-link">查看</span></td>
+                  <td><span class="action-link danger" onclick="if(confirm('确定删除该日志吗？')) this.closest('tr').remove()">删除</span></td>
                 </tr>
                 <tr>
                   <td>#10080</td>
@@ -1066,7 +1061,7 @@
                   <td>2024-01-31 10:45:33</td>
                   <td>192.168.1.108</td>
                   <td><span class="badge badge-green">成功</span></td>
-                  <td><span class="action-link">查看</span></td>
+                  <td><span class="action-link danger" onclick="if(confirm('确定删除该日志吗？')) this.closest('tr').remove()">删除</span></td>
                 </tr>
                 <tr>
                   <td>#10079</td>
@@ -1077,7 +1072,7 @@
                   <td>2024-01-31 08:45:33</td>
                   <td>198.51.100.23</td>
                   <td><span class="badge badge-red">失败</span></td>
-                  <td><span class="action-link">查看</span></td>
+                  <td><span class="action-link danger" onclick="if(confirm('确定删除该日志吗？')) this.closest('tr').remove()">删除</span></td>
                 </tr>
               </tbody>
             </table>
