@@ -255,7 +255,7 @@
             <span class="menu-arrow">▶</span>
           </div>
           <ul class="menu-sub">
-            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">党委工委管理</a></li>
 
           </ul>
         </div>
@@ -442,6 +442,7 @@
               <button class="btn btn-gold">+ 新增党员</button>
               <button class="btn btn-secondary">⬆ 导入</button>
               <button class="btn btn-outline">⬇ 导出</button>
+              <button class="btn btn-danger" onclick="batchDeleteMembers()">批量删除</button>
             </div>
           </div>
 
@@ -451,7 +452,7 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th class="checkbox-col"><input type="checkbox" /></th>
+                    <th class="checkbox-col"><input type="checkbox" id="selectAllMembers" onchange="toggleSelectAllMembers(this)" /></th>
                     <th>姓名</th>
                     <th>性别</th>
                     <th>年龄</th>
@@ -464,7 +465,7 @@
                     <th>操作</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="memberTableBody">
                   <tr>
                     <td class="checkbox-col"><input type="checkbox" /></td>
                     <td>张伟东</td>
@@ -690,7 +691,43 @@
     </div>
   </div>
   <script>
-    // 页面交互由 common.js 统一处理
+    // 党员列表批量操作
+    function toggleSelectAllMembers(master) {
+      const checkboxes = document.querySelectorAll('#memberTableBody input[type="checkbox"]');
+      checkboxes.forEach(function(cb) {
+        cb.checked = master.checked;
+      });
+    }
+
+    function getSelectedMemberRows() {
+      return document.querySelectorAll('#memberTableBody input[type="checkbox"]:checked');
+    }
+
+    function batchDeleteMembers() {
+      const selected = getSelectedMemberRows();
+      if (selected.length === 0) {
+        alert('请先勾选需要删除的党员');
+        return;
+      }
+      if (!confirm('确定删除选中的 ' + selected.length + ' 条党员记录吗？')) {
+        return;
+      }
+      selected.forEach(function(cb) {
+        const row = cb.closest('tr');
+        if (row) row.remove();
+      });
+      document.getElementById('selectAllMembers').checked = false;
+      alert('批量删除成功');
+    }
+
+    function batchExportMembers() {
+      const selected = getSelectedMemberRows();
+      if (selected.length === 0) {
+        alert('请先勾选需要导出的党员');
+        return;
+      }
+      alert('已导出选中的 ' + selected.length + ' 条党员记录');
+    }
   </script>
 <script src="common.js"></script>
 </body>
