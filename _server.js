@@ -21,27 +21,43 @@ const MIME_TYPES = {
   '.ttf': 'font/ttf',
 };
 
+const ANNOTATION_CSS = '<link rel="stylesheet" href="/annotation.css" />';
+const ANNOTATION_JS = '<script src="/annotation.js"></script>';
+
+function injectAnnotations(html) {
+  let result = html;
+  // 注入 CSS 到 </head> 前
+  if (result.includes('</head>')) {
+    result = result.replace(/<\/head>/i, ANNOTATION_CSS + '\n</head>');
+  }
+  // 注入 JS 到 </body> 前
+  if (result.includes('</body>')) {
+    result = result.replace(/<\/body>/i, ANNOTATION_JS + '\n</body>');
+  }
+  return result;
+}
+
 const server = http.createServer((req, res) => {
   let urlPath = decodeURIComponent(req.url.split('?')[0]);
-  
+
   if (urlPath === '/') {
     urlPath = '/index.html';
   }
-  
+
   // If no extension and doesn't end with /, try adding .html
   if (!path.extname(urlPath) && !urlPath.endsWith('/')) {
     urlPath += '.html';
   }
-  
+
   const filePath = path.join(ROOT, urlPath);
-  
+
   // Prevent directory traversal
   if (!filePath.startsWith(ROOT)) {
     res.writeHead(403);
     res.end('Forbidden');
     return;
   }
-  
+
   fs.readFile(filePath, (err, data) => {
     if (err) {
       if (err.code === 'ENOENT') {
@@ -53,10 +69,19 @@ const server = http.createServer((req, res) => {
       }
       return;
     }
-    
+
     const ext = path.extname(filePath).toLowerCase();
     const mimeType = MIME_TYPES[ext] || 'application/octet-stream';
-    
+
+    // 对 HTML 响应自动注入批注组件
+    if (ext === '.html') {
+      const html = data.toString('utf-8');
+      const injected = injectAnnotations(html);
+      res.writeHead(200, { 'Content-Type': mimeType });
+      res.end(Buffer.from(injected, 'utf-8'));
+      return;
+    }
+
     res.writeHead(200, { 'Content-Type': mimeType });
     res.end(data);
   });
