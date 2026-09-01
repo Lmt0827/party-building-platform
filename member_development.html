@@ -2912,7 +2912,7 @@ body {
             <span class="menu-arrow">▶</span>
           </div>
           <ul class="menu-sub">
-            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">党委工委管理</a></li>
 
           </ul>
         </div>
@@ -3141,7 +3141,7 @@ body {
             <div class="table-toolbar-title">发展对象名单</div>
             <div class="table-toolbar-actions">
               <button class="btn btn-secondary" onclick="openModal('importModal')">📋 批量导入</button>
-              <button class="btn btn-secondary">批量操作</button>
+              <button class="btn btn-danger" onclick="batchDeleteDevelopment()">批量删除</button>
               <button class="btn btn-gold" onclick="openModal('addModal')">+ 新增发展</button>
             </div>
           </div>
@@ -3149,7 +3149,7 @@ body {
             <table class="data-table">
               <thead>
                 <tr>
-                  <th class="checkbox-col"><input type="checkbox"></th>
+                  <th class="checkbox-col"><input type="checkbox" id="selectAllDevelopment" onchange="toggleSelectAllDevelopment(this)"></th>
                   <th>姓名</th>
                   <th>性别</th>
                   <th>年龄</th>
@@ -3161,7 +3161,7 @@ body {
                   <th>操作</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="developmentTableBody">
                 <tr>
                   <td class="checkbox-col"><input type="checkbox"></td>
                   <td>
@@ -3892,6 +3892,44 @@ body {
       if (mask) mask.classList.remove('show');
       document.body.style.overflow = '';
     }
+    // 党员发展批量操作
+    function toggleSelectAllDevelopment(master) {
+      var checkboxes = document.querySelectorAll('#developmentTableBody input[type="checkbox"]');
+      checkboxes.forEach(function(cb) {
+        cb.checked = master.checked;
+      });
+    }
+
+    function getSelectedDevelopmentRows() {
+      return document.querySelectorAll('#developmentTableBody input[type="checkbox"]:checked');
+    }
+
+    function batchDeleteDevelopment() {
+      var selected = getSelectedDevelopmentRows();
+      if (selected.length === 0) {
+        alert('请先勾选需要删除的发展对象');
+        return;
+      }
+      if (!confirm('确定删除选中的 ' + selected.length + ' 条发展对象记录吗？')) {
+        return;
+      }
+      selected.forEach(function(cb) {
+        var row = cb.closest('tr');
+        if (row) row.remove();
+      });
+      document.getElementById('selectAllDevelopment').checked = false;
+      alert('批量删除成功');
+    }
+
+    function batchExportDevelopment() {
+      var selected = getSelectedDevelopmentRows();
+      if (selected.length === 0) {
+        alert('请先勾选需要导出的发展对象');
+        return;
+      }
+      alert('已导出选中的 ' + selected.length + ' 条发展对象记录');
+    }
+
     // 点击遮罩关闭弹窗
     document.addEventListener('DOMContentLoaded', function() {
       var masks = document.querySelectorAll('.modal-mask');
