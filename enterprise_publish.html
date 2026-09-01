@@ -886,6 +886,97 @@
       line-height: 1.6;
     }
 
+    /* 富文本编辑器 */
+    .rich-editor {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .rich-editor-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 10px;
+      background: #f7f9fc;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rich-editor-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .rich-editor-btn:hover {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+
+    .rich-editor-btn.active {
+      background: rgba(196, 30, 58, 0.08);
+      border-color: rgba(196, 30, 58, 0.25);
+      color: var(--accent-red);
+    }
+
+    .rich-editor-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+
+    .rich-editor-content {
+      min-height: 200px;
+      max-height: 360px;
+      padding: 10px 12px;
+      overflow-y: auto;
+      line-height: 1.6;
+      font-size: 13px;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .rich-editor-content:empty:before {
+      content: attr(data-placeholder);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .rich-editor-content:focus {
+      background: var(--surface);
+    }
+
+    .rich-editor-content p {
+      margin: 0 0 8px;
+    }
+
+    .rich-editor-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .rich-editor-content ul,
+    .rich-editor-content ol {
+      margin: 0 0 8px;
+      padding-left: 20px;
+    }
+
+    .rich-editor-content a {
+      color: var(--accent-red);
+      text-decoration: underline;
+    }
+
     .form-select {
       cursor: pointer;
       appearance: none;
@@ -1167,6 +1258,128 @@
     .preview-count strong {
       color: var(--color-red-primary);
     }
+    .summary-item {
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .summary-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .summary-item.success:hover { border-color: #16a34a; }
+    .summary-item.warning:hover { border-color: #d97706; }
+    .summary-item.error:hover { border-color: #dc2626; }
+
+    /* 导入预览工具栏 */
+    .import-preview-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+    .import-filter-tabs {
+      display: inline-flex;
+      gap: 8px;
+      background: var(--bg-light);
+      padding: 4px;
+      border-radius: 6px;
+    }
+    .import-filter-tab {
+      padding: 6px 12px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .import-filter-tab:hover {
+      color: var(--color-red-primary);
+    }
+    .import-filter-tab.active {
+      background: #fff;
+      color: var(--color-red-primary);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      font-weight: 500;
+    }
+
+    /* 可横向滚动的表格 */
+    .import-preview-table-wrapper {
+      max-height: 320px;
+      overflow: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+    .import-preview-table {
+      min-width: 1100px;
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .import-preview-table th,
+    .import-preview-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-light);
+      white-space: nowrap;
+    }
+    .import-preview-table tr.row-success {
+      background: #f0fdf4;
+    }
+    .import-preview-table tr.row-warning {
+      background: #fffbeb;
+    }
+    .import-preview-table tr.row-error {
+      background: #fef2f2;
+    }
+    .import-preview-table tbody tr.row-success:hover {
+      background: #dcfce7;
+    }
+    .import-preview-table tbody tr.row-warning:hover {
+      background: #fef3c7;
+    }
+    .import-preview-table tbody tr.row-error:hover {
+      background: #fee2e2;
+    }
+    .import-preview-table td[contenteditable="true"] {
+      background: #fff;
+      outline: none;
+      cursor: text;
+    }
+    .import-preview-table td[contenteditable="true"]:focus {
+      box-shadow: inset 0 0 0 2px var(--color-red-primary);
+    }
+    .import-preview-table td[contenteditable="true"]:hover {
+      background: #fff8f9;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .status-badge.success {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+    .status-badge.warning {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    .status-badge.error {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .cell-reason {
+      color: #d97706;
+      font-size: 12px;
+    }
+    .cell-reason.error {
+      color: #dc2626;
+    }
 
     /* 活动对象选择 */
     .target-radio-group {
@@ -1398,6 +1611,32 @@
       font-size: 12px;
       color: var(--text-secondary);
     }
+
+    /* 诉求回复时间轴 */
+    .timeline-reply-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .timeline-reply-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline-reply-row .timeline-label {
+      flex-shrink: 0;
+      width: 60px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .timeline-reply-row .timeline-value {
+      flex: 1;
+      color: var(--text-main);
+    }
   </style>
 <body>
   <div class="layout">
@@ -1426,7 +1665,7 @@
             <span class="menu-arrow">▶</span>
           </div>
           <ul class="menu-sub">
-            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">党委工委管理</a></li>
 
           </ul>
         </div>
@@ -2290,7 +2529,7 @@
                   <td style="text-align: right;">
                     <div class="table-actions">
                       <div class="table-actions-row">
-                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">诉求处理</button>
                         <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
                       </div>
                       <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
@@ -2312,7 +2551,7 @@
                   <td style="text-align: right;">
                     <div class="table-actions">
                       <div class="table-actions-row">
-                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">诉求处理</button>
                         <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
                       </div>
                       <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
@@ -2334,7 +2573,7 @@
                   <td style="text-align: right;">
                     <div class="table-actions">
                       <div class="table-actions-row">
-                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">诉求处理</button>
                         <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
                       </div>
                       <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
@@ -2356,7 +2595,7 @@
                   <td style="text-align: right;">
                     <div class="table-actions">
                       <div class="table-actions-row">
-                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">诉求处理</button>
                         <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
                       </div>
                       <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
@@ -2378,7 +2617,7 @@
                   <td style="text-align: right;">
                     <div class="table-actions">
                       <div class="table-actions-row">
-                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">诉求处理</button>
                         <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
                       </div>
                       <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
@@ -2400,7 +2639,7 @@
                   <td style="text-align: right;">
                     <div class="table-actions">
                       <div class="table-actions-row">
-                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">查看</button>
+                        <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-detail')">诉求处理</button>
                         <button class="table-action-btn" onclick="event.stopPropagation(); openDrawer('demand-process')">编辑</button>
                       </div>
                       <button class="table-action-btn danger" onclick="event.stopPropagation();">删除</button>
@@ -2940,7 +3179,20 @@
             <div class="form-row">
               <div class="form-group full">
                 <label class="form-label"><span class="required">*</span>详细内容</label>
-                <textarea class="form-textarea" rows="12" placeholder="请输入详细内容，或上传PDF自动提取"></textarea>
+                <div class="rich-editor" id="activityRichEditor">
+                  <div class="rich-editor-toolbar">
+                    <button type="button" class="rich-editor-btn" data-command="bold" title="加粗">B</button>
+                    <button type="button" class="rich-editor-btn" data-command="italic" title="斜体">I</button>
+                    <button type="button" class="rich-editor-btn" data-command="underline" title="下划线">U</button>
+                    <div class="rich-editor-divider"></div>
+                    <button type="button" class="rich-editor-btn" data-command="insertUnorderedList" title="无序列表">☰</button>
+                    <button type="button" class="rich-editor-btn" data-command="insertOrderedList" title="有序列表">1.</button>
+                    <div class="rich-editor-divider"></div>
+                    <button type="button" class="rich-editor-btn" data-command="createLink" title="插入链接">🔗</button>
+                    <button type="button" class="rich-editor-btn" data-command="removeFormat" title="清除格式">✕</button>
+                  </div>
+                  <div class="rich-editor-content" contenteditable="true" data-placeholder="请输入详细内容，或上传PDF自动提取"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -3148,79 +3400,142 @@
               </div>
             </div>
           </div>
-          <div class="form-section" id="importPreviewSection" style="display: none;">
-            <div class="form-section-title">
-              识别结果预览
-              <span class="preview-count">共识别 <strong>128</strong> 条数据</span>
-            </div>
+        `,
+        footer: `
+          <div class="drawer-footer-left">
+            <button class="btn btn-outline" onclick="closeDrawer()">关闭</button>
+          </div>
+        `
+      },
+      'recruit-preview': {
+        title: '识别结果预览',
+        subtitle: '<span>共识别 128 条数据</span><span>·</span><span>可编辑修正后确认导入</span>',
+        body: `
+          <div class="form-section">
             <div class="import-summary">
-              <div class="summary-item success">
+              <div class="summary-item success" onclick="filterImportRows('success')">
                 <div class="summary-num">125</div>
                 <div class="summary-label">校验通过</div>
               </div>
-              <div class="summary-item warning">
+              <div class="summary-item warning" onclick="filterImportRows('warning')">
                 <div class="summary-num">3</div>
                 <div class="summary-label">待修正</div>
               </div>
-              <div class="summary-item error">
+              <div class="summary-item error" onclick="filterImportRows('error')">
                 <div class="summary-num">0</div>
                 <div class="summary-label">识别失败</div>
+              </div>
+            </div>
+            <div class="import-preview-toolbar">
+              <div class="import-filter-tabs">
+                <button class="import-filter-tab active" data-filter="all" onclick="filterImportRows('all')">全部列表</button>
+                <button class="import-filter-tab" data-filter="success" onclick="filterImportRows('success')">校验通过</button>
+                <button class="import-filter-tab" data-filter="warning" onclick="filterImportRows('warning')">待修正</button>
+                <button class="import-filter-tab" data-filter="error" onclick="filterImportRows('error')">识别失败</button>
               </div>
             </div>
             <div class="import-preview-table-wrapper">
               <table class="import-preview-table">
                 <thead>
                   <tr>
+                    <th>状态</th>
                     <th>单位名称</th>
-                    <th>岗位名称</th>
+                    <th>单位属性</th>
                     <th>所属行业</th>
+                    <th>单位地址</th>
+                    <th>岗位名称</th>
                     <th>招聘人数</th>
+                    <th>专业要求</th>
                     <th>学历要求</th>
+                    <th>修正原因</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>华为技术有限公司</td>
-                    <td>高级软件工程师</td>
-                    <td>新一代信息技术</td>
-                    <td style="text-align: center;">25</td>
-                    <td>本科及以上</td>
+                <tbody id="importPreviewTableBody">
+                  <tr data-status="success" class="row-success">
+                    <td><span class="status-badge success">✓ 通过</span></td>
+                    <td contenteditable="true">华为技术有限公司</td>
+                    <td contenteditable="true">民营企业</td>
+                    <td contenteditable="true">新一代信息技术</td>
+                    <td contenteditable="true">深圳市龙岗区坂田华为总部</td>
+                    <td contenteditable="true">高级软件工程师</td>
+                    <td contenteditable="true" style="text-align: center;">25</td>
+                    <td contenteditable="true">计算机科学与技术</td>
+                    <td contenteditable="true">本科及以上</td>
+                    <td>—</td>
                   </tr>
-                  <tr>
-                    <td>中兴通讯股份有限公司</td>
-                    <td>硬件研发工程师</td>
-                    <td>新一代信息技术</td>
-                    <td style="text-align: center;">18</td>
-                    <td>本科及以上</td>
+                  <tr data-status="success" class="row-success">
+                    <td><span class="status-badge success">✓ 通过</span></td>
+                    <td contenteditable="true">中兴通讯股份有限公司</td>
+                    <td contenteditable="true">股份制企业</td>
+                    <td contenteditable="true">新一代信息技术</td>
+                    <td contenteditable="true">深圳市南山区高新技术产业园</td>
+                    <td contenteditable="true">硬件研发工程师</td>
+                    <td contenteditable="true" style="text-align: center;">18</td>
+                    <td contenteditable="true">电子信息工程</td>
+                    <td contenteditable="true">本科及以上</td>
+                    <td>—</td>
                   </tr>
-                  <tr>
-                    <td>比亚迪股份有限公司</td>
-                    <td>机械设计工程师</td>
-                    <td>高端装备制造</td>
-                    <td style="text-align: center;">32</td>
-                    <td>本科及以上</td>
+                  <tr data-status="success" class="row-success">
+                    <td><span class="status-badge success">✓ 通过</span></td>
+                    <td contenteditable="true">比亚迪股份有限公司</td>
+                    <td contenteditable="true">股份制企业</td>
+                    <td contenteditable="true">高端装备制造</td>
+                    <td contenteditable="true">深圳市坪山区比亚迪路</td>
+                    <td contenteditable="true">机械设计工程师</td>
+                    <td contenteditable="true" style="text-align: center;">32</td>
+                    <td contenteditable="true">机械工程</td>
+                    <td contenteditable="true">本科及以上</td>
+                    <td>—</td>
                   </tr>
-                  <tr class="row-warning">
-                    <td>某科技公司</td>
-                    <td>算法工程师</td>
-                    <td style="color: var(--color-warning);">— 未识别 —</td>
-                    <td style="text-align: center;">10</td>
-                    <td>硕士及以上</td>
+                  <tr data-status="warning" class="row-warning">
+                    <td><span class="status-badge warning">! 待修正</span></td>
+                    <td contenteditable="true">某科技公司</td>
+                    <td contenteditable="true">民营企业</td>
+                    <td contenteditable="true">—</td>
+                    <td contenteditable="true">深圳市南山区科技园</td>
+                    <td contenteditable="true">算法工程师</td>
+                    <td contenteditable="true" style="text-align: center;">10</td>
+                    <td contenteditable="true">人工智能</td>
+                    <td contenteditable="true">硕士及以上</td>
+                    <td class="cell-reason">所属行业未识别，请补充</td>
+                  </tr>
+                  <tr data-status="warning" class="row-warning">
+                    <td><span class="status-badge warning">! 待修正</span></td>
+                    <td contenteditable="true">华大基因有限公司</td>
+                    <td contenteditable="true">民营企业</td>
+                    <td contenteditable="true">生物医药</td>
+                    <td contenteditable="true">深圳市盐田区北山工业区</td>
+                    <td contenteditable="true">生物信息工程师</td>
+                    <td contenteditable="true" style="text-align: center;">8</td>
+                    <td contenteditable="true">生物信息学</td>
+                    <td contenteditable="true">硕士及以上</td>
+                    <td class="cell-reason">学历要求格式不规范</td>
+                  </tr>
+                  <tr data-status="error" class="row-error">
+                    <td><span class="status-badge error">✕ 失败</span></td>
+                    <td contenteditable="true">信息缺失企业</td>
+                    <td contenteditable="true">—</td>
+                    <td contenteditable="true">—</td>
+                    <td contenteditable="true">—</td>
+                    <td contenteditable="true">—</td>
+                    <td contenteditable="true" style="text-align: center;">—</td>
+                    <td contenteditable="true">—</td>
+                    <td contenteditable="true">—</td>
+                    <td class="cell-reason error">单位名称、岗位名称均缺失</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="import-preview-tip">
-              仅显示前4条预览，完整数据请在导入后查看。存在待修正项时，系统将跳过异常数据并导入正常数据。
+              提示：点击表格中的单元格可直接编辑数据；上方统计卡片或筛选标签可切换查看不同类别的识别结果。
             </div>
           </div>
         `,
         footer: `
           <div class="drawer-footer-left">
-            <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
+            <button class="btn btn-outline" onclick="closeDrawer(); openDrawer('recruit-publish-import');">重新上传</button>
           </div>
           <div class="drawer-footer-right">
-            <button class="btn btn-outline">重新上传</button>
             <button class="btn btn-primary" onclick="alert('已导入125条招聘数据'); closeDrawer();">确认导入（125条）</button>
           </div>
         `
@@ -3499,37 +3814,57 @@
             </div>
           </div>
           <div class="drawer-content-section">
-            <div class="drawer-content-title">办理进度</div>
+            <div class="drawer-content-title">诉求回复</div>
             <div class="timeline">
               <div class="timeline-item done">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                  <div class="timeline-title">诉求提交</div>
-                  <div class="timeline-time">2024-10-15 11:20</div>
-                  <div class="timeline-desc">企业在线提交诉求</div>
+                  <div class="timeline-reply-row">
+                    <span class="timeline-label">回复时间</span>
+                    <span class="timeline-value">2024-10-15 14:30</span>
+                  </div>
+                  <div class="timeline-reply-row">
+                    <span class="timeline-label">回复组织</span>
+                    <span class="timeline-value">党建服务中心</span>
+                  </div>
+                  <div class="timeline-reply-row">
+                    <span class="timeline-label">回复详情</span>
+                    <span class="timeline-value">已收到您的融资支持诉求，已为您登记并转交区金融办跟进办理，请保持电话畅通。</span>
+                  </div>
                 </div>
               </div>
               <div class="timeline-item done">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                  <div class="timeline-title">受理登记</div>
-                  <div class="timeline-time">2024-10-15 14:30</div>
-                  <div class="timeline-desc">党建服务中心受理并登记</div>
+                  <div class="timeline-reply-row">
+                    <span class="timeline-label">回复时间</span>
+                    <span class="timeline-value">2024-10-16 09:00</span>
+                  </div>
+                  <div class="timeline-reply-row">
+                    <span class="timeline-label">回复组织</span>
+                    <span class="timeline-value">区金融办</span>
+                  </div>
+                  <div class="timeline-reply-row">
+                    <span class="timeline-label">回复详情</span>
+                    <span class="timeline-value">经初步审核，企业符合政府贴息贷款申请条件，已对接合作银行，请准备营业执照、财务报表等基础材料。</span>
+                  </div>
                 </div>
               </div>
               <div class="timeline-item active">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                  <div class="timeline-title">部门办理中</div>
-                  <div class="timeline-time">2024-10-16 09:00</div>
-                  <div class="timeline-desc">已转办至区金融办，正在对接银行</div>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                  <div class="timeline-title">反馈结果</div>
-                  <div class="timeline-time">待完成</div>
+                  <div class="timeline-reply-row">
+                    <span class="timeline-label">回复时间</span>
+                    <span class="timeline-value">2024-10-17 16:45</span>
+                  </div>
+                  <div class="timeline-reply-row">
+                    <span class="timeline-label">回复组织</span>
+                    <span class="timeline-value">区金融办、区工信局</span>
+                  </div>
+                  <div class="timeline-reply-row">
+                    <span class="timeline-label">回复详情</span>
+                    <span class="timeline-value">银行已受理贷款申请，目前正在审批中，预计 5 个工作日内反馈授信结果，后续将持续跟进。</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3540,7 +3875,6 @@
             <button class="btn btn-outline" onclick="closeDrawer()">关闭</button>
           </div>
           <div class="drawer-footer-right">
-            <button class="btn btn-secondary">转交部门</button>
             <button class="btn btn-primary" onclick="openDrawer('demand-process')">回复企业</button>
           </div>
         `
@@ -3613,7 +3947,6 @@
             <button class="btn btn-outline" onclick="closeDrawer()">取消</button>
           </div>
           <div class="drawer-footer-right">
-            <button class="btn btn-secondary">暂存</button>
             <button class="btn btn-primary">提交回复</button>
           </div>
         `
@@ -3720,7 +4053,6 @@
     // 模拟导入识别流程
     function simulateImport() {
       var fileList = document.getElementById('importFileList');
-      var previewSection = document.getElementById('importPreviewSection');
       if (!fileList) return;
 
       fileList.style.display = 'block';
@@ -3735,9 +4067,8 @@
       }, 1500);
 
       setTimeout(function() {
-        if (previewSection) {
-          previewSection.style.display = 'block';
-        }
+        closeDrawer();
+        openDrawer('recruit-preview');
       }, 2500);
     }
 
@@ -3773,6 +4104,63 @@
       document.getElementById('drawerOverlay').classList.remove('active');
       document.body.style.overflow = '';
     }
+
+    // 切换导入预览数据类别：all / success / warning / error
+    function filterImportRows(type) {
+      var rows = document.querySelectorAll('#importPreviewTableBody tr');
+      var tabs = document.querySelectorAll('.import-filter-tab');
+      tabs.forEach(function(tab) {
+        tab.classList.toggle('active', tab.getAttribute('data-filter') === type);
+      });
+      rows.forEach(function(row) {
+        var status = row.getAttribute('data-status');
+        row.style.display = (type === 'all' || status === type) ? '' : 'none';
+      });
+    }
+
+    // 富文本编辑器工具栏
+    document.querySelectorAll('.rich-editor-toolbar').forEach(function(toolbar) {
+      toolbar.addEventListener('click', function(e) {
+        const btn = e.target.closest('.rich-editor-btn');
+        if (!btn) return;
+
+        const command = btn.getAttribute('data-command');
+        const editor = toolbar.parentElement.querySelector('.rich-editor-content');
+        editor.focus();
+
+        if (command === 'createLink') {
+          const url = prompt('请输入链接地址：', 'https://');
+          if (url) {
+            document.execCommand('createLink', false, url);
+          }
+        } else if (command === 'removeFormat') {
+          document.execCommand('removeFormat', false, null);
+        } else {
+          document.execCommand(command, false, null);
+        }
+
+        updateRichEditorActiveStates(toolbar);
+      });
+    });
+
+    function updateRichEditorActiveStates(toolbar) {
+      const editor = toolbar.parentElement.querySelector('.rich-editor-content');
+      toolbar.querySelectorAll('.rich-editor-btn').forEach(function(btn) {
+        const command = btn.getAttribute('data-command');
+        if (command === 'bold' || command === 'italic' || command === 'underline') {
+          btn.classList.toggle('active', document.queryCommandState(command));
+        }
+      });
+    }
+
+    document.querySelectorAll('.rich-editor-content').forEach(function(editor) {
+      editor.addEventListener('keyup', function() {
+        updateRichEditorActiveStates(editor.parentElement.querySelector('.rich-editor-toolbar'));
+      });
+      editor.addEventListener('mouseup', function() {
+        updateRichEditorActiveStates(editor.parentElement.querySelector('.rich-editor-toolbar'));
+      });
+    });
 
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeDrawer();
