@@ -794,6 +794,19 @@ a {
   transform: translateY(-1px);
 }
 
+.btn-danger {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #fff;
+  border-color: #c0392b;
+  box-shadow: 0 2px 6px rgba(231,76,60,0.25);
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #ff6b5b, #e74c3c);
+  box-shadow: 0 4px 12px rgba(231,76,60,0.35);
+  transform: translateY(-1px);
+}
+
 .btn-sm {
   padding: 5px 12px;
   font-size: 12px;
