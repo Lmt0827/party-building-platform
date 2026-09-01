@@ -1341,6 +1341,15 @@
     .import-preview-table tbody tr.row-error:hover {
       background: #fee2e2;
     }
+    .import-preview-table tr.row-success td:first-child {
+      border-left: 3px solid #16a34a;
+    }
+    .import-preview-table tr.row-warning td:first-child {
+      border-left: 3px solid #d97706;
+    }
+    .import-preview-table tr.row-error td:first-child {
+      border-left: 3px solid #dc2626;
+    }
     .import-preview-table td[contenteditable="true"] {
       background: #fff;
       outline: none;
@@ -3454,6 +3463,8 @@
                     <th>招聘人数</th>
                     <th>专业要求</th>
                     <th>学历要求</th>
+                    <th>识别状态</th>
+                    <th>原因说明</th>
                   </tr>
                 </thead>
                 <tbody id="importPreviewTableBody">
@@ -3466,6 +3477,8 @@
                     <td contenteditable="true" style="text-align: center;">25</td>
                     <td contenteditable="true">计算机科学与技术</td>
                     <td contenteditable="true">本科及以上</td>
+                    <td><span class="status-badge success">校验通过</span></td>
+                    <td>—</td>
                   </tr>
                   <tr data-status="success" class="row-success">
                     <td contenteditable="true">中兴通讯股份有限公司</td>
@@ -3476,6 +3489,8 @@
                     <td contenteditable="true" style="text-align: center;">18</td>
                     <td contenteditable="true">电子信息工程</td>
                     <td contenteditable="true">本科及以上</td>
+                    <td><span class="status-badge success">校验通过</span></td>
+                    <td>—</td>
                   </tr>
                   <tr data-status="success" class="row-success">
                     <td contenteditable="true">比亚迪股份有限公司</td>
@@ -3486,6 +3501,8 @@
                     <td contenteditable="true" style="text-align: center;">32</td>
                     <td contenteditable="true">机械工程</td>
                     <td contenteditable="true">本科及以上</td>
+                    <td><span class="status-badge success">校验通过</span></td>
+                    <td>—</td>
                   </tr>
                   <tr data-status="warning" class="row-warning">
                     <td contenteditable="true">某科技公司</td>
@@ -3496,6 +3513,8 @@
                     <td contenteditable="true" style="text-align: center;">10</td>
                     <td contenteditable="true">人工智能</td>
                     <td contenteditable="true">硕士及以上</td>
+                    <td><span class="status-badge warning">待修正</span></td>
+                    <td class="cell-reason">所属行业信息缺失，请补充</td>
                   </tr>
                   <tr data-status="warning" class="row-warning">
                     <td contenteditable="true">华大基因有限公司</td>
@@ -3506,6 +3525,8 @@
                     <td contenteditable="true" style="text-align: center;">8</td>
                     <td contenteditable="true">生物信息学</td>
                     <td contenteditable="true">硕士及以上</td>
+                    <td><span class="status-badge warning">待修正</span></td>
+                    <td class="cell-reason">地址邮编格式待校验</td>
                   </tr>
                   <tr data-status="error" class="row-error">
                     <td contenteditable="true">信息缺失企业</td>
@@ -3516,6 +3537,8 @@
                     <td contenteditable="true" style="text-align: center;">—</td>
                     <td contenteditable="true">—</td>
                     <td contenteditable="true">—</td>
+                    <td><span class="status-badge error">识别失败</span></td>
+                    <td class="cell-reason error">单位名称、属性、岗位等关键信息缺失，无法识别</td>
                   </tr>
                 </tbody>
               </table>
