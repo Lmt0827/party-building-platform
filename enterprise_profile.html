@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -1127,7 +1127,7 @@
             <span class="menu-arrow">▶</span>
           </div>
           <ul class="menu-sub">
-            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">工委管理</a></li>
+            <li><a href="org_data.html">组织数据管理</a></li><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_committee.html">党委工委管理</a></li>
 
           </ul>
         </div>
@@ -2300,7 +2300,6 @@
                       <div class="service-content">园区党建指导员张红旗同志到企业进行党员发展工作指导，帮助规范入党积极分子培养流程，审核发展对象材料。</div>
                       <div class="service-footer">
                         <span class="service-person">服务人员：张红旗</span>
-                        <span class="service-satisfaction"><span class="stars">★★★★★</span> 非常满意</span>
                       </div>
                     </div>
                     <div class="service-card">
@@ -2311,7 +2310,6 @@
                       <div class="service-content">就企业党员活动室标准化建设提供咨询服务，协助规划阵地布局、制度上墙、党旗悬挂等具体方案。</div>
                       <div class="service-footer">
                         <span class="service-person">服务人员：李明远</span>
-                        <span class="service-satisfaction"><span class="stars">★★★★★</span> 非常满意</span>
                       </div>
                     </div>
                     <div class="service-card">
@@ -2322,7 +2320,6 @@
                       <div class="service-content">邀请区委党校教授为企业党员开展"学习贯彻习近平新时代中国特色社会主义思想"主题党课宣讲活动。</div>
                       <div class="service-footer">
                         <span class="service-person">服务人员：王教授</span>
-                        <span class="service-satisfaction"><span class="stars">★★★★☆</span> 满意</span>
                       </div>
                     </div>
                     <div class="service-card">
@@ -2333,7 +2330,6 @@
                       <div class="service-content">协助企业办理5名新入职员工的党组织关系转接手续，指导线上转接流程。</div>
                       <div class="service-footer">
                         <span class="service-person">服务人员：赵晓燕</span>
-                        <span class="service-satisfaction"><span class="stars">★★★★★</span> 非常满意</span>
                       </div>
                     </div>
                   </div>
@@ -2343,9 +2339,9 @@
                 <div class="card">
                   <div class="card-header">
                     <div class="card-title">企业诉求记录</div>
-                    <button class="btn btn-secondary btn-sm">+ 提交诉求</button>
+                    <button class="btn btn-secondary btn-sm" onclick="openAppealModal()">+ 提交诉求</button>
                   </div>
-                  <div class="card-body" style="padding: 0;">
+                  <div class="card-body" id="appealList" style="padding: 0;">
                     <div class="appeal-item">
                       <div class="appeal-indicator" style="background: var(--status-success);"></div>
                       <div class="appeal-content">
@@ -2394,78 +2390,6 @@
                 </div>
               </div>
 
-              <!-- 政策匹配 -->
-              <div class="card">
-                <div class="card-header">
-                  <div class="card-title">匹配惠企政策</div>
-                  <div class="flex items-center gap-8">
-                    <span class="tag tag-gold">已匹配 12 项</span>
-                    <button class="btn btn-outline btn-sm">查看全部</button>
-                  </div>
-                </div>
-                <div class="card-body" style="padding: 0;">
-                  <div class="policy-item">
-                    <div class="policy-header">
-                      <span class="policy-title">上海市高新技术企业认定奖励政策</span>
-                      <span class="tag tag-gold">高匹配度</span>
-                    </div>
-                    <div class="policy-desc">对首次认定为高新技术企业的，给予20万元一次性奖励；对重新认定通过的，给予10万元奖励。</div>
-                    <div class="policy-meta">
-                      <span>📅 2024-01-01 发布</span>
-                      <span>🏛️ 上海市科学技术委员会</span>
-                      <span style="color: var(--status-success);">✓ 符合条件</span>
-                    </div>
-                  </div>
-                  <div class="policy-item">
-                    <div class="policy-header">
-                      <span class="policy-title">浦东新区研发费用加计扣除补贴</span>
-                      <span class="tag tag-gold">高匹配度</span>
-                    </div>
-                    <div class="policy-desc">对企业研发费用按实际发生额的10%给予补贴，单家企业年度补贴最高不超过200万元。</div>
-                    <div class="policy-meta">
-                      <span>📅 2024-02-15 发布</span>
-                      <span>🏛️ 浦东新区科技和经济委员会</span>
-                      <span style="color: var(--status-success);">✓ 符合条件</span>
-                    </div>
-                  </div>
-                  <div class="policy-item">
-                    <div class="policy-header">
-                      <span class="policy-title">张江科学城人才安居政策</span>
-                      <span class="tag tag-blue">中匹配度</span>
-                    </div>
-                    <div class="policy-desc">对符合条件的各类人才提供人才公寓、租房补贴、购房补贴等安居保障，A类人才最高可享200万购房补贴。</div>
-                    <div class="policy-meta">
-                      <span>📅 2024-03-01 发布</span>
-                      <span>🏛️ 张江科学城建设管理办公室</span>
-                      <span style="color: var(--status-warning);">△ 部分符合</span>
-                    </div>
-                  </div>
-                  <div class="policy-item">
-                    <div class="policy-header">
-                      <span class="policy-title">专精特新中小企业培育计划</span>
-                      <span class="tag tag-gold">高匹配度</span>
-                    </div>
-                    <div class="policy-desc">对认定为市级专精特新中小企业的，给予50万元一次性奖励；对认定为国家级专精特新"小巨人"的，给予100万元奖励。</div>
-                    <div class="policy-meta">
-                      <span>📅 2024-01-20 发布</span>
-                      <span>🏛️ 上海市经济和信息化委员会</span>
-                      <span style="color: var(--status-success);">✓ 符合条件</span>
-                    </div>
-                  </div>
-                  <div class="policy-item">
-                    <div class="policy-header">
-                      <span class="policy-title">软件企业增值税即征即退政策</span>
-                      <span class="tag tag-blue">中匹配度</span>
-                    </div>
-                    <div class="policy-desc">增值税一般纳税人销售其自行开发生产的软件产品，按13%税率征收增值税后，对其增值税实际税负超过3%的部分实行即征即退。</div>
-                    <div class="policy-meta">
-                      <span>📅 2023-12-01 发布</span>
-                      <span>🏛️ 财政部 国家税务总局</span>
-                      <span style="color: var(--status-warning);">△ 部分符合</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -2592,6 +2516,52 @@
     </div>
   </div>
 
+  <!-- 提交诉求弹窗 -->
+  <div class="modal-mask" id="appealModal" onclick="if(event.target===this)closeAppealModal()">
+    <div class="modal-dialog" style="width: 560px; max-width: 90vw;">
+      <div class="modal-header">
+        <h3 class="modal-title">📝 提交企业诉求</h3>
+        <button type="button" class="modal-close" onclick="event.stopPropagation();closeAppealModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">诉求标题 <span class="required">*</span></label>
+          <input type="text" class="form-input" id="appealTitle" placeholder="请输入诉求标题，如：人才公寓申请咨询">
+        </div>
+        <div class="form-group">
+          <label class="form-label">诉求类型 <span class="required">*</span></label>
+          <select class="form-select" id="appealType">
+            <option value="">请选择诉求类型</option>
+            <option value="policy">政策咨询</option>
+            <option value="talent">人才服务</option>
+            <option value="funding">融资支持</option>
+            <option value="land">场地用地</option>
+            <option value="tech">技术创新</option>
+            <option value="other">其他诉求</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">诉求内容 <span class="required">*</span></label>
+          <textarea class="form-textarea" id="appealContent" rows="4" placeholder="请详细描述您的诉求，便于工作人员快速响应"></textarea>
+        </div>
+        <div class="grid grid-2" style="gap: 16px;">
+          <div class="form-group">
+            <label class="form-label">联系人</label>
+            <input type="text" class="form-input" id="appealContact" placeholder="请输入联系人姓名">
+          </div>
+          <div class="form-group">
+            <label class="form-label">联系电话</label>
+            <input type="tel" class="form-input" id="appealPhone" placeholder="请输入联系电话">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" onclick="closeAppealModal()">取消</button>
+        <button class="btn btn-primary" onclick="submitAppeal()">提交</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Tab 切换功能
     document.querySelectorAll('.tab-item').forEach(tab => {
@@ -2635,6 +2605,84 @@
       document.getElementById('outputModal').classList.remove('show');
       document.getElementById('outputYear').value = '';
       document.getElementById('outputValue').value = '';
+    }
+
+    // 提交诉求弹窗
+    function openAppealModal() {
+      document.getElementById('appealModal').classList.add('show');
+    }
+
+    function closeAppealModal() {
+      document.getElementById('appealModal').classList.remove('show');
+      document.getElementById('appealTitle').value = '';
+      document.getElementById('appealType').value = '';
+      document.getElementById('appealContent').value = '';
+      document.getElementById('appealContact').value = '';
+      document.getElementById('appealPhone').value = '';
+    }
+
+    function submitAppeal() {
+      const title = document.getElementById('appealTitle').value.trim();
+      const type = document.getElementById('appealType').value;
+      const content = document.getElementById('appealContent').value.trim();
+      const contact = document.getElementById('appealContact').value.trim();
+      const phone = document.getElementById('appealPhone').value.trim();
+
+      if (!title) {
+        alert('请输入诉求标题');
+        document.getElementById('appealTitle').focus();
+        return;
+      }
+
+      if (!type) {
+        alert('请选择诉求类型');
+        document.getElementById('appealType').focus();
+        return;
+      }
+
+      if (!content) {
+        alert('请输入诉求内容');
+        document.getElementById('appealContent').focus();
+        return;
+      }
+
+      // 获取当前日期
+      const now = new Date();
+      const dateStr = now.getFullYear() + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        String(now.getDate()).padStart(2, '0');
+
+      // 构建新诉求项并插入到列表顶部
+      const typeMap = {
+        policy: '政策咨询',
+        talent: '人才服务',
+        funding: '融资支持',
+        land: '场地用地',
+        tech: '技术创新',
+        other: '其他诉求'
+      };
+
+      const appealCard = document.createElement('div');
+      appealCard.className = 'appeal-item';
+      appealCard.innerHTML = `
+        <div class="appeal-indicator" style="background: var(--status-info);"></div>
+        <div class="appeal-content">
+          <div class="appeal-title">${title}</div>
+          <div class="appeal-desc">${content}</div>
+        </div>
+        <div class="appeal-meta">
+          <span class="appeal-date">${dateStr}</span>
+          <span class="tag tag-blue">待处理</span>
+        </div>
+      `;
+
+      const appealList = document.getElementById('appealList');
+      if (appealList) {
+        appealList.insertBefore(appealCard, appealList.firstChild);
+      }
+
+      alert('诉求提交成功');
+      closeAppealModal();
     }
 
     // 获取已有数据的年份列表
