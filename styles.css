@@ -6874,3 +6874,23 @@ a {
   color: #fff;
   border-color: var(--primary);
 }
+
+/* ============================================
+   表单填写规则提示
+   ============================================ */
+.form-rule-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 4px;
+  word-break: break-word;
+}
+
+.form-group {
+  gap: 4px;
+}
+
+.form-label .required {
+  color: var(--accent-red);
+  margin-left: 2px;
+}
