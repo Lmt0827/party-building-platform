@@ -6890,6 +6890,45 @@ a {
   gap: 4px;
 }
 
+/* 可输入筛选框 */
+.combobox-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.combobox-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, rgba(42, 107, 176, 0.2));
+  border-radius: var(--radius-md, 6px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+  display: none;
+}
+
+.combobox-dropdown.show {
+  display: block;
+}
+
+.combobox-option {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-primary, #303133);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.combobox-option:hover,
+.combobox-option.active {
+  background: var(--hover-bg, rgba(42, 107, 176, 0.08));
+}
+
 .form-label .required {
   color: var(--accent-red);
   margin-left: 2px;

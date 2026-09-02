@@ -886,6 +886,55 @@
     });
   }
 
+  // 可输入筛选框交互初始化
+  function initComboboxes() {
+    $$('.combobox-wrap').forEach(function(wrap) {
+      if (wrap._comboboxBound) return;
+      wrap._comboboxBound = true;
+
+      var input = wrap.querySelector('.combobox-input');
+      var dropdown = wrap.querySelector('.combobox-dropdown');
+      if (!input || !dropdown) return;
+
+      var allOptions = Array.prototype.slice.call(dropdown.querySelectorAll('.combobox-option'));
+
+      function filterOptions() {
+        var keyword = input.value.trim().toLowerCase();
+        var hasVisible = false;
+        allOptions.forEach(function(opt) {
+          var text = opt.textContent.toLowerCase();
+          var visible = !keyword || text.indexOf(keyword) >= 0;
+          opt.style.display = visible ? 'block' : 'none';
+          if (visible) hasVisible = true;
+        });
+        dropdown.classList.toggle('show', hasVisible);
+      }
+
+      function hideDropdown() {
+        dropdown.classList.remove('show');
+      }
+
+      input.addEventListener('focus', filterOptions);
+      input.addEventListener('input', filterOptions);
+
+      dropdown.addEventListener('click', function(e) {
+        var option = e.target.closest('.combobox-option');
+        if (!option) return;
+        input.value = option.getAttribute('data-value') || option.textContent;
+        hideDropdown();
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!wrap.contains(e.target)) hideDropdown();
+      });
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') hideDropdown();
+      });
+    });
+  }
+
   // ===== 21. 通用模态框 =====
   var currentModal = null;
 
@@ -961,6 +1010,7 @@
     setTimeout(function() {
       try {
         if (mask.querySelector('.tag-select-wrap')) initTagSelections();
+        if (mask.querySelector('.combobox-wrap')) initComboboxes();
       } catch(e) {}
     }, 0);
 
@@ -1415,10 +1465,14 @@
           { section: '所属信息' },
           { row: [
             { label: '所属党组织', type: 'select', options: ['请选择', '高新区党工委', '经开区党工委', '国企党委', '教育系统党委', '卫生系统党委'], required: true },
-            { label: '所属企业', type: 'text', placeholder: '请输入所属企业' }
+            { label: '所属单位', type: 'combobox', placeholder: '请输入所属单位', options: [
+              '华为技术有限公司', '腾讯科技（深圳）有限公司', '比亚迪股份有限公司', '中兴通讯股份有限公司',
+              '大疆创新科技有限公司', '迈瑞生物医疗电子股份有限公司', '高新区党工委', '经开区党工委',
+              '国企党委', '教育系统党委', '卫生系统党委', '街道党工委', '社区党委'
+            ]}
           ]},
           { row: [
-            { label: '党员类型', type: 'select', options: ['请选择', '正式党员', '预备党员', '发展对象', '积极分子'] },
+            { label: '党员类型', type: 'select', options: ['请选择', '普通党员', '机关党员', '国企党员', '非公企业党员'] },
             { label: '党员状态', type: 'select', options: ['正常', '暂停', '转出'] }
           ]},
           { section: '标签配置' },
@@ -1630,6 +1684,7 @@
       '入党时间': '请选择入党时间',
       '电子邮箱': '有效邮箱格式',
       '所属党组织': '请选择所属党组织',
+      '所属单位': '输入筛选框，筛选范围为所有企业及所有党组织，如无法筛选出数据，也可支持用户手动输入',
       '所属企业': '2–50 个字符',
       '所在公司': '2–50 个字符',
       '所在单位': '2–50 个字符',
@@ -1743,6 +1798,15 @@
       });
       input = '<div class="tag-select-wrap" data-field-type="tagselect">' +
                 tagHtml +
+              '</div>';
+    } else if (field.type === 'combobox') {
+      // 可输入筛选框
+      var opts = (field.options || []).map(function(opt) {
+        return '<div class="combobox-option" data-value="' + opt + '">' + opt + '</div>';
+      }).join('');
+      input = '<div class="combobox-wrap" data-field-type="combobox">' +
+                '<input type="text" class="form-input combobox-input" autocomplete="off"' + requiredAttr + placeholder + valueAttr + disabledAttr + ' />' +
+                '<div class="combobox-dropdown">' + opts + '</div>' +
               '</div>';
     } else {
       input = '<input type="text" class="form-input"' + requiredAttr + placeholder + valueAttr + disabledAttr + ' />';
@@ -2444,6 +2508,7 @@
     try { initCheckboxAll(); } catch(e) {}
     try { initForms(); } catch(e) {}
     try { initTagSelections(); } catch(e) {}
+    try { initComboboxes(); } catch(e) {}
     try { initAddButtons(); } catch(e) {}
     try { annotateStaticForms(); } catch(e) {}
     try { initAnnotations(); } catch(e) {}
