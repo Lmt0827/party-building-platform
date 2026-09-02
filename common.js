@@ -1649,6 +1649,526 @@
            '</div>';
   }
 
+  // ===== 跨页面图钉标注系统 =====
+  var ANNO_STORAGE_KEY = 'party_building_annotations_v1';
+  var ANNO_Z_INDEX = 100000;
+  var annotationLayer = null;
+  var annotationPanel = null;
+  var annotationToggle = null;
+  var annotationMode = false;
+  var currentAnnotationId = null;
+  var currentUser = '当前用户';
+
+  function getAnnotationStorage() {
+    try {
+      var raw = localStorage.getItem(ANNO_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e) {
+      return {};
+    }
+  }
+
+  function setAnnotationStorage(data) {
+    try {
+      localStorage.setItem(ANNO_STORAGE_KEY, JSON.stringify(data));
+    } catch(e) {}
+  }
+
+  function getPageKey() {
+    return window.location.pathname + window.location.search;
+  }
+
+  function getPageAnnotations() {
+    var store = getAnnotationStorage();
+    var key = getPageKey();
+    return store[key] || [];
+  }
+
+  function savePageAnnotations(annotations) {
+    var store = getAnnotationStorage();
+    var key = getPageKey();
+    store[key] = annotations;
+    setAnnotationStorage(store);
+  }
+
+  function generateId() {
+    return 'anno_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+  }
+
+  function formatDate(date) {
+    var d = new Date(date);
+    var pad = function(n) { return n < 10 ? '0' + n : n; };
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+           ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+
+  function injectAnnotationStyles() {
+    if (document.getElementById('annotation-styles')) return;
+    var style = document.createElement('style');
+    style.id = 'annotation-styles';
+    style.textContent =
+      '.annotation-toggle {' +
+        'position: fixed;' +
+        'right: 24px;' +
+        'bottom: 24px;' +
+        'width: 48px;' +
+        'height: 48px;' +
+        'border-radius: 50%;' +
+        'background: #c8161d;' +
+        'color: #fff;' +
+        'border: none;' +
+        'box-shadow: 0 4px 12px rgba(200, 22, 29, 0.35);' +
+        'cursor: pointer;' +
+        'z-index: ' + (ANNO_Z_INDEX + 10) + ';' +
+        'display: flex;' +
+        'align-items: center;' +
+        'justify-content: center;' +
+        'font-size: 20px;' +
+        'transition: all 0.2s ease;' +
+      '}' +
+      '.annotation-toggle:hover { transform: scale(1.05); background: #a81016; }' +
+      '.annotation-toggle.active { background: #303133; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }' +
+      '.annotation-toggle .anno-badge {' +
+        'position: absolute;' +
+        'top: -4px;' +
+        'right: -4px;' +
+        'min-width: 18px;' +
+        'height: 18px;' +
+        'padding: 0 5px;' +
+        'border-radius: 9px;' +
+        'background: #fff;' +
+        'color: #c8161d;' +
+        'font-size: 11px;' +
+        'font-weight: 600;' +
+        'display: flex;' +
+        'align-items: center;' +
+        'justify-content: center;' +
+        'box-shadow: 0 2px 4px rgba(0,0,0,0.15);' +
+      '}' +
+      '.annotation-layer {' +
+        'position: absolute;' +
+        'top: 0;' +
+        'left: 0;' +
+        'width: 100%;' +
+        'height: 100%;' +
+        'pointer-events: none;' +
+        'z-index: ' + ANNO_Z_INDEX + ';' +
+      '}' +
+      '.annotation-layer.anno-active { pointer-events: auto; cursor: crosshair; }' +
+      '.annotation-pin {' +
+        'position: absolute;' +
+        'width: 28px;' +
+        'height: 28px;' +
+        'margin-left: -14px;' +
+        'margin-top: -28px;' +
+        'background: #c8161d;' +
+        'border-radius: 50% 50% 50% 0;' +
+        'transform: rotate(-45deg);' +
+        'box-shadow: 0 3px 8px rgba(200, 22, 29, 0.4);' +
+        'cursor: pointer;' +
+        'pointer-events: auto;' +
+        'display: flex;' +
+        'align-items: center;' +
+        'justify-content: center;' +
+        'transition: transform 0.15s ease;' +
+      '}' +
+      '.annotation-pin:hover { transform: rotate(-45deg) scale(1.15); }' +
+      '.annotation-pin.active { background: #ff6b6b; transform: rotate(-45deg) scale(1.2); }' +
+      '.annotation-pin .anno-num {' +
+        'transform: rotate(45deg);' +
+        'color: #fff;' +
+        'font-size: 12px;' +
+        'font-weight: 600;' +
+      '}' +
+      '.annotation-panel {' +
+        'position: fixed;' +
+        'top: 50%;' +
+        'left: 50%;' +
+        'transform: translate(-50%, -50%);' +
+        'width: 380px;' +
+        'max-height: 520px;' +
+        'background: #fff;' +
+        'border-radius: 12px;' +
+        'box-shadow: 0 20px 50px rgba(0,0,0,0.25);' +
+        'z-index: ' + (ANNO_Z_INDEX + 20) + ';' +
+        'display: none;' +
+        'flex-direction: column;' +
+        'overflow: hidden;' +
+        'font-size: 14px;' +
+      '}' +
+      '.annotation-panel.show { display: flex; }' +
+      '.annotation-panel .anno-header {' +
+        'padding: 16px 20px;' +
+        'border-bottom: 1px solid #f0f0f0;' +
+        'display: flex;' +
+        'align-items: center;' +
+        'justify-content: space-between;' +
+      '}' +
+      '.annotation-panel .anno-title {' +
+        'font-weight: 600;' +
+        'color: #303133;' +
+        'font-size: 16px;' +
+      '}' +
+      '.annotation-panel .anno-close {' +
+        'width: 28px;' +
+        'height: 28px;' +
+        'border-radius: 50%;' +
+        'border: none;' +
+        'background: #f5f5f5;' +
+        'cursor: pointer;' +
+        'font-size: 18px;' +
+        'color: #666;' +
+        'display: flex;' +
+        'align-items: center;' +
+        'justify-content: center;' +
+      '}' +
+      '.annotation-panel .anno-body {' +
+        'padding: 16px 20px;' +
+        'overflow-y: auto;' +
+        'flex: 1;' +
+      '}' +
+      '.annotation-panel .anno-empty {' +
+        'text-align: center;' +
+        'color: #999;' +
+        'padding: 32px 0;' +
+      '}' +
+      '.annotation-panel .anno-comment {' +
+        'margin-bottom: 16px;' +
+        'padding-bottom: 16px;' +
+        'border-bottom: 1px solid #f5f5f5;' +
+      '}' +
+      '.annotation-panel .anno-comment:last-child { border-bottom: none; margin-bottom: 0; }' +
+      '.annotation-panel .anno-author {' +
+        'font-weight: 500;' +
+        'color: #303133;' +
+        'margin-bottom: 4px;' +
+      '}' +
+      '.annotation-panel .anno-time {' +
+        'font-size: 12px;' +
+        'color: #999;' +
+        'margin-bottom: 6px;' +
+      '}' +
+      '.annotation-panel .anno-text {' +
+        'color: #606266;' +
+        'line-height: 1.5;' +
+        'word-break: break-word;' +
+      '}' +
+      '.annotation-panel .anno-footer {' +
+        'padding: 12px 20px 16px;' +
+        'border-top: 1px solid #f0f0f0;' +
+        'display: flex;' +
+        'gap: 8px;' +
+      '}' +
+      '.annotation-panel .anno-input {' +
+        'flex: 1;' +
+        'padding: 8px 12px;' +
+        'border: 1px solid #dcdfe6;' +
+        'border-radius: 6px;' +
+        'font-size: 14px;' +
+        'outline: none;' +
+      '}' +
+      '.annotation-panel .anno-input:focus { border-color: #c8161d; }' +
+      '.annotation-panel .anno-btn {' +
+        'padding: 8px 16px;' +
+        'border: none;' +
+        'border-radius: 6px;' +
+        'background: #c8161d;' +
+        'color: #fff;' +
+        'cursor: pointer;' +
+        'font-size: 14px;' +
+        'white-space: nowrap;' +
+      '}' +
+      '.annotation-panel .anno-btn:hover { background: #a81016; }' +
+      '.annotation-panel .anno-actions {' +
+        'display: flex;' +
+        'gap: 8px;' +
+        'margin-top: 8px;' +
+      '}' +
+      '.annotation-panel .anno-actions button {' +
+        'border: none;' +
+        'background: transparent;' +
+        'color: #999;' +
+        'font-size: 12px;' +
+        'cursor: pointer;' +
+        'padding: 0;' +
+      '}' +
+      '.annotation-panel .anno-actions button:hover { color: #c8161d; }' +
+      '.annotation-hint {' +
+        'position: fixed;' +
+        'top: 80px;' +
+        'left: 50%;' +
+        'transform: translateX(-50%);' +
+        'background: rgba(48, 49, 51, 0.9);' +
+        'color: #fff;' +
+        'padding: 10px 20px;' +
+        'border-radius: 20px;' +
+        'font-size: 13px;' +
+        'z-index: ' + (ANNO_Z_INDEX + 30) + ';' +
+        'display: none;' +
+        'pointer-events: none;' +
+      '}' +
+      '.annotation-hint.show { display: block; }';
+    document.head.appendChild(style);
+  }
+
+  function updateLayerSize() {
+    if (!annotationLayer) return;
+    var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    annotationLayer.style.height = h + 'px';
+  }
+
+  function createAnnotationElements() {
+    if (annotationLayer) return;
+
+    annotationLayer = document.createElement('div');
+    annotationLayer.id = 'annotationLayer';
+    annotationLayer.className = 'annotation-layer';
+    document.body.appendChild(annotationLayer);
+    updateLayerSize();
+
+    annotationPanel = document.createElement('div');
+    annotationPanel.id = 'annotationPanel';
+    annotationPanel.className = 'annotation-panel';
+    annotationPanel.innerHTML =
+      '<div class="anno-header">' +
+        '<span class="anno-title">标注讨论</span>' +
+        '<div style="display:flex;gap:8px;align-items:center;">' +
+          '<button class="anno-delete" title="删除标注" style="border:none;background:transparent;color:#999;cursor:pointer;font-size:13px;">删除</button>' +
+          '<button class="anno-close">&times;</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="anno-body"></div>' +
+      '<div class="anno-footer">' +
+        '<input type="text" class="anno-input" placeholder="输入评论..." />' +
+        '<button class="anno-btn">发送</button>' +
+      '</div>';
+    document.body.appendChild(annotationPanel);
+
+    annotationToggle = document.createElement('button');
+    annotationToggle.id = 'annotationToggle';
+    annotationToggle.className = 'annotation-toggle';
+    annotationToggle.title = '标注模式';
+    annotationToggle.innerHTML = '📌<span class="anno-badge"></span>';
+    document.body.appendChild(annotationToggle);
+
+    var hint = document.createElement('div');
+    hint.id = 'annotationHint';
+    hint.className = 'annotation-hint';
+    hint.textContent = '点击页面任意位置添加标注';
+    document.body.appendChild(hint);
+
+    annotationToggle.addEventListener('click', toggleAnnotationMode);
+    annotationLayer.addEventListener('click', onLayerClick);
+    annotationPanel.querySelector('.anno-close').addEventListener('click', closeAnnotationPanel);
+    annotationPanel.querySelector('.anno-delete').addEventListener('click', function() {
+      if (currentAnnotationId) deleteAnnotation(currentAnnotationId);
+    });
+    annotationPanel.querySelector('.anno-btn').addEventListener('click', submitComment);
+    annotationPanel.querySelector('.anno-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') submitComment();
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!currentAnnotationId) return;
+      if (annotationPanel.contains(e.target)) return;
+      if (e.target.closest('.annotation-pin')) return;
+      closeAnnotationPanel();
+    });
+  }
+
+  function updateToggleBadge() {
+    if (!annotationToggle) return;
+    var count = getPageAnnotations().length;
+    var badge = annotationToggle.querySelector('.anno-badge');
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function toggleAnnotationMode() {
+    annotationMode = !annotationMode;
+    annotationToggle.classList.toggle('active', annotationMode);
+    annotationLayer.classList.toggle('anno-active', annotationMode);
+    var hint = document.getElementById('annotationHint');
+    if (hint) hint.classList.toggle('show', annotationMode);
+    if (annotationMode) {
+      closeAnnotationPanel();
+    }
+  }
+
+  function onLayerClick(e) {
+    if (!annotationMode) return;
+    if (e.target.closest('.annotation-pin')) return;
+
+    var docHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    var x = e.pageX / window.innerWidth;
+    var y = e.pageY / docHeight;
+
+    var annotation = {
+      id: generateId(),
+      pageUrl: getPageKey(),
+      x: x,
+      y: y,
+      author: currentUser,
+      content: '',
+      createdAt: new Date().toISOString(),
+      replies: []
+    };
+
+    var annotations = getPageAnnotations();
+    annotations.push(annotation);
+    savePageAnnotations(annotations);
+
+    renderPins();
+    updateToggleBadge();
+    openAnnotationPanel(annotation.id);
+    toggleAnnotationMode();
+  }
+
+  function renderPins() {
+    if (!annotationLayer) return;
+    updateLayerSize();
+    annotationLayer.innerHTML = '';
+    var annotations = getPageAnnotations();
+    var docHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+
+    annotations.forEach(function(anno, index) {
+      var pin = document.createElement('div');
+      pin.className = 'annotation-pin' + (anno.id === currentAnnotationId ? ' active' : '');
+      pin.style.left = (anno.x * 100) + '%';
+      pin.style.top = (anno.y * docHeight) + 'px';
+      pin.dataset.id = anno.id;
+      pin.innerHTML = '<span class="anno-num">' + (index + 1) + '</span>';
+      pin.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openAnnotationPanel(anno.id);
+      });
+      annotationLayer.appendChild(pin);
+    });
+  }
+
+  function openAnnotationPanel(id) {
+    currentAnnotationId = id;
+    var annotations = getPageAnnotations();
+    var anno = annotations.find(function(a) { return a.id === id; });
+    if (!anno) return;
+
+    var body = annotationPanel.querySelector('.anno-body');
+    var commentsHtml = '';
+
+    if (!anno.content && (!anno.replies || !anno.replies.length)) {
+      commentsHtml = '<div class="anno-empty">暂无评论，发表第一条评论吧</div>';
+    } else {
+      if (anno.content) {
+        commentsHtml += renderComment({
+          author: anno.author,
+          content: anno.content,
+          createdAt: anno.createdAt,
+          isOwner: anno.author === currentUser
+        }, true);
+      }
+      if (anno.replies && anno.replies.length) {
+        anno.replies.forEach(function(reply) {
+          commentsHtml += renderComment({
+            author: reply.author,
+            content: reply.content,
+            createdAt: reply.createdAt,
+            isOwner: reply.author === currentUser
+          }, false);
+        });
+      }
+    }
+
+    body.innerHTML = commentsHtml;
+    annotationPanel.classList.add('show');
+    renderPins();
+
+    setTimeout(function() {
+      var input = annotationPanel.querySelector('.anno-input');
+      if (input) input.focus();
+    }, 50);
+  }
+
+  function renderComment(comment, isFirst) {
+    return '<div class="anno-comment">' +
+      '<div class="anno-author">' + escapeHtml(comment.author) + (isFirst ? ' <span style="color:#c8161d;font-size:12px;">发起</span>' : '') + '</div>' +
+      '<div class="anno-time">' + formatDate(comment.createdAt) + '</div>' +
+      '<div class="anno-text">' + escapeHtml(comment.content) + '</div>' +
+    '</div>';
+  }
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function closeAnnotationPanel() {
+    currentAnnotationId = null;
+    if (annotationPanel) annotationPanel.classList.remove('show');
+    renderPins();
+  }
+
+  function submitComment() {
+    var input = annotationPanel.querySelector('.anno-input');
+    var text = input.value.trim();
+    if (!text) return;
+
+    var annotations = getPageAnnotations();
+    var anno = annotations.find(function(a) { return a.id === currentAnnotationId; });
+    if (!anno) return;
+
+    if (!anno.content) {
+      anno.content = text;
+      anno.createdAt = new Date().toISOString();
+    } else {
+      anno.replies = anno.replies || [];
+      anno.replies.push({
+        id: generateId(),
+        author: currentUser,
+        content: text,
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    savePageAnnotations(annotations);
+    input.value = '';
+    openAnnotationPanel(currentAnnotationId);
+  }
+
+  function deleteAnnotation(id) {
+    if (!confirm('确定删除这条标注及所有讨论吗？')) return;
+    var annotations = getPageAnnotations().filter(function(a) { return a.id !== id; });
+    savePageAnnotations(annotations);
+    closeAnnotationPanel();
+    renderPins();
+    updateToggleBadge();
+  }
+
+  function initAnnotations() {
+    injectAnnotationStyles();
+    createAnnotationElements();
+    renderPins();
+    updateToggleBadge();
+
+    window.addEventListener('resize', renderPins);
+    window.addEventListener('scroll', renderPins);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (currentAnnotationId) {
+          closeAnnotationPanel();
+        } else if (annotationMode) {
+          toggleAnnotationMode();
+        }
+      }
+    });
+  }
+
+
   // ===== 初始化 =====
   function initAll() {
     try { initSidebarMenu(); } catch(e) {}
@@ -1672,6 +2192,7 @@
     try { initForms(); } catch(e) {}
     try { initTagSelections(); } catch(e) {}
     try { initAddButtons(); } catch(e) {}
+    try { initAnnotations(); } catch(e) {}
   }
 
   // DOM 加载完成后初始化
