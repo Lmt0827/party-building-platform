@@ -1893,6 +1893,40 @@
         'padding: 0;' +
       '}' +
       '.annotation-panel .anno-actions button:hover { color: #c8161d; }' +
+      '.annotation-panel .anno-edit-box {' +
+        'margin-top: 8px;' +
+        'display: none;' +
+      '}' +
+      '.annotation-panel .anno-edit-box.show { display: block; }' +
+      '.annotation-panel .anno-edit-textarea {' +
+        'width: 100%;' +
+        'padding: 8px 12px;' +
+        'border: 1px solid #dcdfe6;' +
+        'border-radius: 6px;' +
+        'font-size: 14px;' +
+        'resize: vertical;' +
+        'min-height: 60px;' +
+        'box-sizing: border-box;' +
+        'outline: none;' +
+      '}' +
+      '.annotation-panel .anno-edit-textarea:focus { border-color: #c8161d; }' +
+      '.annotation-panel .anno-edit-btns {' +
+        'display: flex;' +
+        'gap: 8px;' +
+        'margin-top: 8px;' +
+        'justify-content: flex-end;' +
+      '}' +
+      '.annotation-panel .anno-edit-btns button {' +
+        'padding: 6px 12px;' +
+        'border: none;' +
+        'border-radius: 4px;' +
+        'font-size: 12px;' +
+        'cursor: pointer;' +
+      '}' +
+      '.annotation-panel .anno-save-btn { background: #c8161d; color: #fff; }' +
+      '.annotation-panel .anno-save-btn:hover { background: #a81016; }' +
+      '.annotation-panel .anno-cancel-btn { background: #f5f5f5; color: #666; }' +
+      '.annotation-panel .anno-cancel-btn:hover { background: #e0e0e0; }' +
       '.annotation-hint {' +
         'position: fixed;' +
         'top: 80px;' +
@@ -1966,6 +2000,23 @@
     annotationPanel.querySelector('.anno-btn').addEventListener('click', submitComment);
     annotationPanel.querySelector('.anno-input').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') submitComment();
+    });
+
+    annotationPanel.querySelector('.anno-body').addEventListener('click', function(e) {
+      var target = e.target;
+      if (target.classList.contains('anno-edit')) {
+        e.stopPropagation();
+        startEditComment(target.closest('.anno-comment'));
+      } else if (target.classList.contains('anno-delete-comment')) {
+        e.stopPropagation();
+        deleteComment(target.dataset.commentId, target.dataset.isFirst === '1');
+      } else if (target.classList.contains('anno-save-btn')) {
+        e.stopPropagation();
+        saveEditComment(target.closest('.anno-comment'));
+      } else if (target.classList.contains('anno-cancel-btn')) {
+        e.stopPropagation();
+        cancelEditComment(target.closest('.anno-comment'));
+      }
     });
 
     document.addEventListener('click', function(e) {
@@ -2064,6 +2115,7 @@
     } else {
       if (anno.content) {
         commentsHtml += renderComment({
+          id: '',
           author: anno.author,
           content: anno.content,
           createdAt: anno.createdAt,
@@ -2073,6 +2125,7 @@
       if (anno.replies && anno.replies.length) {
         anno.replies.forEach(function(reply) {
           commentsHtml += renderComment({
+            id: reply.id,
             author: reply.author,
             content: reply.content,
             createdAt: reply.createdAt,
@@ -2093,10 +2146,26 @@
   }
 
   function renderComment(comment, isFirst) {
-    return '<div class="anno-comment">' +
+    var actions = '';
+    if (comment.isOwner) {
+      actions =
+        '<div class="anno-actions">' +
+          '<button class="anno-edit" data-comment-id="' + (comment.id || '') + '" data-is-first="' + (isFirst ? '1' : '0') + '">编辑</button>' +
+          '<button class="anno-delete-comment" data-comment-id="' + (comment.id || '') + '" data-is-first="' + (isFirst ? '1' : '0') + '">删除</button>' +
+        '</div>';
+    }
+    return '<div class="anno-comment" data-comment-id="' + (comment.id || '') + '">' +
       '<div class="anno-author">' + escapeHtml(comment.author) + (isFirst ? ' <span style="color:#c8161d;font-size:12px;">发起</span>' : '') + '</div>' +
       '<div class="anno-time">' + formatDate(comment.createdAt) + '</div>' +
       '<div class="anno-text">' + escapeHtml(comment.content) + '</div>' +
+      actions +
+      '<div class="anno-edit-box">' +
+        '<textarea class="anno-edit-textarea">' + escapeHtml(comment.content) + '</textarea>' +
+        '<div class="anno-edit-btns">' +
+          '<button class="anno-cancel-btn">取消</button>' +
+          '<button class="anno-save-btn">保存</button>' +
+        '</div>' +
+      '</div>' +
     '</div>';
   }
 
@@ -2136,6 +2205,65 @@
 
     savePageAnnotations(annotations);
     input.value = '';
+    openAnnotationPanel(currentAnnotationId);
+  }
+
+  function startEditComment(commentEl) {
+    if (!commentEl) return;
+    commentEl.querySelector('.anno-text').style.display = 'none';
+    commentEl.querySelector('.anno-actions').style.display = 'none';
+    commentEl.querySelector('.anno-edit-box').classList.add('show');
+    var textarea = commentEl.querySelector('.anno-edit-textarea');
+    textarea.focus();
+    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+  }
+
+  function cancelEditComment(commentEl) {
+    if (!commentEl) return;
+    commentEl.querySelector('.anno-text').style.display = '';
+    commentEl.querySelector('.anno-actions').style.display = '';
+    commentEl.querySelector('.anno-edit-box').classList.remove('show');
+  }
+
+  function saveEditComment(commentEl) {
+    if (!commentEl || !currentAnnotationId) return;
+    var textarea = commentEl.querySelector('.anno-edit-textarea');
+    var newText = textarea.value.trim();
+    if (!newText) return;
+
+    var annotations = getPageAnnotations();
+    var anno = annotations.find(function(a) { return a.id === currentAnnotationId; });
+    if (!anno) return;
+
+    var commentId = commentEl.dataset.commentId;
+    if (!commentId) {
+      anno.content = newText;
+    } else {
+      var reply = (anno.replies || []).find(function(r) { return r.id === commentId; });
+      if (reply) reply.content = newText;
+    }
+
+    savePageAnnotations(annotations);
+    openAnnotationPanel(currentAnnotationId);
+  }
+
+  function deleteComment(commentId, isFirst) {
+    if (!confirm('确定删除这条评论吗？')) return;
+    var annotations = getPageAnnotations();
+    var anno = annotations.find(function(a) { return a.id === currentAnnotationId; });
+    if (!anno) return;
+
+    if (isFirst) {
+      anno.content = '';
+      if (!anno.replies || anno.replies.length === 0) {
+        deleteAnnotation(currentAnnotationId);
+        return;
+      }
+    } else {
+      anno.replies = (anno.replies || []).filter(function(r) { return r.id !== commentId; });
+    }
+
+    savePageAnnotations(annotations);
     openAnnotationPanel(currentAnnotationId);
   }
 
