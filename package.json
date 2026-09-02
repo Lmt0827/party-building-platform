@@ -1,0 +1,10 @@
+{
+  "name": "party-building-platform",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@octokit/rest": "^22.0.1",
+    "docx": "^9.7.1",
+    "isomorphic-git": "^1.41.9"
+  }
+}

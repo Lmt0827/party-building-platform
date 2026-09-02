@@ -891,6 +891,7 @@
                 <div class="form-item">
                   <div class="form-label">组织名称 <span class="required">*</span></div>
                   <input type="text" class="form-input" value="中共XX科技园区工作委员会" placeholder="请输入组织名称">
+                <div class="form-rule-hint">必填；2–50 个字符，支持中文、数字、字母</div>
                 </div>
                 <div class="form-item">
                   <div class="form-label">组织类型 <span class="required">*</span></div>
@@ -900,26 +901,32 @@
                     <option>党总支</option>
                     <option>党支部</option>
                   </select>
+                <div class="form-rule-hint">必填；请选择组织类型</div>
                 </div>
                 <div class="form-item">
                   <div class="form-label">书记 <span class="required">*</span></div>
                   <input type="text" class="form-input" value="李建国" placeholder="请输入书记姓名">
+                <div class="form-rule-hint">必填；2–20 个字符</div>
                 </div>
                 <div class="form-item">
                   <div class="form-label">成立时间 <span class="required">*</span></div>
                   <input type="date" class="form-input" value="2003-06-15">
+                <div class="form-rule-hint">必填；日期不得晚于今天</div>
                 </div>
                 <div class="form-item">
                   <div class="form-label">委员数</div>
                   <input type="text" class="form-input" value="15 人" disabled>
+                <div class="form-rule-hint">选填；正整数，建议 3–50 人</div>
                 </div>
                 <div class="form-item">
                   <div class="form-label">下属组织数</div>
                   <input type="text" class="form-input" value="186 个" disabled>
+                <div class="form-rule-hint">选填；正整数</div>
                 </div>
                 <div class="form-item">
                   <div class="form-label">党员总数</div>
                   <input type="text" class="form-input" value="3,256 人" disabled>
+                <div class="form-rule-hint">选填；正整数</div>
                 </div>
                 <div class="form-item">
                   <div class="form-label">组织状态 <span class="required">*</span></div>
@@ -929,14 +936,17 @@
                     <option>撤销</option>
                     <option>合并</option>
                   </select>
+                <div class="form-rule-hint">必填；请选择组织状态</div>
                 </div>
                 <div class="form-item">
                   <div class="form-label">联系电话</div>
                   <input type="text" class="form-input" value="0571-88886666" placeholder="请输入联系电话">
+                <div class="form-rule-hint">选填；11 位手机号或固定电话（如 0755-12345678）</div>
                 </div>
                 <div class="form-item full-width">
                   <div class="form-label">办公地址 <span class="required">*</span></div>
                   <input type="text" class="form-input" value="高新区科技大道88号高新大厦18楼" placeholder="请输入办公地址">
+                <div class="form-rule-hint">必填；5–100 个字符</div>
                 </div>
               </div>
 
@@ -984,10 +994,12 @@
                   <div class="form-item">
                     <div class="form-label">经度</div>
                     <input type="text" class="form-input" value="120.123456" placeholder="请输入经度">
+                <div class="form-rule-hint">选填；-180 至 180 之间</div>
                   </div>
                   <div class="form-item">
                     <div class="form-label">纬度</div>
                     <input type="text" class="form-input" value="30.567890" placeholder="请输入纬度">
+                <div class="form-rule-hint">选填；-90 至 90 之间</div>
                   </div>
                 </div>
               </div>

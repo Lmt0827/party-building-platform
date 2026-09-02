@@ -1663,6 +1663,7 @@
               <div class="form-group">
                 <label class="form-label"><span class="required">*</span>组织名称</label>
                 <input type="text" class="form-input" id="orgName" placeholder="请输入党组织名称" />
+                <div class="form-rule-hint">必填；2–50 个字符，支持中文、数字、字母</div>
               </div>
               <div class="form-row">
                 <div class="form-group">
@@ -1674,6 +1675,7 @@
                     <option value="党总支">党总支</option>
                     <option value="党支部">党支部</option>
                   </select>
+                <div class="form-rule-hint">必填；请选择组织类型</div>
                 </div>
                 <div class="form-group">
                   <label class="form-label"><span class="required">*</span>上级组织</label>
@@ -1686,32 +1688,38 @@
                     <option value="科技园区党委">科技园区党委</option>
                     <option value="创业园党总支">创业园党总支</option>
                   </select>
+                <div class="form-rule-hint">必填；请选择上级组织</div>
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label"><span class="required">*</span>书记</label>
                   <input type="text" class="form-input" id="orgSecretary" placeholder="请输入书记姓名" />
+                <div class="form-rule-hint">必填；2–20 个字符</div>
                 </div>
                 <div class="form-group">
                   <label class="form-label">副书记</label>
                   <input type="text" class="form-input" id="deputySecretary" placeholder="请输入副书记姓名" />
+                <div class="form-rule-hint">选填；2–20 个字符，多人可用顿号分隔</div>
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">委员数</label>
                   <input type="number" class="form-input" id="committeeCount" placeholder="请输入委员人数" min="0" />
+                <div class="form-rule-hint">选填；正整数，建议 3–50 人</div>
                 </div>
                 <div class="form-group">
                   <label class="form-label">党员数</label>
                   <input type="number" class="form-input" id="memberCount" placeholder="请输入党员人数" min="0" />
+                <div class="form-rule-hint">选填；正整数</div>
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label"><span class="required">*</span>成立时间</label>
                   <input type="date" class="form-input" id="establishDate" />
+                <div class="form-rule-hint">必填；日期不得晚于今天</div>
                 </div>
                 <div class="form-group">
                   <label class="form-label">组织状态</label>
@@ -1720,19 +1728,23 @@
                     <option value="筹建中">筹建中</option>
                     <option value="撤销">撤销</option>
                   </select>
+                <div class="form-rule-hint">选填；请选择组织状态</div>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">联系电话</label>
                 <input type="text" class="form-input" id="orgPhone" placeholder="请输入联系电话" />
+                <div class="form-rule-hint">选填；11 位手机号或固定电话（如 0755-12345678）</div>
               </div>
               <div class="form-group">
                 <label class="form-label">办公地址</label>
                 <input type="text" class="form-input" id="orgAddress" placeholder="请输入办公地址" />
+                <div class="form-rule-hint">选填；5–100 个字符</div>
               </div>
               <div class="form-group">
                 <label class="form-label">备注</label>
                 <textarea class="form-textarea" id="orgRemark" placeholder="请输入备注信息"></textarea>
+                <div class="form-rule-hint">选填；最多 500 个字符</div>
               </div>
             </form>
           </div>

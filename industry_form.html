@@ -308,10 +308,12 @@
               <div class="form-item">
                 <label class="form-item-label">产业名称 <span class="required">*</span></label>
                 <input type="text" class="form-item-input" placeholder="请输入产业名称">
+                <div class="form-rule-hint">必填；2–50 个字符</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">产业编码 <span class="required">*</span></label>
                 <input type="text" class="form-item-input" placeholder="系统自动生成，可手动修改">
+                <div class="form-rule-hint">必填；系统自动生成，可手动修改</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">产业层级 <span class="required">*</span></label>
@@ -321,6 +323,7 @@
                   <option value="2">二级产业</option>
                   <option value="3">三级产业</option>
                 </select>
+                <div class="form-rule-hint">必填；请选择产业层级</div>
               </div>
               <div class="form-item" id="parentIndustryItem" style="display:none;">
                 <label class="form-item-label">上级产业 <span class="required">*</span></label>
@@ -332,6 +335,7 @@
                   <option value="4">智能制造装备</option>
                   <option value="5">航空航天装备</option>
                 </select>
+                <div class="form-rule-hint">必填；请选择上级产业</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">产业分类</label>
@@ -342,6 +346,7 @@
                   <option value="3">未来产业</option>
                   <option value="4">现代服务业</option>
                 </select>
+                <div class="form-rule-hint">选填；请选择产业分类</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">状态</label>
@@ -352,6 +357,7 @@
                   </label>
                   <label class="status-radio">
                     <input type="radio" name="status" value="inactive">
+                <div class="form-rule-hint">选填；请选择状态</div>
                     <span>停用</span>
                   </label>
                 </div>
@@ -388,22 +394,27 @@
               <div class="form-item">
                 <label class="form-item-label">年度产值（亿元）</label>
                 <input type="number" class="form-item-input" placeholder="请输入本年度产值" step="0.1" min="0">
+                <div class="form-rule-hint">选填；正数，单位亿元</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">同比增长率（%）</label>
                 <input type="number" class="form-item-input" placeholder="请输入同比增长率" step="0.1">
+                <div class="form-rule-hint">选填；数字，单位 %</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">关联企业数（家）</label>
                 <input type="number" class="form-item-input" placeholder="关联企业数量" min="0" value="0">
+                <div class="form-rule-hint">选填；正整数</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">规上企业数（家）</label>
                 <input type="number" class="form-item-input" placeholder="规模以上企业数量" min="0" value="0">
+                <div class="form-rule-hint">选填；正整数</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">从业人数（人）</label>
                 <input type="number" class="form-item-input" placeholder="产业从业人员总数" min="0">
+                <div class="form-rule-hint">选填；正整数</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">统计年份</label>
@@ -412,6 +423,7 @@
                   <option value="2023">2023年</option>
                   <option value="2022">2022年</option>
                 </select>
+                <div class="form-rule-hint">选填；请选择统计年份</div>
               </div>
             </div>
           </div>
@@ -427,10 +439,12 @@
               <div class="form-item">
                 <label class="form-item-label">产业负责人</label>
                 <input type="text" class="form-item-input" placeholder="请输入负责人姓名">
+                <div class="form-rule-hint">选填；2–20 个字符</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">联系电话</label>
                 <input type="tel" class="form-item-input" placeholder="请输入联系电话">
+                <div class="form-rule-hint">选填；11 位手机号或固定电话（如 0755-12345678）</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">所属部门</label>
@@ -441,14 +455,17 @@
                   <option value="3">科技创新部</option>
                   <option value="4">企业服务部</option>
                 </select>
+                <div class="form-rule-hint">选填；请选择所属部门</div>
               </div>
               <div class="form-item">
                 <label class="form-item-label">电子邮箱</label>
                 <input type="email" class="form-item-input" placeholder="请输入电子邮箱">
+                <div class="form-rule-hint">选填；有效邮箱格式</div>
               </div>
               <div class="form-item full-width">
                 <label class="form-item-label">备注</label>
                 <textarea class="form-item-input" placeholder="请输入备注信息" rows="2"></textarea>
+                <div class="form-rule-hint">选填；最多 500 个字符</div>
               </div>
             </div>
           </div>

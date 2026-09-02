@@ -1425,10 +1425,12 @@
               <div class="form-group">
                 <label class="form-label">产业名称 <span class="required">*</span></label>
                 <input type="text" name="name" class="form-input" placeholder="请输入产业名称">
+                <div class="form-rule-hint">必填；2–50 个字符</div>
               </div>
               <div class="form-group" style="display:none;">
                 <label class="form-label">产业编码</label>
                 <input type="text" name="code" class="form-input" placeholder="系统自动生成">
+                <div class="form-rule-hint">选填；系统自动生成，可手动修改</div>
               </div>
             </div>
             <div class="form-row">
@@ -1440,12 +1442,14 @@
                   <option value="2">二级产业</option>
                   <option value="3">三级产业</option>
                 </select>
+                <div class="form-rule-hint">必填；请选择产业层级</div>
               </div>
               <div class="form-group" id="modalParentItem" style="display:none;">
                 <label class="form-label">上级产业 <span class="required">*</span></label>
                 <select id="modalParentIndustry" class="form-select">
                   <option value="">请选择上级产业</option>
                 </select>
+                <div class="form-rule-hint">必填；请选择上级产业</div>
               </div>
             </div>
             <div class="form-row">
@@ -1467,6 +1471,7 @@
                 </label>
                 <label>
                   <input type="radio" name="status" value="inactive">
+                <div class="form-rule-hint">选填；请选择状态</div>
                   <span>停用</span>
                 </label>
               </div>
@@ -1527,6 +1532,7 @@
                   <option value="新能源">新能源</option>
                   <option value="节能环保">节能环保</option>
                 </select>
+                <div class="form-rule-hint">必填；请选择所属产业</div>
               </div>
               <div class="form-group">
                 <label class="form-label">状态</label>
@@ -1538,6 +1544,7 @@
                   </label>
                   <label class="radio-item">
                     <input type="radio" name="tradeStatus" value="inactive">
+                <div class="form-rule-hint">选填；请选择状态</div>
                     <span class="radio-custom"></span>
                     <span>停用</span>
                   </label>
