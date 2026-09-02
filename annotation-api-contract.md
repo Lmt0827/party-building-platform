@@ -2,7 +2,7 @@
 
 > 本文为「党建数字化平台」跨页面图钉标注功能的后端接口契约，便于后续接入 NestJS + Prisma 实现服务端持久化与多人协作。
 
----
+***
 
 ## 1. 数据模型（Prisma 建议）
 
@@ -36,7 +36,7 @@ model AnnotationReply {
 }
 ```
 
----
+***
 
 ## 2. REST API
 
@@ -115,7 +115,7 @@ DELETE /api/annotations/:id/replies/:replyId
 Authorization: Bearer <token>
 ```
 
----
+***
 
 ## 3. WebSocket 实时协作（可选）
 
@@ -123,12 +123,12 @@ Authorization: Bearer <token>
 
 ### 事件定义
 
-| 事件名 | 方向 | 说明 |
-|--------|------|------|
-| `annotation:join` | C→S | 加入页面房间，如 `{ pageUrl: '/dashboard.html' }` |
-| `annotation:create` | S→C | 新标注广播 |
-| `annotation:reply` | S→C | 新回复广播 |
-| `annotation:delete` | S→C | 标注/回复删除广播 |
+| 事件名                 | 方向  | 说明                                        |
+| ------------------- | --- | ----------------------------------------- |
+| `annotation:join`   | C→S | 加入页面房间，如 `{ pageUrl: '/dashboard.html' }` |
+| `annotation:create` | S→C | 新标注广播                                     |
+| `annotation:reply`  | S→C | 新回复广播                                     |
+| `annotation:delete` | S→C | 标注/回复删除广播                                 |
 
 ### 广播示例
 
@@ -148,24 +148,31 @@ Authorization: Bearer <token>
 }
 ```
 
----
+***
 
 ## 4. 前端集成说明
 
 当前前端实现位于 `common.js` 的 `initAnnotations()` 中，本地使用 `localStorage` 存储。接入后端时，替换以下函数即可：
 
 - `getPageAnnotations()` → `GET /api/annotations?pageUrl=...`
+
 - `savePageAnnotations()` → 不再整体保存，改为调用创建/回复/删除接口
+
 - 新增标注后 POST `/api/annotations`
+
 - 新增回复后 POST `/api/annotations/:id/replies`
 
 建议保留 `currentUser` 从登录态获取，替换硬编码的 `'当前用户'`。
 
----
+***
 
 ## 5. 权限建议
 
 - 查看：所有登录用户可见本页面标注
+
 - 创建/回复：普通用户可创建和回复
+
 - 删除：仅标注创建者或管理员可删除
+
 - 审计：重要操作可记录操作日志
+
