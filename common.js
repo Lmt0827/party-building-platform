@@ -1599,6 +1599,109 @@
     return html;
   }
 
+  function getFieldRule(label, required) {
+    var rules = {
+      '组织名称': '2–50 个字符，支持中文、数字、字母',
+      '组织类型': '请选择组织类型',
+      '上级组织': '请选择上级组织',
+      '党组织层级': '请选择党组织层级',
+      '党工委': '请选择党工委',
+      '书记': '2–20 个字符',
+      '副书记': '2–20 个字符，多人可用顿号分隔',
+      '委员数': '正整数，建议 3–50 人',
+      '党员数': '正整数',
+      '党员总数': '正整数',
+      '下属组织数': '正整数',
+      '成立时间': '日期不得晚于今天',
+      '组织状态': '请选择组织状态',
+      '联系电话': '11 位手机号或固定电话（如 0755-12345678）',
+      '办公地址': '5–100 个字符',
+      '经度': '-180 至 180 之间',
+      '纬度': '-90 至 90 之间',
+      '姓名': '2–20 个字符',
+      '性别': '请选择性别',
+      '出生日期': '请选择出生日期',
+      '民族': '请选择民族',
+      '籍贯': '2–50 个字符',
+      '身份证号': '18 位有效身份证号码',
+      '学历': '请选择学历',
+      '毕业院校': '2–50 个字符',
+      '参加工作时间': '请选择参加工作时间',
+      '入党时间': '请选择入党时间',
+      '电子邮箱': '有效邮箱格式',
+      '所属党组织': '请选择所属党组织',
+      '所属企业': '2–50 个字符',
+      '所在公司': '2–50 个字符',
+      '所在单位': '2–50 个字符',
+      '现工作单位及职务': '2–100 个字符',
+      '现工作企业及职务': '2–100 个字符',
+      '党员类型': '请选择党员类型',
+      '党员状态': '请选择党员状态',
+      '党员标签': '可多选',
+      '所在支部': '2–50 个字符',
+      '培养阶段': '请选择培养阶段',
+      '申请时间': '请选择申请时间',
+      '联系人': '2–20 个字符',
+      '备注': '最多 500 个字符',
+      '政治面貌': '请选择政治面貌',
+      '账号': '4–20 个字符',
+      '用户名': '4–20 个字符',
+      '密码': '6–20 个字符',
+      '角色名称': '2–20 个字符',
+      '角色权限': '请选择角色权限',
+      '操作人': '请输入操作人姓名',
+      '标签名称': '2–20 个字符',
+      '标题': '2–100 个字符',
+      '内容': '10–2000 个字符',
+      '发布时间': '请选择发布时间',
+      '附件': '支持常见文档格式',
+      '企业名称': '2–50 个字符',
+      '统一社会信用代码': '18 位统一社会信用代码',
+      '企业类型': '请选择企业类型',
+      '所属行业': '请选择所属行业',
+      '企业规模': '请选择企业规模',
+      '成立日期': '日期不得晚于今天',
+      '法人代表': '2–20 个字符',
+      '注册资本': '正数，单位万元',
+      '员工人数': '正整数',
+      '年营业额': '正数，单位万元',
+      '企业地址': '5–100 个字符',
+      '企业简介': '最多 500 个字符',
+      '活动名称': '2–100 个字符',
+      '活动时间': '请选择活动时间',
+      '活动地点': '5–100 个字符',
+      '活动类型': '请选择活动类型',
+      '参与人数': '正整数',
+      '活动主题': '2–100 个字符',
+      '开始时间': '请选择开始时间',
+      '结束时间': '请选择结束时间',
+      '会议类型': '请选择会议类型',
+      '会议主题': '2–100 个字符',
+      '会议地点': '5–100 个字符',
+      '会议时间': '请选择会议时间',
+      '汇报人': '2–20 个字符',
+      '汇报主题': '2–100 个字符',
+      '汇报时间': '请选择汇报时间',
+      '文档名称': '2–100 个字符',
+      '文档类型': '请选择文档类型',
+      '上传时间': '请选择上传时间',
+      '文件大小': '系统自动计算',
+      '关键词': '多个关键词用逗号分隔',
+      '摘要': '最多 300 个字符',
+      '状态': '请选择状态',
+      '排序': '正整数，越小越靠前',
+      '描述': '最多 500 个字符',
+      '说明': '最多 500 个字符',
+      '原因': '最多 300 个字符',
+      '意见': '最多 500 个字符',
+      '反馈': '最多 500 个字符',
+      '建议': '最多 500 个字符'
+    };
+    var rule = rules[label] || '';
+    if (!rule) return '';
+    return (required ? '必填；' : '选填；') + rule;
+  }
+
   function buildFieldHtml(field) {
     var label = field.label || '';
     var required = field.required ? ' <span class="required">*</span>' : '';
@@ -1606,6 +1709,8 @@
     var placeholder = field.placeholder ? ' placeholder="' + field.placeholder + '"' : '';
     var disabledAttr = field.disabled ? ' disabled' : '';
     var valueAttr = field.value !== undefined && field.value !== null ? ' value="' + field.value + '"' : '';
+    var ruleHint = getFieldRule(label, field.required);
+    var ruleHtml = ruleHint ? '<div class="form-rule-hint">' + ruleHint + '</div>' : '';
 
     var input = '';
     if (field.type === 'select') {
@@ -1646,6 +1751,7 @@
     return '<div class="form-group">' +
              '<label class="form-label">' + label + required + '</label>' +
              input +
+             ruleHtml +
            '</div>';
   }
 
@@ -2276,6 +2382,25 @@
     updateToggleBadge();
   }
 
+  function annotateStaticForms() {
+    var items = document.querySelectorAll('.form-item');
+    items.forEach(function(item) {
+      if (item.querySelector('.form-rule-hint')) return;
+      var labelEl = item.querySelector('.form-label');
+      if (!labelEl) return;
+      var labelText = labelEl.textContent.replace(/\*/g, '').trim();
+      var required = labelEl.querySelector('.required') !== null || labelEl.innerHTML.indexOf('*') >= 0;
+      var input = item.querySelector('input, select, textarea');
+      if (input && input.disabled) return;
+      var rule = getFieldRule(labelText, required);
+      if (!rule) return;
+      var hint = document.createElement('div');
+      hint.className = 'form-rule-hint';
+      hint.textContent = rule;
+      item.appendChild(hint);
+    });
+  }
+
   function initAnnotations() {
     injectAnnotationStyles();
     createAnnotationElements();
@@ -2320,6 +2445,7 @@
     try { initForms(); } catch(e) {}
     try { initTagSelections(); } catch(e) {}
     try { initAddButtons(); } catch(e) {}
+    try { annotateStaticForms(); } catch(e) {}
     try { initAnnotations(); } catch(e) {}
   }
 
