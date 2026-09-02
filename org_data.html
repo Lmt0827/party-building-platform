@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -231,6 +231,59 @@
       height: 16px;
       background: linear-gradient(180deg, #c41e3a, #d4af37);
       border-radius: 2px;
+    }
+    .org-info-tip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #c41e3a;
+      color: #fff;
+      font-size: 11px;
+      font-style: italic;
+      cursor: help;
+      position: relative;
+      font-family: 'Times New Roman', serif;
+    }
+    .org-info-tooltip {
+      position: absolute;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      width: 320px;
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-size: 12px;
+      font-weight: normal;
+      color: #606266;
+      line-height: 1.6;
+      display: none;
+      z-index: 100;
+      cursor: default;
+    }
+    .org-info-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #fff;
+    }
+    .org-info-tip:hover .org-info-tooltip,
+    .org-info-tip.active .org-info-tooltip {
+      display: block;
+    }
+    .org-info-tooltip p {
+      margin: 0 0 6px;
+    }
+    .org-info-tooltip p:last-child {
+      margin-bottom: 0;
     }
     .expand-all-btn {
       font-size: 12px;
@@ -1053,7 +1106,16 @@
           <!-- 左侧：组织架构树 -->
           <div class="org-chart-panel">
             <div class="org-chart-header">
-              <div class="org-chart-title">组织架构</div>
+              <div class="org-chart-title">
+                组织架构
+                <span class="org-info-tip">
+                  i
+                  <div class="org-info-tooltip">
+                    <p>1、权限：组织数据管理的权限为所有党组织层级账号，均可查看</p>
+                    <p>2、组织架构树里包含机关党委和企业工委</p>
+                  </div>
+                </span>
+              </div>
               <div style="display:flex;align-items:center;gap:8px;">
                 <div class="expand-all-btn" onclick="toggleExpandAll(this)">展开全部</div>
               </div>
