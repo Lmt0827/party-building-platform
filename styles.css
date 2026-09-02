@@ -6884,6 +6884,27 @@ a {
   line-height: 1.4;
   margin-top: 4px;
   word-break: break-word;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.form-rule-hint::before {
+  content: '!';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  border-radius: 50%;
+  background: #c41e3a;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  margin-top: 1px;
+  flex-shrink: 0;
 }
 
 .form-group {
