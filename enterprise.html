@@ -1375,7 +1375,7 @@
                 <div class="form-rule-hint">必填；正整数</div>
               </div>
               <div class="form-group">
-                <label class="form-label">党组织状态 <span class="required">*</span></label>
+                <label class="form-label">党组织建设 <span class="required">*</span></label>
                 <select class="form-select" name="partyStatus" onchange="togglePartyOrgSelect()">
                   <option value="未建党组织">未建党组织</option>
                   <option value="已建党支部">已建党支部</option>
@@ -1383,7 +1383,7 @@
                   <option value="已建党委">已建党委</option>
                   <option value="联合支部">联合支部</option>
                 </select>
-                <div class="form-rule-hint">必填；请选择党组织状态</div>
+                <div class="form-rule-hint">必填；请选择党组织建设</div>
               </div>
             </div>
             <div class="form-group" id="partyOrgItem" style="display:none;">
@@ -1983,7 +1983,7 @@
       if (!scale) { alert('请选择企业规模'); return; }
       if (employeeCount === '' || employeeCount < 0) { alert('请输入有效的员工人数'); return; }
       if (partyCount === '' || partyCount < 0) { alert('请输入有效的党员人数'); return; }
-      if (!partyStatus) { alert('请选择党组织状态'); return; }
+      if (!partyStatus) { alert('请选择党组织建设'); return; }
       if (!contact) { alert('请输入联系人姓名'); return; }
       if (!phone) { alert('请输入联系电话'); return; }
       if (!address) { alert('请选择办公地址（通过GIS标点定位）'); return; }
