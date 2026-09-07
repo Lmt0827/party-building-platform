@@ -519,39 +519,10 @@
             <div class="filter-item">
               <select id="typeFilter" class="filter-select">
                 <option>全部类型</option>
-                <option>信息填报</option>
-                <option>审批流</option>
-                <option>调查问卷</option>
-                <option>登记表</option>
+                <option>新增</option>
+                <option>发布</option>
               </select>
             </div>
-          </div>
-          <div class="filter-right">
-            <button class="btn btn-primary" onclick="openFormModal()">
-              <span>+</span> 新建表单
-            </button>
-          </div>
-        </div>
-
-        <!-- KPI 统计卡 -->
-        <div class="kpi-row-3">
-          <div class="kpi-card">
-            <div class="kpi-label">表单总数</div>
-            <div class="kpi-value" id="kpiTotal">0<span class="unit">个</span></div>
-            <div class="kpi-trend up">覆盖 4 种业务类型</div>
-            <div class="kpi-icon icon-red">表</div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-label">已启用表单</div>
-            <div class="kpi-value" id="kpiEnabled">0<span class="unit">个</span></div>
-            <div class="kpi-trend up">占总数 <span id="kpiEnabledRatio">0%</span></div>
-            <div class="kpi-icon icon-green">启</div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-label">表单版本总数</div>
-            <div class="kpi-value" id="kpiVersions">0<span class="unit">个</span></div>
-            <div class="kpi-trend up">累计迭代版本</div>
-            <div class="kpi-icon icon-blue">版</div>
           </div>
         </div>
 
@@ -610,10 +581,8 @@
             <div class="form-group">
               <label>表单类型</label>
               <select id="fmType" class="form-select form-control">
-                <option value="信息填报">信息填报</option>
-                <option value="审批流">审批流</option>
-                <option value="调查问卷">调查问卷</option>
-                <option value="登记表">登记表</option>
+                <option value="新增">新增</option>
+                <option value="发布">发布</option>
               </select>
             </div>
           </div>
@@ -721,11 +690,11 @@
     </div>
   </div>
 
-  <!-- 详情抽屉 -->
+  <!-- 表单预览抽屉 -->
   <div class="drawer-mask" id="detailMask"></div>
   <div class="drawer" id="detailDrawer">
     <div class="drawer-header">
-      <h3>表单详情</h3>
+      <h3>表单预览</h3>
       <button class="drawer-close" onclick="closeDetailModal()">×</button>
     </div>
     <div class="drawer-body" id="detailBody">
@@ -772,7 +741,7 @@
       {
         id: 1,
         name: '党员基本信息登记表',
-        type: '登记表',
+        type: '新增',
         version: 'v2.1',
         createDate: '2024-01-15',
         creator: '张建国',
@@ -792,7 +761,7 @@
       {
         id: 2,
         name: '组织生活会签到表',
-        type: '信息填报',
+        type: '新增',
         version: 'v1.3',
         createDate: '2024-01-18',
         creator: '李明华',
@@ -810,7 +779,7 @@
       {
         id: 3,
         name: '党员发展审批流',
-        type: '审批流',
+        type: '新增',
         version: 'v3.0',
         createDate: '2024-01-20',
         creator: '王晓芳',
@@ -829,7 +798,7 @@
       {
         id: 4,
         name: '党建工作满意度调查',
-        type: '调查问卷',
+        type: '发布',
         version: 'v1.1',
         createDate: '2024-01-22',
         creator: '赵志强',
@@ -847,7 +816,7 @@
       {
         id: 5,
         name: '困难党员帮扶申请表',
-        type: '审批流',
+        type: '发布',
         version: 'v1.5',
         createDate: '2024-01-25',
         creator: '陈美玲',
@@ -865,7 +834,7 @@
       {
         id: 6,
         name: '主题党日活动报名表',
-        type: '信息填报',
+        type: '发布',
         version: 'v2.2',
         createDate: '2024-01-28',
         creator: '刘大伟',
@@ -892,22 +861,11 @@
 
     // 初始化
     document.addEventListener('DOMContentLoaded', () => {
-      renderKPI();
       renderTable();
       bindSearch();
       bindTabs();
       bindCanvasDrag();
     });
-
-    function renderKPI() {
-      const total = forms.length;
-      const enabled = forms.filter(f => f.status === '启用').length;
-      const versionCount = forms.reduce((sum, f) => sum + (f.versions ? f.versions.length : 0), 0);
-      document.getElementById('kpiTotal').innerHTML = total + '<span class="unit">个</span>';
-      document.getElementById('kpiEnabled').innerHTML = enabled + '<span class="unit">个</span>';
-      document.getElementById('kpiEnabledRatio').textContent = total ? Math.round(enabled / total * 100) + '%' : '0%';
-      document.getElementById('kpiVersions').innerHTML = versionCount + '<span class="unit">个</span>';
-    }
 
     function getFilteredForms() {
       const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -933,9 +891,8 @@
           <td><span class="badge ${f.status === '启用' ? 'badge-green' : 'badge-orange'}">${f.status}</span></td>
           <td>
             <div class="action-links">
-              <button class="action-link" onclick="openFormModal(${f.id})">编辑</button>
-              <span class="divider"></span>
-              <button class="action-link" onclick="openDetailModal(${f.id})">详情</button>
+              ${f.type === '新增' ? `<button class="action-link" onclick="openFormModal(${f.id})">编辑</button><span class="divider"></span>` : ''}
+              <button class="action-link" onclick="openDetailModal(${f.id})">预览</button>
               <span class="divider"></span>
               <button class="action-link danger" onclick="openDeleteModal(${f.id})">删除</button>
             </div>
@@ -946,10 +903,8 @@
 
     function typeTagClass(type) {
       switch (type) {
-        case '信息填报': return 'tag-blue';
-        case '审批流': return 'tag-red';
-        case '调查问卷': return 'tag-gold';
-        case '登记表': return 'tag-green';
+        case '新增': return 'tag-blue';
+        case '发布': return 'tag-green';
         default: return '';
       }
     }
@@ -957,6 +912,7 @@
     function bindSearch() {
       document.getElementById('searchInput').addEventListener('input', renderTable);
       document.getElementById('typeFilter').addEventListener('change', renderTable);
+      document.getElementById('fmType').addEventListener('change', toggleDesignerTab);
     }
 
     function bindTabs() {
@@ -986,11 +942,12 @@
       } else {
         title.textContent = '新建表单';
         document.getElementById('fmName').value = '';
-        document.getElementById('fmType').value = '信息填报';
+        document.getElementById('fmType').value = '新增';
         setRadioValue('fmStatus', '启用');
         currentFields = [];
         currentVersions = [];
       }
+      toggleDesignerTab();
       renderCanvas();
       renderVersions();
       // 默认回到第一个 tab
@@ -999,6 +956,23 @@
       document.querySelectorAll('#formModal .modal-tab-panel').forEach(p => p.classList.remove('active'));
       document.getElementById('panel-basic').classList.add('active');
       document.getElementById('formModalMask').classList.add('show');
+    }
+
+    function toggleDesignerTab() {
+      const type = document.getElementById('fmType').value;
+      const designerTab = document.querySelector('#formModalTabs .modal-tab-item[data-panel="designer"]');
+      if (type === '新增') {
+        designerTab.style.display = '';
+      } else {
+        designerTab.style.display = 'none';
+        // 如果当前在设计器 tab，切回基础信息
+        if (designerTab.classList.contains('active')) {
+          designerTab.classList.remove('active');
+          document.getElementById('panel-designer').classList.remove('active');
+          document.querySelector('#formModalTabs .modal-tab-item[data-panel="basic"]').classList.add('active');
+          document.getElementById('panel-basic').classList.add('active');
+        }
+      }
     }
 
     function closeFormModal() {
@@ -1049,7 +1023,6 @@
         });
       }
       closeFormModal();
-      renderKPI();
       renderTable();
     }
 
@@ -1199,7 +1172,29 @@
       closeVersionModal();
     }
 
-    // ===== 详情抽屉 =====
+    // ===== 表单预览抽屉 =====
+    function renderPreviewInput(field) {
+      const placeholder = field.hidden ? '该字段已隐藏' : `请输入${field.label}`;
+      switch (field.type) {
+        case 'textarea':
+          return `<textarea class="form-input" rows="3" disabled placeholder="${placeholder}"></textarea>`;
+        case 'select':
+          return `<select class="form-select form-control" disabled><option>${placeholder}</option></select>`;
+        case 'radio':
+          return `<div class="form-control-group"><label class="radio-label"><input type="radio" name="preview_${field.id}" disabled> 选项一</label><label class="radio-label"><input type="radio" name="preview_${field.id}" disabled> 选项二</label></div>`;
+        case 'checkbox':
+          return `<div class="form-control-group"><label class="radio-label"><input type="checkbox" disabled> 选项一</label><label class="radio-label"><input type="checkbox" disabled> 选项二</label></div>`;
+        case 'date':
+          return `<input type="text" class="form-input" disabled placeholder="${placeholder}">`;
+        case 'number':
+          return `<input type="text" class="form-input" disabled placeholder="${placeholder}">`;
+        case 'file':
+          return `<input type="file" disabled>`;
+        default:
+          return `<input type="text" class="form-input" disabled placeholder="${placeholder}">`;
+      }
+    }
+
     function openDetailModal(id) {
       const form = forms.find(f => f.id === id);
       const body = document.getElementById('detailBody');
@@ -1207,12 +1202,12 @@
         ? '<span class="badge badge-green">启用</span>'
         : '<span class="badge badge-orange">停用</span>';
       const fieldsHtml = (form.fields || []).map(f => `
-        <div class="detail-field-item">
-          <div class="detail-field-name">
-            <span>${f.label}</span>
+        <div class="form-group" style="margin-bottom:14px;${f.hidden ? 'opacity:0.55;' : ''}">
+          <label style="font-size:13px;color:var(--text-secondary);font-weight:500;margin-bottom:6px;display:block;">
+            ${f.label}${f.required ? '<span style="color:var(--accent-red)"> *</span>' : ''}
             ${f.hidden ? '<span class="hidden-mark">隐藏</span>' : ''}
-          </div>
-          <div class="detail-field-type">${FIELD_TYPES[f.type]} ${f.required ? '· 必填' : ''}</div>
+          </label>
+          ${renderPreviewInput(f)}
         </div>
       `).join('');
       const versionsHtml = (form.versions || []).map(v => `
@@ -1236,8 +1231,8 @@
           </div>
         </div>
         <div class="detail-section">
-          <div class="detail-section-title">字段列表（${(form.fields || []).length}）</div>
-          <div class="detail-field-list">${fieldsHtml || '<div class="version-empty">暂无字段</div>'}</div>
+          <div class="detail-section-title">表单预览（${(form.fields || []).length} 个字段）</div>
+          <div class="preview-form">${fieldsHtml || '<div class="version-empty">暂无字段</div>'}</div>
         </div>
         <div class="detail-section">
           <div class="detail-section-title">版本历史</div>
@@ -1274,7 +1269,6 @@
     function confirmDelete() {
       if (deleteId) {
         forms = forms.filter(f => f.id !== deleteId);
-        renderKPI();
         renderTable();
       }
       closeDeleteModal();
