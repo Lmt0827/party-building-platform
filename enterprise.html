@@ -1187,7 +1187,7 @@
                     <td>小型</td>
                     <td><span class="party-count">180</span> 人</td>
                     <td><span class="party-count">32</span> 人</td>
-                    <td><span class="tag tag-blue">联合支部</span></td>
+                    <td><span class="tag tag-blue">联合党支部</span></td>
                     <td>
                       <div class="industry-tags">
                         <span class="industry-tag">民营企业</span>
@@ -1223,7 +1223,7 @@
                     <td>小型</td>
                     <td><span class="party-count">150</span> 人</td>
                     <td><span class="party-count">28</span> 人</td>
-                    <td><span class="tag tag-blue">联合支部</span></td>
+                    <td><span class="tag tag-blue">联合党支部</span></td>
                     <td>
                       <div class="industry-tags">
                         <span class="industry-tag">科技型中小企业</span>
@@ -1377,11 +1377,12 @@
               <div class="form-group">
                 <label class="form-label">党组织建设 <span class="required">*</span></label>
                 <select class="form-select" name="partyStatus" onchange="togglePartyOrgSelect()">
-                  <option value="未建党组织">未建党组织</option>
+                  <option value="未组建">未组建</option>
+                  <option value="筹建中">筹建中</option>
                   <option value="已建党支部">已建党支部</option>
                   <option value="已建党总支">已建党总支</option>
                   <option value="已建党委">已建党委</option>
-                  <option value="联合支部">联合支部</option>
+                  <option value="联合党支部">联合党支部</option>
                 </select>
                 <div class="form-rule-hint">必填；请选择党组织建设</div>
               </div>
@@ -1628,9 +1629,9 @@
         '中航空天装备集团党委', '智能制造装备集团党委',
         '国科新材料研究院党委'
       ],
-      '联合支部': [
-        '节能环保产业联合支部', '小微企业联合支部',
-        '外资企业联合支部'
+      '联合党支部': [
+        '节能环保产业联合党支部', '小微企业联合党支部',
+        '外资企业联合党支部'
       ]
     };
 
@@ -1640,7 +1641,7 @@
       const item = document.getElementById('partyOrgItem');
       const select = document.querySelector('#enterpriseModal select[name="partyOrg"]');
 
-      const builtTypes = ['已建党支部', '已建党总支', '已建党委', '联合支部'];
+      const builtTypes = ['已建党支部', '已建党总支', '已建党委', '联合党支部'];
       if (builtTypes.includes(status)) {
         // 显示并填充选项
         item.style.display = '';
@@ -1990,7 +1991,7 @@
       if (!isAboveScale) { alert('请选择是否为规上企业'); return; }
 
       // 校验：已建党组织类型必须选择所属党组织
-      const builtTypes = ['已建党支部', '已建党总支', '已建党委', '联合支部'];
+      const builtTypes = ['已建党支部', '已建党总支', '已建党委', '联合党支部'];
       if (builtTypes.includes(partyStatus)) {
         const partyOrg = document.querySelector('#enterpriseModal select[name="partyOrg"]').value;
         if (!partyOrg) { alert('请选择所属党组织'); return; }
