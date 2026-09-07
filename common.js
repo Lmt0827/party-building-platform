@@ -1696,7 +1696,7 @@
             { label: '企业规模', type: 'select', options: ['大型', '中型', '小型', '微型'] }
           ]},
           { row: [
-            { label: '党组织状态', type: 'select', options: ['已建党委', '已建党总支', '已建党支部', '联合党支部', '未组建', '筹建中'] },
+            { label: '党组织建设', type: 'select', options: ['已建党委', '已建党总支', '已建党支部', '联合党支部', '未组建', '筹建中'] },
             { label: '党员人数', type: 'text', placeholder: '请输入党员人数' }
           ]},
           { row: [
