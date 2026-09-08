@@ -1384,7 +1384,7 @@
                   <option value="已建党委">已建党委</option>
                   <option value="联合党支部">联合党支部</option>
                 </select>
-                <div class="form-tip">选择已建党组织后，将自动弹出选择党组织的交互框</div>
+                <div class="form-tip" id="partyStatusTip">选择已建党组织后，将自动弹出选择党组织的交互框</div>
                 <div class="form-rule-hint">必填；请选择党组织建设</div>
               </div>
             </div>
@@ -1672,6 +1672,8 @@
       togglePartyOrgSelect();
       // 恢复标题
       document.getElementById('enterpriseModalTitle').textContent = '新增企业';
+      // 新增企业时显示党组织建设提示
+      document.getElementById('partyStatusTip').style.display = 'block';
       // 恢复企业名称和信用代码可编辑
       const nameInput = document.querySelector('#enterpriseModal input[name="enterpriseName"]');
       const creditCodeInput = document.querySelector('#enterpriseModal input[name="creditCode"]');
@@ -2045,6 +2047,8 @@
 
       // 修改标题
       document.getElementById('enterpriseModalTitle').textContent = '编辑企业';
+      // 编辑企业时隐藏党组织建设提示
+      document.getElementById('partyStatusTip').style.display = 'none';
 
       // 填充表单
       const nameInput = document.querySelector('#enterpriseModal input[name="enterpriseName"]');
