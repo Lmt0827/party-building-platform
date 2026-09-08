@@ -412,7 +412,8 @@
       if (btn.closest('.table-actions')) return; // 表格操作已在第4部分处理
       if (btn.closest('.pagination')) return; // 分页已处理
       if (btn.closest('.filter-bar')) return; // 筛选按钮单独处理
-      
+      if (btn.getAttribute('onclick')) return; // 有自定义 onclick 的按钮走自定义弹窗
+
       var text = getText(btn);
       
       if (text === '新增' || text === '+ 新增' || text.includes('新增')) {
@@ -517,6 +518,7 @@
       bar.addEventListener('click', function(e) {
         var btn = e.target.closest('.btn');
         if (!btn) return;
+        if (btn.getAttribute('onclick')) return; // 有自定义 onclick 的按钮走自定义弹窗
         var text = getText(btn);
 
         // 新增按钮 → 走通用新增弹窗
@@ -1047,9 +1049,10 @@
       if (currentModal.parentNode) currentModal.parentNode.removeChild(currentModal);
       currentModal = null;
     }
-    // 额外清理：移除所有残留的 modal-mask
+    // 额外清理：移除所有动态弹出的 modal-mask（保留页面中已有 id 的静态弹窗）
     var allMasks = document.querySelectorAll('.modal-mask');
     for (var i = 0; i < allMasks.length; i++) {
+      if (allMasks[i].id) continue; // 保留静态弹窗
       if (allMasks[i].parentNode) allMasks[i].parentNode.removeChild(allMasks[i]);
     }
 
