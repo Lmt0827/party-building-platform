@@ -813,8 +813,8 @@
           <td><span class="badge ${f.status === '启用' ? 'badge-green' : 'badge-orange'}">${f.status}</span></td>
           <td>
             <div class="action-links">
-              <button class="action-link" onclick="openFormModal(${f.id})">编辑</button>
-              <span class="divider"></span>
+              <button class="action-link" onclick="openFormModal(${f.id})" style="display:none;">编辑</button>
+              <span class="divider" style="display:none;"></span>
               <button class="action-link" onclick="openDetailModal(${f.id})">预览</button>
               <span class="divider"></span>
               <button class="action-link danger" onclick="openDeleteModal(${f.id})">删除</button>
