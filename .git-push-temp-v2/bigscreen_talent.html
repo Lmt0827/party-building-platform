@@ -1,0 +1,1174 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人才发展一张图 - 党建数字化平台</title>
+  <style>
+    /* ========== 全局重置与基础 ========== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      font-size: 14px;
+      color: #e0e8f0;
+      background: #050d1a;
+      overflow: hidden;
+    }
+
+    /* ========== 背景系统 ========== */
+    .bigscreen-bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(30, 80, 160, 0.25) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 80%, rgba(196, 30, 58, 0.08) 0%, transparent 40%),
+        radial-gradient(ellipse at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 40%),
+        linear-gradient(180deg, #050d1a 0%, #0a1628 50%, #050d1a 100%);
+      z-index: 0;
+    }
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(100, 180, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100, 180, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .scan-line {
+      position: fixed;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.4), transparent);
+      z-index: 2;
+      animation: scanMove 8s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes scanMove {
+      0% { top: 0; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* ========== 顶部标题栏 ========== */
+    .header {
+      position: relative;
+      z-index: 10;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      background: linear-gradient(180deg, rgba(10, 22, 40, 0.9) 0%, rgba(10, 22, 40, 0.3) 100%);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #d4af37, #e6c65c, #d4af37, transparent);
+    }
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      min-width: 280px;
+    }
+    .header-right { justify-content: flex-end; }
+    .header-title {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 6px;
+      background: linear-gradient(180deg, #fff5c8 0%, #e6c65c 40%, #d4af37 60%, #b8941f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+      white-space: nowrap;
+    }
+    .header-title::before,
+    .header-title::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #d4af37);
+    }
+    .header-title::before { left: -80px; }
+    .header-title::after { right: -80px; transform: scaleX(-1); }
+    .date-time {
+      color: #8fa8c8;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .date-time .date { font-size: 14px; color: #b8cfe8; }
+    .mode-switch {
+      display: flex;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .mode-switch button {
+      padding: 6px 16px;
+      background: transparent;
+      border: none;
+      color: #8fa8c8;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+    .mode-switch button.active {
+      background: linear-gradient(180deg, #d4af37, #b8941f);
+      color: #0a1628;
+      font-weight: bold;
+    }
+    .party-badge {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #c41e3a, #9b1b30);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4af37;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 0 15px rgba(196, 30, 58, 0.4);
+    }
+
+    /* ========== 主体三栏布局 ========== */
+    .main-container {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 380px 1fr 380px;
+      gap: 16px;
+      padding: 16px;
+      height: calc(100vh - 70px - 36px);
+    }
+    .col-left, .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .col-center {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ========== 面板通用样式 ========== */
+    .panel {
+      position: relative;
+      background: linear-gradient(135deg, rgba(16, 32, 56, 0.85) 0%, rgba(10, 22, 40, 0.9) 100%);
+      border: 1px solid rgba(100, 150, 200, 0.15);
+      padding: 14px 16px;
+      backdrop-filter: blur(4px);
+    }
+    .panel::before,
+    .panel::after,
+    .panel .corner-bl,
+    .panel .corner-br {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-color: #d4af37;
+      border-style: solid;
+    }
+    .panel::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .panel::after { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+    .panel .corner-bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+    .panel .corner-br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #e6c65c;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      position: relative;
+    }
+    .panel-title::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: linear-gradient(180deg, #e6c65c, #d4af37);
+      border-radius: 2px;
+    }
+    .panel-title .title-en {
+      font-size: 11px;
+      color: rgba(143, 168, 200, 0.5);
+      font-weight: normal;
+      letter-spacing: 1px;
+      margin-left: auto;
+    }
+
+    /* ========== KPI 卡片 ========== */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .kpi-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(30, 60, 100, 0.6) 0%, rgba(16, 32, 56, 0.8) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      padding: 14px 18px;
+      text-align: center;
+    }
+    .kpi-card::before,
+    .kpi-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #d4af37;
+      border-style: solid;
+    }
+    .kpi-card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .kpi-card::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+    .kpi-value {
+      font-size: 30px;
+      font-weight: bold;
+      background: linear-gradient(180deg, #fff5c8, #d4af37);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Consolas', 'Monaco', monospace;
+      line-height: 1.2;
+    }
+    .kpi-label {
+      font-size: 12px;
+      color: #8fa8c8;
+      margin-top: 4px;
+    }
+
+    /* ========== 重点人才分类卡 ========== */
+    .talent-categories {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .talent-cat-card {
+      text-align: center;
+      padding: 10px 4px;
+      background: rgba(30, 60, 100, 0.3);
+      border: 1px solid rgba(100, 150, 200, 0.15);
+      position: relative;
+    }
+    .talent-cat-card .grade {
+      font-size: 18px;
+      font-weight: bold;
+      background: linear-gradient(180deg, #fff5c8, #d4af37);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .talent-cat-card .count {
+      font-size: 14px;
+      color: #e6c65c;
+      font-family: 'Consolas', monospace;
+      margin-top: 2px;
+    }
+    .talent-cat-card .label {
+      font-size: 10px;
+      color: #8fa8c8;
+      margin-top: 2px;
+    }
+
+    /* ========== 柱状图 ========== */
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      height: 90px;
+      padding: 0 4px;
+    }
+    .bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+    .bar {
+      width: 22px;
+      background: linear-gradient(180deg, #e6c65c, #c41e3a);
+      border-radius: 2px 2px 0 0;
+      position: relative;
+    }
+    .bar::after {
+      content: attr(data-value);
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: #e6c65c;
+      font-family: 'Consolas', monospace;
+    }
+    .bar-label {
+      font-size: 10px;
+      color: #8fa8c8;
+    }
+
+    /* ========== 饼图 / 环形图 ========== */
+    .pie-chart-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .pie-chart {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      position: relative;
+    }
+    .pie-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 55px; height: 55px;
+      border-radius: 50%;
+      background: #0a1628;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .pie-center .val {
+      font-size: 14px;
+      font-weight: bold;
+      color: #e6c65c;
+    }
+    .pie-center .lbl {
+      font-size: 9px;
+      color: #8fa8c8;
+    }
+    .pie-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+    }
+    .pie-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #b8cfe8;
+    }
+    .pie-legend-item .dot {
+      width: 8px; height: 8px;
+      border-radius: 2px;
+    }
+
+    /* ========== 横向柱状图 ========== */
+    .h-bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .h-bar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .h-bar-rank {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #c41e3a, #9b1b30);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+      color: #e6c65c;
+      flex-shrink: 0;
+    }
+    .h-bar-rank.rank-2 { background: linear-gradient(135deg, #d4af37, #b8941f); }
+    .h-bar-rank.rank-3 { background: linear-gradient(135deg, #b8941f, #8b6914); }
+    .h-bar-rank.rank-other { background: rgba(100, 150, 200, 0.3); }
+    .h-bar-name {
+      font-size: 11px;
+      color: #b8cfe8;
+      width: 70px;
+      flex-shrink: 0;
+    }
+    .h-bar-track {
+      flex: 1;
+      height: 16px;
+      background: rgba(100, 150, 200, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .h-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #c41e3a, #e6c65c);
+      border-radius: 8px;
+      position: relative;
+    }
+    .h-bar-fill::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background: #e6c65c;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 0 8px #e6c65c;
+    }
+    .h-bar-value {
+      font-size: 11px;
+      color: #e6c65c;
+      font-family: 'Consolas', monospace;
+      width: 45px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ========== 地图区域 ========== */
+    .map-container {
+      flex: 1;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(30, 80, 160, 0.2) 0%, transparent 70%),
+        rgba(10, 22, 40, 0.5);
+      border: 1px solid rgba(100, 150, 200, 0.15);
+      overflow: hidden;
+    }
+    .map-container::before,
+    .map-container::after,
+    .map-container .corner-bl,
+    .map-container .corner-br {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-color: #d4af37;
+      border-style: solid;
+      z-index: 10;
+    }
+    .map-container::before { top: -1px; left: -1px; border-width: 3px 0 0 3px; }
+    .map-container::after { top: -1px; right: -1px; border-width: 3px 3px 0 0; }
+    .map-container .corner-bl { bottom: -1px; left: -1px; border-width: 0 0 3px 3px; }
+    .map-container .corner-br { bottom: -1px; right: -1px; border-width: 0 3px 3px 0; }
+    .map-container .panel-title {
+      position: absolute;
+      top: 0; left: 16px; right: 16px;
+      z-index: 5;
+    }
+    .map-svg { width: 100%; height: 100%; }
+
+    .map-legend {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      display: flex;
+      gap: 16px;
+      background: rgba(10, 22, 40, 0.8);
+      padding: 8px 14px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      font-size: 11px;
+      z-index: 5;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* ========== 底部双栏 ========== */
+    .bottom-dual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* ========== 三线面积图 ========== */
+    .area-chart {
+      width: 100%;
+      height: 110px;
+      position: relative;
+    }
+    .area-chart svg { width: 100%; height: 100%; }
+
+    /* ========== 人才生态卡片 ========== */
+    .eco-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .eco-card {
+      background: linear-gradient(135deg, rgba(30, 60, 100, 0.4) 0%, rgba(16, 32, 56, 0.6) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      padding: 12px;
+      text-align: center;
+      position: relative;
+    }
+    .eco-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    }
+    .eco-icon {
+      width: 36px;
+      height: 36px;
+      margin: 0 auto 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c41e3a, #d4af37);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .eco-card .eco-num {
+      font-size: 18px;
+      font-weight: bold;
+      color: #e6c65c;
+      font-family: 'Consolas', monospace;
+    }
+    .eco-card .eco-label {
+      font-size: 11px;
+      color: #8fa8c8;
+      margin-top: 2px;
+    }
+
+    /* ========== 底部跑马灯 ========== */
+    .marquee-bar {
+      position: relative;
+      z-index: 5;
+      height: 36px;
+      background: linear-gradient(90deg, rgba(196, 30, 58, 0.3), rgba(10, 22, 40, 0.8), rgba(196, 30, 58, 0.3));
+      border-top: 1px solid rgba(212, 175, 55, 0.3);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .marquee-label {
+      flex-shrink: 0;
+      padding: 0 16px;
+      background: linear-gradient(90deg, #c41e3a, #9b1b30);
+      color: #e6c65c;
+      font-size: 12px;
+      font-weight: bold;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+    }
+    .marquee-content {
+      white-space: nowrap;
+      animation: marquee 30s linear infinite;
+      color: #b8cfe8;
+      font-size: 13px;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    @keyframes numGlow {
+      0%, 100% { text-shadow: 0 0 10px rgba(230, 198, 92, 0.3); }
+      50% { text-shadow: 0 0 20px rgba(230, 198, 92, 0.6); }
+    }
+    .glow-num { animation: numGlow 3s ease-in-out infinite; }
+
+    /* 热门岗位排行 */
+    .job-ranking {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .job-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 8px;
+      background: rgba(30, 60, 100, 0.25);
+      border-left: 3px solid;
+      font-size: 12px;
+    }
+    .job-rank {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .job-name { flex: 1; color: #b8cfe8; }
+    .job-count { color: #e6c65c; font-family: 'Consolas', monospace; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <!-- 背景 -->
+  <div class="bigscreen-bg"></div>
+  <div class="grid-bg"></div>
+  <div class="scan-line"></div>
+
+  <!-- 顶部标题栏 -->
+  <div class="header">
+    <div class="header-left">
+      <div class="party-badge">党</div>
+      <div class="date-time">
+        <span class="date" id="currentDate">2026年8月18日 星期二</span>
+        <span id="currentTime">09:28:36</span>
+      </div>
+    </div>
+    <div class="header-title">人才发展一张图</div>
+    <div class="header-right">
+      <div class="mode-switch">
+        <button>组织</button>
+        <button>产业</button>
+        <button class="active">人才</button>
+        <button>服务</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主体三栏 -->
+  <div class="main-container">
+    <!-- 左列 -->
+    <div class="col-left">
+      <!-- 重点人才统计 -->
+      <div class="panel">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          重点人才统计
+          <span class="title-en">KEY TALENTS</span>
+        </div>
+        <!-- 四类小卡片 -->
+        <div class="talent-categories">
+          <div class="talent-cat-card">
+            <div class="grade">A</div>
+            <div class="count">28</div>
+            <div class="label">顶尖人才</div>
+          </div>
+          <div class="talent-cat-card">
+            <div class="grade">B</div>
+            <div class="count">186</div>
+            <div class="label">领军人才</div>
+          </div>
+          <div class="talent-cat-card">
+            <div class="grade">C</div>
+            <div class="count">680</div>
+            <div class="label">拔尖人才</div>
+          </div>
+          <div class="talent-cat-card">
+            <div class="grade">D</div>
+            <div class="count">2,054</div>
+            <div class="label">骨干人才</div>
+          </div>
+        </div>
+        <!-- 七类柱状图 -->
+        <div style="font-size: 11px; color: #8fa8c8; margin-bottom: 6px;">A-G类人才分布</div>
+        <div class="bar-chart">
+          <div class="bar-item">
+            <div class="bar" data-value="28" style="height: 20px; background: linear-gradient(180deg, #ff6b6b, #c41e3a);"></div>
+            <div class="bar-label">A类</div>
+          </div>
+          <div class="bar-item">
+            <div class="bar" data-value="186" style="height: 35px; background: linear-gradient(180deg, #ffa502, #d4af37);"></div>
+            <div class="bar-label">B类</div>
+          </div>
+          <div class="bar-item">
+            <div class="bar" data-value="680" style="height: 55px; background: linear-gradient(180deg, #ffd93d, #b8941f);"></div>
+            <div class="bar-label">C类</div>
+          </div>
+          <div class="bar-item">
+            <div class="bar" data-value="2054" style="height: 75px; background: linear-gradient(180deg, #6bcb77, #22c55e);"></div>
+            <div class="bar-label">D类</div>
+          </div>
+          <div class="bar-item">
+            <div class="bar" data-value="4520" style="height: 88px; background: linear-gradient(180deg, #4d96ff, #3b82f6);"></div>
+            <div class="bar-label">E类</div>
+          </div>
+          <div class="bar-item">
+            <div class="bar" data-value="6800" style="height: 95px; background: linear-gradient(180deg, #9b59b6, #8b5cf6);"></div>
+            <div class="bar-label">F类</div>
+          </div>
+          <div class="bar-item">
+            <div class="bar" data-value="1592" style="height: 60px; background: linear-gradient(180deg, #ff6b9d, #ec4899);"></div>
+            <div class="bar-label">G类</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 人才学历分布 -->
+      <div class="panel">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          人才学历分布
+          <span class="title-en">EDUCATION</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px;">
+          <div style="text-align: center;">
+            <div style="font-size: 24px; font-weight: bold; color: #c41e3a; font-family: Consolas,monospace;">18.6%</div>
+            <div style="font-size: 10px; color: #8fa8c8;">高层次人才占比</div>
+          </div>
+        </div>
+        <div class="pie-chart-container">
+          <div class="pie-chart" style="width: 100px; height: 100px; background: conic-gradient(#c41e3a 0 10%, #d4af37 10% 30%, #3b82f6 30% 60%, #22c55e 60% 85%, #8b5cf6 85% 100%);">
+            <div class="pie-center">
+              <span class="val">15860</span>
+              <span class="lbl">人才总数</span>
+            </div>
+          </div>
+          <div class="pie-legend">
+            <div class="pie-legend-item"><span class="dot" style="background:#c41e3a;"></span>博士后 10%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#d4af37;"></span>博士 20%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#3b82f6;"></span>硕士 30%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#22c55e;"></span>本科 25%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#8b5cf6;"></span>其他 15%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 省市人才分布TOP5 -->
+      <div class="panel" style="flex: 1;">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          省市人才分布 TOP5
+          <span class="title-en">REGIONAL TOP 5</span>
+        </div>
+        <div class="h-bar-chart">
+          <div class="h-bar-item">
+            <div class="h-bar-rank">1</div>
+            <span class="h-bar-name">北京市</span>
+            <div class="h-bar-track">
+              <div class="h-bar-fill" style="width: 95%;"></div>
+            </div>
+            <span class="h-bar-value">2,580人</span>
+          </div>
+          <div class="h-bar-item">
+            <div class="h-bar-rank rank-2">2</div>
+            <span class="h-bar-name">上海市</span>
+            <div class="h-bar-track">
+              <div class="h-bar-fill" style="width: 82%; background: linear-gradient(90deg, #d4af37, #e6c65c);"></div>
+            </div>
+            <span class="h-bar-value">2,230人</span>
+          </div>
+          <div class="h-bar-item">
+            <div class="h-bar-rank rank-3">3</div>
+            <span class="h-bar-name">深圳市</span>
+            <div class="h-bar-track">
+              <div class="h-bar-fill" style="width: 70%; background: linear-gradient(90deg, #b8941f, #d4af37);"></div>
+            </div>
+            <span class="h-bar-value">1,900人</span>
+          </div>
+          <div class="h-bar-item">
+            <div class="h-bar-rank rank-other">4</div>
+            <span class="h-bar-name">杭州市</span>
+            <div class="h-bar-track">
+              <div class="h-bar-fill" style="width: 58%; background: linear-gradient(90deg, #3b82f6, #60a5fa);"></div>
+            </div>
+            <span class="h-bar-value">1,580人</span>
+          </div>
+          <div class="h-bar-item">
+            <div class="h-bar-rank rank-other">5</div>
+            <span class="h-bar-name">广州市</span>
+            <div class="h-bar-track">
+              <div class="h-bar-fill" style="width: 48%; background: linear-gradient(90deg, #22c55e, #4ade80);"></div>
+            </div>
+            <span class="h-bar-value">1,300人</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中间主区 -->
+    <div class="col-center">
+      <!-- KPI行 -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-value glow-num">15,860</div>
+          <div class="kpi-label">人才总数</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value glow-num">2,948</div>
+          <div class="kpi-label">高层次人才</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value glow-num">3,256</div>
+          <div class="kpi-label">本年引进</div>
+        </div>
+      </div>
+
+      <!-- 人才分布地图 -->
+      <div class="map-container panel">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          人才区域分布
+          <span class="title-en">TALENT DISTRIBUTION</span>
+        </div>
+        <svg class="map-svg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="mapFill" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="rgba(30, 80, 160, 0.3)"/>
+              <stop offset="100%" stop-color="rgba(20, 50, 100, 0.2)"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <radialGradient id="dotGlow1">
+              <stop offset="0%" stop-color="#c41e3a" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#c41e3a" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- 区域轮廓 -->
+          <path d="M150,60 L300,40 L450,50 L580,80 L680,140 L720,240 L680,340 L580,400 L420,420 L250,400 L120,340 L80,230 L100,130 Z"
+            fill="url(#mapFill)" stroke="rgba(100, 180, 255, 0.4)" stroke-width="1.5" filter="url(#glow)"/>
+          <!-- 内部区域 -->
+          <path d="M300,40 L350,180 L250,260 L120,340 L80,230 L100,130 Z"
+            fill="rgba(196, 30, 58, 0.06)" stroke="rgba(100, 180, 255, 0.2)" stroke-width="1"/>
+          <path d="M450,50 L580,80 L600,200 L480,260 L350,180 Z"
+            fill="rgba(212, 175, 55, 0.05)" stroke="rgba(100, 180, 255, 0.2)" stroke-width="1"/>
+          <path d="M600,200 L680,140 L720,240 L680,340 L580,400 L520,300 Z"
+            fill="rgba(59, 130, 246, 0.06)" stroke="rgba(100, 180, 255, 0.2)" stroke-width="1"/>
+          <path d="M350,180 L480,260 L520,300 L420,420 L250,400 L250,260 Z"
+            fill="rgba(34, 197, 94, 0.05)" stroke="rgba(100, 180, 255, 0.2)" stroke-width="1"/>
+
+          <!-- 7个人才光点，大小对应数量 -->
+          <!-- 光点1 - 最大 -->
+          <g transform="translate(470, 130)">
+            <circle r="20" fill="url(#dotGlow1)" opacity="0.5">
+              <animate attributeName="r" values="15;25;15" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="8" fill="#c41e3a">
+              <animate attributeName="r" values="6;10;6" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="4" fill="#ff6b6b"/>
+            <text y="30" text-anchor="middle" fill="#e6c65c" font-size="11" font-weight="bold">5800人</text>
+            <text y="44" text-anchor="middle" fill="#8fa8c8" font-size="10">高新区</text>
+          </g>
+          <!-- 光点2 -->
+          <g transform="translate(220, 160)">
+            <circle r="16" fill="url(#dotGlow1)" opacity="0.4">
+              <animate attributeName="r" values="12;20;12" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="7" fill="#d4af37">
+              <animate attributeName="r" values="5;9;5" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="3" fill="#ffe066"/>
+            <text y="28" text-anchor="middle" fill="#e6c65c" font-size="10" font-weight="bold">3200人</text>
+            <text y="40" text-anchor="middle" fill="#8fa8c8" font-size="10">城东区</text>
+          </g>
+          <!-- 光点3 -->
+          <g transform="translate(620, 240)">
+            <circle r="14" fill="url(#dotGlow1)" opacity="0.4">
+              <animate attributeName="r" values="10;18;10" dur="2.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="6" fill="#3b82f6">
+              <animate attributeName="r" values="4;8;4" dur="2.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="3" fill="#60a5fa"/>
+            <text y="26" text-anchor="middle" fill="#e6c65c" font-size="10" font-weight="bold">2800人</text>
+            <text y="38" text-anchor="middle" fill="#8fa8c8" font-size="10">经开区</text>
+          </g>
+          <!-- 光点4 -->
+          <g transform="translate(390, 320)">
+            <circle r="12" fill="url(#dotGlow1)" opacity="0.4">
+              <animate attributeName="r" values="8;16;8" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="5" fill="#22c55e">
+              <animate attributeName="r" values="3;7;3" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2" fill="#4ade80"/>
+            <text y="24" text-anchor="middle" fill="#e6c65c" font-size="10" font-weight="bold">1860人</text>
+            <text y="36" text-anchor="middle" fill="#8fa8c8" font-size="10">城西区</text>
+          </g>
+          <!-- 光点5 -->
+          <g transform="translate(160, 240)">
+            <circle r="10" fill="url(#dotGlow1)" opacity="0.3">
+              <animate attributeName="r" values="7;13;7" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="4" fill="#8b5cf6">
+              <animate attributeName="r" values="3;6;3" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+            <text y="20" text-anchor="middle" fill="#e6c65c" font-size="9" font-weight="bold">1080人</text>
+          </g>
+          <!-- 光点6 -->
+          <g transform="translate(540, 360)">
+            <circle r="9" fill="url(#dotGlow1)" opacity="0.3">
+              <animate attributeName="r" values="6;12;6" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="4" fill="#ec4899">
+              <animate attributeName="r" values="3;5;3" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <text y="18" text-anchor="middle" fill="#e6c65c" font-size="9" font-weight="bold">720人</text>
+          </g>
+          <!-- 光点7 -->
+          <g transform="translate(300, 100)">
+            <circle r="8" fill="url(#dotGlow1)" opacity="0.3">
+              <animate attributeName="r" values="5;10;5" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="3" fill="#14b8a6">
+              <animate attributeName="r" values="2;5;2" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+            <text y="18" text-anchor="middle" fill="#e6c65c" font-size="9" font-weight="bold">400人</text>
+          </g>
+        </svg>
+        <div class="map-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:#c41e3a; box-shadow:0 0 6px #c41e3a;"></span>5000+ 人</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#d4af37; box-shadow:0 0 6px #d4af37;"></span>3000-5000</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#3b82f6; box-shadow:0 0 6px #3b82f6;"></span>1000-3000</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#22c55e; box-shadow:0 0 6px #22c55e;"></span>1000以下</div>
+        </div>
+      </div>
+
+      <!-- 底部双栏 -->
+      <div class="bottom-dual">
+        <!-- 招聘需求趋势 -->
+        <div class="panel">
+          <span class="corner-bl"></span>
+          <span class="corner-br"></span>
+          <div class="panel-title">
+            招聘需求趋势
+            <span class="title-en">RECRUITMENT TREND</span>
+          </div>
+          <div class="area-chart">
+            <svg viewBox="0 0 300 110" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="recruitGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="rgba(196, 30, 58, 0.4)"/>
+                  <stop offset="100%" stop-color="rgba(196, 30, 58, 0)"/>
+                </linearGradient>
+              </defs>
+              <line x1="0" y1="20" x2="300" y2="20" stroke="rgba(100,150,200,0.1)" stroke-width="1"/>
+              <line x1="0" y1="55" x2="300" y2="55" stroke="rgba(100,150,200,0.1)" stroke-width="1"/>
+              <line x1="0" y1="90" x2="300" y2="90" stroke="rgba(100,150,200,0.1)" stroke-width="1"/>
+              <path d="M0,85 L40,70 L80,60 L120,45 L160,50 L200,35 L240,25 L300,18 L300,110 L0,110 Z" fill="url(#recruitGrad)"/>
+              <path d="M0,85 L40,70 L80,60 L120,45 L160,50 L200,35 L240,25 L300,18"
+                fill="none" stroke="#c41e3a" stroke-width="2"/>
+              <circle cx="0" cy="85" r="3" fill="#c41e3a"/>
+              <circle cx="60" cy="65" r="3" fill="#c41e3a"/>
+              <circle cx="120" cy="45" r="3" fill="#c41e3a"/>
+              <circle cx="180" cy="42" r="3" fill="#c41e3a"/>
+              <circle cx="240" cy="25" r="3" fill="#c41e3a"/>
+              <circle cx="300" cy="18" r="3" fill="#c41e3a"/>
+            </svg>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 10px; color: #8fa8c8; padding: 0 4px;">
+            <span>1月</span><span>3月</span><span>5月</span><span>7月</span><span>9月</span><span>11月</span>
+          </div>
+        </div>
+
+        <!-- 热门岗位TOP5 -->
+        <div class="panel">
+          <span class="corner-bl"></span>
+          <span class="corner-br"></span>
+          <div class="panel-title">
+            热门岗位 TOP5
+            <span class="title-en">HOT JOBS</span>
+          </div>
+          <div class="job-ranking">
+            <div class="job-item" style="border-color: #c41e3a;">
+              <div class="job-rank" style="background: linear-gradient(135deg, #c41e3a, #9b1b30); color: #e6c65c;">1</div>
+              <span class="job-name">算法工程师</span>
+              <span class="job-count">386</span>
+            </div>
+            <div class="job-item" style="border-color: #d4af37;">
+              <div class="job-rank" style="background: linear-gradient(135deg, #d4af37, #b8941f); color: #0a1628;">2</div>
+              <span class="job-name">研发工程师</span>
+              <span class="job-count">328</span>
+            </div>
+            <div class="job-item" style="border-color: #b8941f;">
+              <div class="job-rank" style="background: linear-gradient(135deg, #b8941f, #8b6914); color: #fff5c8;">3</div>
+              <span class="job-name">产品经理</span>
+              <span class="job-count">256</span>
+            </div>
+            <div class="job-item" style="border-color: #3b82f6;">
+              <div class="job-rank" style="background: rgba(59,130,246,0.3); color: #93c5fd;">4</div>
+              <span class="job-name">数据分析师</span>
+              <span class="job-count">198</span>
+            </div>
+            <div class="job-item" style="border-color: #22c55e;">
+              <div class="job-rank" style="background: rgba(34,197,94,0.3); color: #86efac;">5</div>
+              <span class="job-name">销售经理</span>
+              <span class="job-count">165</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右列 -->
+    <div class="col-right">
+      <!-- 人才团队引进成效 -->
+      <div class="panel">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          人才团队引进成效
+          <span class="title-en">TEAM INTRODUCTION</span>
+        </div>
+        <div style="display: flex; justify-content: space-around; margin-bottom: 10px;">
+          <div style="text-align: center;">
+            <div style="font-size: 22px; font-weight: bold; color: #e6c65c; font-family: Consolas,monospace;">2.8<span style="font-size: 12px;">亿</span></div>
+            <div style="font-size: 11px; color: #8fa8c8;">人才奖补</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 22px; font-weight: bold; color: #c41e3a; font-family: Consolas,monospace;">286</div>
+            <div style="font-size: 11px; color: #8fa8c8;">创新团队</div>
+          </div>
+        </div>
+        <div class="pie-chart-container">
+          <div class="pie-chart" style="width: 95px; height: 95px; background: conic-gradient(#c41e3a 0 20%, #d4af37 20% 50%, #3b82f6 50% 78%, #22c55e 78% 100%);">
+            <div class="pie-center" style="width: 52px; height: 52px;">
+              <span class="val" style="font-size: 14px;">职称</span>
+              <span class="lbl">分布</span>
+            </div>
+          </div>
+          <div class="pie-legend">
+            <div class="pie-legend-item"><span class="dot" style="background:#c41e3a;"></span>正高级 20%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#d4af37;"></span>副高级 30%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#3b82f6;"></span>中级 28%</div>
+            <div class="pie-legend-item"><span class="dot" style="background:#22c55e;"></span>初级 22%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 人才增长趋势 -->
+      <div class="panel">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          人才增长趋势
+          <span class="title-en">GROWTH TREND</span>
+        </div>
+        <div class="area-chart" style="height: 130px;">
+          <svg viewBox="0 0 300 130" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="goldArea" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(230, 198, 92, 0.3)"/>
+                <stop offset="100%" stop-color="rgba(230, 198, 92, 0)"/>
+              </linearGradient>
+              <linearGradient id="redArea" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(196, 30, 58, 0.3)"/>
+                <stop offset="100%" stop-color="rgba(196, 30, 58, 0)"/>
+              </linearGradient>
+              <linearGradient id="blueArea" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(59, 130, 246, 0.3)"/>
+                <stop offset="100%" stop-color="rgba(59, 130, 246, 0)"/>
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="25" x2="300" y2="25" stroke="rgba(100,150,200,0.1)" stroke-width="1"/>
+            <line x1="0" y1="65" x2="300" y2="65" stroke="rgba(100,150,200,0.1)" stroke-width="1"/>
+            <line x1="0" y1="105" x2="300" y2="105" stroke="rgba(100,150,200,0.1)" stroke-width="1"/>
+
+            <!-- 总人才 -->
+            <path d="M0,105 L50,85 L100,70 L150,55 L200,40 L250,28 L300,18 L300,130 L0,130 Z" fill="url(#goldArea)"/>
+            <path d="M0,105 L50,85 L100,70 L150,55 L200,40 L250,28 L300,18" fill="none" stroke="#e6c65c" stroke-width="2"/>
+
+            <!-- 高层次 -->
+            <path d="M0,115 L50,105 L100,92 L150,78 L200,65 L250,52 L300,42 L300,130 L0,130 Z" fill="url(#redArea)"/>
+            <path d="M0,115 L50,105 L100,92 L150,78 L200,65 L250,52 L300,42" fill="none" stroke="#c41e3a" stroke-width="2"/>
+
+            <!-- 青年人才 -->
+            <path d="M0,120 L50,112 L100,100 L150,88 L200,75 L250,62 L300,52 L300,130 L0,130 Z" fill="url(#blueArea)"/>
+            <path d="M0,120 L50,112 L100,100 L150,88 L200,75 L250,62 L300,52" fill="none" stroke="#3b82f6" stroke-width="2"/>
+          </svg>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 16px; font-size: 11px; margin-top: 4px;">
+          <span style="color: #e6c65c;">● 总人才</span>
+          <span style="color: #c41e3a;">● 高层次</span>
+          <span style="color: #3b82f6;">● 青年人才</span>
+        </div>
+      </div>
+
+      <!-- 人才生态环境 -->
+      <div class="panel" style="flex: 1;">
+        <span class="corner-bl"></span>
+        <span class="corner-br"></span>
+        <div class="panel-title">
+          人才生态环境
+          <span class="title-en">TALENT ECOLOGY</span>
+        </div>
+        <div class="eco-cards">
+          <div class="eco-card">
+            <div class="eco-icon">📋</div>
+            <div class="eco-num">86</div>
+            <div class="eco-label">人才政策</div>
+          </div>
+          <div class="eco-card">
+            <div class="eco-icon">🏠</div>
+            <div class="eco-num">3,680</div>
+            <div class="eco-label">人才公寓（套）</div>
+          </div>
+          <div class="eco-card">
+            <div class="eco-icon">🏢</div>
+            <div class="eco-num">28</div>
+            <div class="eco-label">服务中心</div>
+          </div>
+          <div class="eco-card">
+            <div class="eco-icon">🚀</div>
+            <div class="eco-num">156</div>
+            <div class="eco-label">孵化基地</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部跑马灯 -->
+  <div class="marquee-bar">
+    <div class="marquee-label">人才动态</div>
+    <div class="marquee-content">
+      【喜讯】我区今年引进高层次人才突破3000人，创历史新高 &nbsp;&nbsp;|&nbsp;&nbsp;
+      "紫星人才计划"入选省级人才工作品牌 &nbsp;&nbsp;|&nbsp;&nbsp;
+      首批200套人才公寓交付使用，解决人才安居之忧 &nbsp;&nbsp;|&nbsp;&nbsp;
+      我区与12所高校建立人才合作关系 &nbsp;&nbsp;|&nbsp;&nbsp;
+      人才服务中心实现"一站式"服务，办理时限压缩60%
+    </div>
+  </div>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const weeks = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+      const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${weeks[now.getDay()]}`;
+      const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+      document.getElementById('currentDate').textContent = dateStr;
+      document.getElementById('currentTime').textContent = timeStr;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+  </script>
+<script src="bigscreen.js"></script>
+  <script src="common.js"></script>
+</body>
+</html>
+
