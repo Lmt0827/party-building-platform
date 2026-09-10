@@ -10,6 +10,13 @@
        页面特有样式 - 浅色政务风格
        ============================================ */
 
+    .btn-hint {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin: 0 8px;
+      white-space: nowrap;
+    }
+
     /* 主 Tab 切换 */
     .tabs {
       display: flex;
@@ -2811,6 +2818,7 @@
           </div>
           <div class="drawer-footer-right">
             <button class="btn btn-outline">撤回</button>
+            <span class="btn-hint">撤回的发布，状态变为“草稿”</span>
             <button class="btn btn-primary" onclick="openDrawer('activity-publish-edit')">编辑内容</button>
           </div>
         `
