@@ -1526,7 +1526,7 @@
         { label: '身份证号', type: 'text', placeholder: '请输入身份证号', value: data.idCard, required: true, disabled: true }
       ]},
       { row: [
-        { label: '学历', type: 'select', options: ['请选择', '博士研究生', '硕士研究生', '本科', '大专', '高中/中专', '初中及以下'], value: data.education },
+        { label: '学历', type: 'select', options: ['请选择', '博士研究生', '硕士研究生', '本科', '大专', '高中/中专', '初中及以下'], value: data.education, required: true },
         { label: '毕业院校', type: 'text', placeholder: '请输入毕业院校', value: data.school }
       ]},
       { row: [
@@ -1572,7 +1572,7 @@
             { label: '身份证号', type: 'text', placeholder: '请输入身份证号', required: true }
           ]},
           { row: [
-            { label: '学历', type: 'select', options: ['请选择', '博士研究生', '硕士研究生', '本科', '大专', '高中/中专', '初中及以下'] },
+            { label: '学历', type: 'select', options: ['请选择', '博士研究生', '硕士研究生', '本科', '大专', '高中/中专', '初中及以下'], required: true },
             { label: '毕业院校', type: 'text', placeholder: '请输入毕业院校' }
           ]},
           { row: [
