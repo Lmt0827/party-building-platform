@@ -811,6 +811,140 @@
       text-decoration: underline;
     }
 
+    .attachment-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .attachment-action {
+      color: var(--accent-red);
+      font-size: 12px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      font-weight: 500;
+    }
+
+    .attachment-action:hover {
+      text-decoration: underline;
+    }
+
+    .attachment-action.download {
+      color: var(--text-secondary);
+    }
+
+    .attachment-action.download:hover {
+      color: var(--accent-red);
+    }
+
+    /* 附件预览弹窗 */
+    .attachment-preview-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .attachment-preview-overlay.active {
+      display: flex;
+    }
+
+    .attachment-preview-modal {
+      width: 560px;
+      max-width: 92vw;
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .attachment-preview-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .attachment-preview-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .attachment-preview-close {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .attachment-preview-close:hover {
+      background: var(--bg);
+      color: var(--accent-red);
+    }
+
+    .attachment-preview-body {
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .attachment-preview-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      background: #eff6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 16px;
+    }
+
+    .attachment-preview-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      word-break: break-all;
+    }
+
+    .attachment-preview-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .attachment-preview-hint {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    .attachment-preview-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
     /* ============================================
        表单样式
        ============================================ */
@@ -3864,6 +3998,44 @@
             </div>
           </div>
           <div class="drawer-content-section">
+            <div class="drawer-content-title">附件资料</div>
+            <div class="attachment-list">
+              <div class="attachment-item">
+                <div class="attachment-icon">📄</div>
+                <div class="attachment-info">
+                  <div class="attachment-name">企业融资申请书.pdf</div>
+                  <div class="attachment-meta">PDF · 1.8MB</div>
+                </div>
+                <div class="attachment-actions">
+                  <span class="attachment-action" onclick="viewAttachment('企业融资申请书.pdf', 'PDF', '1.8MB')">查看</span>
+                  <span class="attachment-action download">下载</span>
+                </div>
+              </div>
+              <div class="attachment-item">
+                <div class="attachment-icon">📊</div>
+                <div class="attachment-info">
+                  <div class="attachment-name">近两年财务报表.xlsx</div>
+                  <div class="attachment-meta">Excel · 856KB</div>
+                </div>
+                <div class="attachment-actions">
+                  <span class="attachment-action" onclick="viewAttachment('近两年财务报表.xlsx', 'Excel', '856KB')">查看</span>
+                  <span class="attachment-action download">下载</span>
+                </div>
+              </div>
+              <div class="attachment-item">
+                <div class="attachment-icon">🖼️</div>
+                <div class="attachment-info">
+                  <div class="attachment-name">生产线扩建项目规划图.png</div>
+                  <div class="attachment-meta">图片 · 3.2MB</div>
+                </div>
+                <div class="attachment-actions">
+                  <span class="attachment-action" onclick="viewAttachment('生产线扩建项目规划图.png', '图片', '3.2MB')">查看</span>
+                  <span class="attachment-action download">下载</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="drawer-content-section">
             <div class="drawer-content-title">诉求回复</div>
             <div class="timeline">
               <div class="timeline-item done">
@@ -4148,6 +4320,24 @@
       document.body.style.overflow = '';
     }
 
+    // 附件预览
+    function viewAttachment(name, type, size) {
+      const iconMap = {
+        'PDF': '📄',
+        'Excel': '📊',
+        'Word': '📝',
+        '图片': '🖼️'
+      };
+      document.getElementById('attachmentPreviewIcon').textContent = iconMap[type] || '📎';
+      document.getElementById('attachmentPreviewName').textContent = name;
+      document.getElementById('attachmentPreviewMeta').textContent = type + ' · ' + size;
+      document.getElementById('attachmentPreviewOverlay').classList.add('active');
+    }
+
+    function closeAttachmentPreview() {
+      document.getElementById('attachmentPreviewOverlay').classList.remove('active');
+    }
+
     // 切换导入预览数据类别：all / success / warning / error
     function filterImportRows(type) {
       var rows = document.querySelectorAll('#importPreviewTableBody tr');
@@ -4206,10 +4396,38 @@
     });
 
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeDrawer();
+      if (e.key === 'Escape') {
+        if (document.getElementById('attachmentPreviewOverlay').classList.contains('active')) {
+          closeAttachmentPreview();
+        } else {
+          closeDrawer();
+        }
+      }
     });
   </script>
-<script src="common.js"></script>
+<!-- 附件预览弹窗 -->
+  <div class="attachment-preview-overlay" id="attachmentPreviewOverlay" onclick="closeAttachmentPreview()">
+    <div class="attachment-preview-modal" onclick="event.stopPropagation()">
+      <div class="attachment-preview-header">
+        <div class="attachment-preview-title">附件预览</div>
+        <button class="attachment-preview-close" onclick="closeAttachmentPreview()">✕</button>
+      </div>
+      <div class="attachment-preview-body">
+        <div class="attachment-preview-icon" id="attachmentPreviewIcon">📄</div>
+        <div class="attachment-preview-name" id="attachmentPreviewName">--</div>
+        <div class="attachment-preview-meta" id="attachmentPreviewMeta">--</div>
+        <div class="attachment-preview-hint">
+          当前为演示环境，附件预览功能展示文件基本信息。实际环境中，点击“查看”将打开对应文件的在线预览或下载链接。
+        </div>
+      </div>
+      <div class="attachment-preview-footer">
+        <button class="btn btn-outline" onclick="closeAttachmentPreview()">关闭</button>
+        <button class="btn btn-primary">下载附件</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="common.js"></script>
 </body>
 </html>
 
