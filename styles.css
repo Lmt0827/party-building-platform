@@ -3829,6 +3829,62 @@ a {
   color: var(--accent-red);
 }
 
+/* 数据脱敏 */
+.data-masking {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-light);
+}
+
+.data-masking-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.data-masking-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.data-masking-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+}
+
+.data-masking-option:hover {
+  border-color: var(--accent-red);
+}
+
+.data-masking-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-red);
+  cursor: pointer;
+}
+
+.masking-name {
+  color: var(--text-main);
+  min-width: 80px;
+}
+
+.masking-preview {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: monospace;
+  background: var(--bg);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
 /* 底部操作栏 */
 .action-footer {
   padding: 16px 24px;

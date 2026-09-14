@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -675,6 +675,31 @@
               </div>
             </div>
 
+            <!-- 数据脱敏 -->
+            <div class="data-masking">
+              <div class="permission-section-title">
+                <span>🔒</span> 数据脱敏配置
+              </div>
+              <div class="data-masking-desc">勾选后，该角色在查看敏感字段时将自动脱敏显示</div>
+              <div class="data-masking-options">
+                <label class="data-masking-option">
+                  <input type="checkbox" data-mask-field="idCard" value="idCard">
+                  <span class="masking-name">身份证号</span>
+                  <span class="masking-preview">110101**********34</span>
+                </label>
+                <label class="data-masking-option">
+                  <input type="checkbox" data-mask-field="phone" value="phone">
+                  <span class="masking-name">手机号</span>
+                  <span class="masking-preview">138****1234</span>
+                </label>
+                <label class="data-masking-option">
+                  <input type="checkbox" data-mask-field="email" value="email">
+                  <span class="masking-name">电子邮箱</span>
+                  <span class="masking-preview">z****@example.com</span>
+                </label>
+              </div>
+            </div>
+
             <!-- 底部操作栏 -->
             <div class="action-footer">
               <button class="btn btn-secondary">重置</button>
@@ -687,44 +712,115 @@
   </div>
 
   <script>
-    // 角色卡片选中
-    document.querySelectorAll('.role-card').forEach(card => {
-      card.addEventListener('click', function(e) {
-        if (e.target.closest('.role-card-actions')) return;
-        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
+    (function() {
+      var MASK_STORAGE_KEY = 'pb_roleMaskConfig';
+      var CURRENT_ROLE_KEY = 'pb_currentRole';
 
-    // 复选框切换
-    document.querySelectorAll('.checkbox').forEach(cb => {
-      cb.addEventListener('click', function(e) {
-        e.stopPropagation();
-        this.classList.toggle('checked');
-      });
-    });
+      // 默认当前角色（演示用），实际项目应从登录信息获取
+      if (!localStorage.getItem(CURRENT_ROLE_KEY)) {
+        localStorage.setItem(CURRENT_ROLE_KEY, '普通用户');
+      }
 
-    // 权限树展开/收起
-    document.querySelectorAll('.perm-item .perm-arrow').forEach(arrow => {
-      arrow.addEventListener('click', function(e) {
-        e.stopPropagation();
-        this.parentElement.classList.toggle('expanded');
-      });
-    });
+      function getRoleCode(card) {
+        var codeText = card.querySelector('.role-code');
+        if (!codeText) return '';
+        return codeText.textContent.replace('编码：', '').trim();
+      }
 
-    // 数据权限选择
-    document.querySelectorAll('.data-perm-option').forEach(opt => {
-      opt.addEventListener('click', function() {
-        document.querySelectorAll('.data-perm-option').forEach(o => {
-          o.classList.remove('selected');
-          o.querySelector('.checkbox').classList.remove('checked');
+      function getRoleName(card) {
+        var nameEl = card.querySelector('.role-name');
+        return nameEl ? nameEl.childNodes[nameEl.childNodes.length - 1].textContent.trim() : '';
+      }
+
+      function getDefaultMaskConfig(roleCode) {
+        // 系统管理员和部门管理员默认不脱敏，其他角色默认全部脱敏
+        if (roleCode === 'SYS_ADMIN' || roleCode === 'DEPT_ADMIN' || roleCode === 'DATA_ANALYST') {
+          return { idCard: false, phone: false, email: false };
+        }
+        return { idCard: true, phone: true, email: true };
+      }
+
+      function getMaskConfig(roleCode) {
+        var all = JSON.parse(localStorage.getItem(MASK_STORAGE_KEY) || '{}');
+        if (!all[roleCode]) {
+          all[roleCode] = getDefaultMaskConfig(roleCode);
+          localStorage.setItem(MASK_STORAGE_KEY, JSON.stringify(all));
+        }
+        return all[roleCode];
+      }
+
+      function setMaskConfig(roleCode, config) {
+        var all = JSON.parse(localStorage.getItem(MASK_STORAGE_KEY) || '{}');
+        all[roleCode] = config;
+        localStorage.setItem(MASK_STORAGE_KEY, JSON.stringify(all));
+      }
+
+      function loadMaskingForCard(card) {
+        var roleCode = getRoleCode(card);
+        var config = getMaskConfig(roleCode);
+        document.querySelectorAll('.data-masking-option input[type="checkbox"]').forEach(function(cb) {
+          var field = cb.getAttribute('data-mask-field');
+          cb.checked = !!config[field];
         });
-        this.classList.add('selected');
-        this.querySelector('.checkbox').classList.add('checked');
+      }
+
+      // 角色卡片选中
+      document.querySelectorAll('.role-card').forEach(function(card) {
+        card.addEventListener('click', function(e) {
+          if (e.target.closest('.role-card-actions')) return;
+          document.querySelectorAll('.role-card').forEach(function(c) { c.classList.remove('active'); });
+          this.classList.add('active');
+          loadMaskingForCard(this);
+        });
       });
-    });
+
+      // 初始化第一个角色的脱敏配置
+      var firstCard = document.querySelector('.role-card.active') || document.querySelector('.role-card');
+      if (firstCard) loadMaskingForCard(firstCard);
+
+      // 复选框切换
+      document.querySelectorAll('.checkbox').forEach(function(cb) {
+        cb.addEventListener('click', function(e) {
+          e.stopPropagation();
+          this.classList.toggle('checked');
+        });
+      });
+
+      // 权限树展开/收起
+      document.querySelectorAll('.perm-item .perm-arrow').forEach(function(arrow) {
+        arrow.addEventListener('click', function(e) {
+          e.stopPropagation();
+          this.parentElement.classList.toggle('expanded');
+        });
+      });
+
+      // 数据权限选择
+      document.querySelectorAll('.data-perm-option').forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          document.querySelectorAll('.data-perm-option').forEach(function(o) {
+            o.classList.remove('selected');
+            o.querySelector('.checkbox').classList.remove('checked');
+          });
+          this.classList.add('selected');
+          this.querySelector('.checkbox').classList.add('checked');
+        });
+      });
+
+      // 保存脱敏配置
+      document.querySelector('.action-footer .btn-primary').addEventListener('click', function() {
+        var activeCard = document.querySelector('.role-card.active');
+        if (!activeCard) return;
+        var roleCode = getRoleCode(activeCard);
+        var config = {};
+        document.querySelectorAll('.data-masking-option input[type="checkbox"]').forEach(function(cb) {
+          config[cb.getAttribute('data-mask-field')] = cb.checked;
+        });
+        setMaskConfig(roleCode, config);
+        showToast('数据脱敏配置已保存');
+      });
+    })();
   </script>
-<script src="common.js"></script>
+<script src="common.js?v=5"></script>
 </body>
 </html>
 

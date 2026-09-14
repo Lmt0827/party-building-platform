@@ -2620,6 +2620,73 @@
   }
 
 
+  // ===== 数据脱敏 =====
+  var MASK_STORAGE_KEY = 'pb_roleMaskConfig';
+  var CURRENT_ROLE_KEY = 'pb_currentRole';
+
+  function getCurrentRole() {
+    try {
+      return localStorage.getItem(CURRENT_ROLE_KEY) || '普通用户';
+    } catch (e) {
+      return '普通用户';
+    }
+  }
+
+  function getRoleMaskConfig(role) {
+    try {
+      var all = JSON.parse(localStorage.getItem(MASK_STORAGE_KEY) || '{}');
+      return all[role] || { idCard: true, phone: true, email: true };
+    } catch (e) {
+      return { idCard: true, phone: true, email: true };
+    }
+  }
+
+  function shouldSkipMaskNode(node) {
+    var el = node.parentElement;
+    if (!el) return true;
+    var tag = el.tagName;
+    if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA' || tag === 'INPUT') return true;
+    if (el.closest && el.closest('.data-masking, .masking-preview, [data-no-mask]')) return true;
+    return false;
+  }
+
+  function applyDataMasking() {
+    // 角色权限配置页本身不脱敏
+    if (/role\.html/.test(window.location.pathname)) return;
+
+    var role = getCurrentRole();
+    var config = getRoleMaskConfig(role);
+    if (!config || (!config.idCard && !config.phone && !config.email)) return;
+
+    var patterns = [];
+    if (config.idCard) {
+      patterns.push({ regex: /\b(\d{6})\d{10}(\d{2})\b/g, replacement: '$1**********$2' });
+    }
+    if (config.phone) {
+      patterns.push({ regex: /\b(1[3-9]\d)\d{4}(\d{4})\b/g, replacement: '$1****$2' });
+    }
+    if (config.email) {
+      patterns.push({ regex: /\b([a-zA-Z0-9])[^@\s]*(@[^\s@]+\.[^\s@]+)\b/g, replacement: '$1****$2' });
+    }
+
+    var root = document.querySelector('.main-content') || document.body;
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    var node;
+    while ((node = walker.nextNode())) {
+      if (shouldSkipMaskNode(node)) continue;
+      var text = node.textContent;
+      var newText = text;
+      patterns.forEach(function(p) {
+        newText = newText.replace(p.regex, p.replacement);
+      });
+      if (newText !== text) node.textContent = newText;
+    }
+  }
+
+  function initDataMasking() {
+    applyDataMasking();
+  }
+
   // ===== 初始化 =====
   function initAll() {
     try { initSidebarMenu(); } catch(e) {}
@@ -2646,6 +2713,7 @@
     try { initAddButtons(); } catch(e) {}
     try { annotateStaticForms(); } catch(e) {}
     try { initAnnotations(); } catch(e) {}
+    try { initDataMasking(); } catch(e) {}
   }
 
   // DOM 加载完成后初始化
@@ -2660,6 +2728,7 @@
     init: initAll,
     initTabs: initTabs,
     initPagination: initPagination,
-    initTableActions: initTableActions
+    initTableActions: initTableActions,
+    applyDataMasking: applyDataMasking
   };
 })();
