@@ -2731,4 +2731,7 @@
     initTableActions: initTableActions,
     applyDataMasking: applyDataMasking
   };
+  window.showModal = showModal;
+  window.closeModal = closeModal;
+  window.showToast = showToast;
 })();

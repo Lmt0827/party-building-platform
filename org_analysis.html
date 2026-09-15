@@ -836,7 +836,7 @@
           <div class="card-header">
             <div class="card-title">各党工委党组织明细</div>
             <div class="flex gap-8">
-              <button class="btn btn-outline btn-sm">筛选</button>
+              <button class="btn btn-outline btn-sm" id="tableFilterBtn">筛选</button>
               <button class="btn btn-secondary btn-sm">导出</button>
             </div>
           </div>
@@ -956,7 +956,78 @@
       </main>
     </div>
   </div>
-<script src="common.js?v=5"></script>
+<script>
+(function() {
+  // 表格筛选
+  var filterBtn = document.getElementById('tableFilterBtn');
+  if (filterBtn) {
+    filterBtn.addEventListener('click', function() {
+      showModal({
+        title: '筛选党组织明细',
+        body:
+          '<div class="form-group">' +
+            '<label class="form-label">党工委名称</label>' +
+            '<input type="text" class="form-input" id="filter-org-name" placeholder="输入关键词">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">排名范围</label>' +
+            '<select class="filter-select" id="filter-org-rank" style="width:100%">' +
+              '<option value="">全部</option>' +
+              '<option value="1-3">前 3 名</option>' +
+              '<option value="4-6">4 - 6 名</option>' +
+              '<option value="7-10">7 - 10 名</option>' +
+            '</select>' +
+          '</div>',
+        confirmText: '确定',
+        onConfirm: function() {
+          var nameVal = (document.getElementById('filter-org-name').value || '').trim();
+          var rankVal = document.getElementById('filter-org-rank').value;
+          var rows = document.querySelectorAll('table tbody tr');
+          var visibleCount = 0;
+          rows.forEach(function(row) {
+            var name = row.cells[0].textContent.trim();
+            var rankText = row.cells[5].textContent.trim();
+            var rank = parseInt(rankText, 10) || 0;
+            var matchName = !nameVal || name.indexOf(nameVal) >= 0;
+            var matchRank = true;
+            if (rankVal === '1-3') matchRank = rank >= 1 && rank <= 3;
+            else if (rankVal === '4-6') matchRank = rank >= 4 && rank <= 6;
+            else if (rankVal === '7-10') matchRank = rank >= 7 && rank <= 10;
+            if (matchName && matchRank) {
+              row.style.display = '';
+              visibleCount++;
+            } else {
+              row.style.display = 'none';
+            }
+          });
+          showToast('筛选完成，共 ' + visibleCount + ' 条记录');
+        }
+      });
+    });
+  }
+
+  // 顶部查询/重置按钮
+  var queryBtn = document.querySelector('.filter-actions .btn-secondary');
+  var resetBtn = document.querySelector('.filter-actions .btn-outline');
+  var timeSelect = document.querySelector('.filter-bar .filter-select');
+
+  if (queryBtn) {
+    queryBtn.addEventListener('click', function() {
+      showToast('已按“' + (timeSelect ? timeSelect.value : '近一年') + '”刷新数据');
+    });
+  }
+  if (resetBtn && timeSelect) {
+    resetBtn.addEventListener('click', function() {
+      timeSelect.selectedIndex = 0;
+      document.querySelectorAll('table tbody tr').forEach(function(row) {
+        row.style.display = '';
+      });
+      showToast('筛选条件已重置');
+    });
+  }
+})();
+</script>
+<script src="common.js?v=6"></script>
 </body>
 </html>
 
