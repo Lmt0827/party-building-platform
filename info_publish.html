@@ -202,7 +202,7 @@
           <!-- 筛选区 -->
           <div class="filter-bar">
             <div class="filter-left">
-              <div class="filter-item">
+              <div class="filter-item" id="policyTypeFilter" style="display:none;">
                 <label>政策类型</label>
                 <select class="filter-select">
                   <option>全部类型</option>
@@ -767,6 +767,11 @@
           document.getElementById('tab-review').classList.add('active');
         } else {
           document.getElementById('tab-all').classList.add('active');
+        }
+        // 政策类型筛选仅政策发布显示
+        const policyFilter = document.getElementById('policyTypeFilter');
+        if (policyFilter) {
+          policyFilter.style.display = (tabId === 'policy') ? '' : 'none';
         }
       });
     });
