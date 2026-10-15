@@ -571,8 +571,6 @@
         <!-- 筛选栏 -->
         <div class="filter-bar">
           <div class="filter-actions">
-            <button class="btn btn-outline btn-sm">重置</button>
-            <button class="btn btn-secondary btn-sm">查询</button>
             <button class="btn btn-primary btn-sm">导出报表</button>
           </div>
         </div>
@@ -997,23 +995,6 @@
     });
   }
 
-  // 顶部查询/重置按钮
-  var queryBtn = document.querySelector('.filter-actions .btn-secondary');
-  var resetBtn = document.querySelector('.filter-actions .btn-outline');
-
-  if (queryBtn) {
-    queryBtn.addEventListener('click', function() {
-      showToast('数据已刷新');
-    });
-  }
-  if (resetBtn) {
-    resetBtn.addEventListener('click', function() {
-      document.querySelectorAll('table tbody tr').forEach(function(row) {
-        row.style.display = '';
-      });
-      showToast('筛选条件已重置');
-    });
-  }
 })();
 </script>
 <script src="common.js?v=6"></script>
