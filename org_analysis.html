@@ -570,15 +570,6 @@
       <main class="main-content">
         <!-- 筛选栏 -->
         <div class="filter-bar">
-          <div class="filter-group">
-            <span class="filter-label">时间范围：</span>
-            <select class="filter-select">
-              <option>近一年</option>
-              <option>近半年</option>
-              <option>本季度</option>
-              <option>本月</option>
-            </select>
-          </div>
           <div class="filter-actions">
             <button class="btn btn-outline btn-sm">重置</button>
             <button class="btn btn-secondary btn-sm">查询</button>
@@ -1009,16 +1000,14 @@
   // 顶部查询/重置按钮
   var queryBtn = document.querySelector('.filter-actions .btn-secondary');
   var resetBtn = document.querySelector('.filter-actions .btn-outline');
-  var timeSelect = document.querySelector('.filter-bar .filter-select');
 
   if (queryBtn) {
     queryBtn.addEventListener('click', function() {
-      showToast('已按“' + (timeSelect ? timeSelect.value : '近一年') + '”刷新数据');
+      showToast('数据已刷新');
     });
   }
-  if (resetBtn && timeSelect) {
+  if (resetBtn) {
     resetBtn.addEventListener('click', function() {
-      timeSelect.selectedIndex = 0;
       document.querySelectorAll('table tbody tr').forEach(function(row) {
         row.style.display = '';
       });
