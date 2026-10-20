@@ -478,14 +478,13 @@
     function openCategoryDialog(name, evt) {
       if (evt) { evt.stopPropagation(); evt.preventDefault(); }
       var isEdit = !!name;
-      var icon = '';
-      var desc = '';
+      var initialName = isEdit ? name : '';
 
       var body = '' +
         '<div class="tag-form">' +
           '<div class="form-group">' +
             '<label class="form-label">分类名称 <span style="color:#e53e3e;">*</span></label>' +
-            '<input type="text" class="form-input" id="cat-name" placeholder="请输入分类名称" value="' + icon + '">' +
+            '<input type="text" class="form-input" id="cat-name" placeholder="请输入分类名称" value="' + initialName.replace(/"/g, '&quot;') + '">' +
           '</div>' +
           '<div class="form-group">' +
             '<label class="form-label">分类图标</label>' +
@@ -728,38 +727,42 @@
       cb.classList.toggle('checked');
     }
 
-    /* ================ 树节点点击联动右侧 ================ */
+    /* ================ 树节点点击联动右侧（事件委托，兼容动态新增） ================ */
     function bindTreeClicks() {
-      document.querySelectorAll('.tree-item').forEach(function(item) {
-        item.addEventListener('click', function(e) {
-          // 如果点击的是操作按钮，不做切换
-          if (e.target.closest('.tree-actions')) return;
-          // 箭头自己处理展开
-          if (e.target.classList.contains('tree-arrow')) return;
+      var tree = document.querySelector('.category-tree');
+      if (!tree) return;
 
-          // 选中态切换
-          document.querySelectorAll('.tree-item').forEach(function(i) { i.classList.remove('active'); });
-          item.classList.add('active');
+      tree.addEventListener('click', function(e) {
+        var arrow = e.target.closest('.tree-arrow');
+        var action = e.target.closest('.tree-actions');
+        // 点击操作按钮和箭头分别由各自的 onclick / 箭头逻辑处理
+        if (action || arrow) return;
 
-          var cat = item.getAttribute('data-cat') || '';
-          var sub = item.getAttribute('data-sub') || '';
-          if (cat) currentCategory = cat;
-          currentSubCategory = sub;
-          renderTagTable();
-        });
+        var item = e.target.closest('.tree-item');
+        if (!item) return;
 
-        // 箭头展开/收起
-        var arrow = item.querySelector('.tree-arrow');
-        if (arrow) {
-          arrow.addEventListener('click', function(e) {
-            e.stopPropagation();
-            item.classList.toggle('expanded');
-            // 收起/展开其后面紧随的 tree-children
-            var next = item.nextElementSibling;
-            if (next && next.classList.contains('tree-children')) {
-              next.style.display = item.classList.contains('expanded') ? 'block' : 'none';
-            }
-          });
+        // 选中态切换
+        document.querySelectorAll('.tree-item').forEach(function(i) { i.classList.remove('active'); });
+        item.classList.add('active');
+
+        var cat = item.getAttribute('data-cat') || '';
+        var sub = item.getAttribute('data-sub') || '';
+        if (cat) currentCategory = cat;
+        currentSubCategory = sub;
+        renderTagTable();
+      });
+
+      // 箭头展开/收起（事件委托）
+      tree.addEventListener('click', function(e) {
+        var arrow = e.target.closest('.tree-arrow');
+        if (!arrow) return;
+        var item = arrow.closest('.tree-item');
+        if (!item) return;
+        e.stopPropagation();
+        item.classList.toggle('expanded');
+        var next = item.nextElementSibling;
+        if (next && next.classList.contains('tree-children')) {
+          next.style.display = item.classList.contains('expanded') ? 'block' : 'none';
         }
       });
     }
@@ -771,6 +774,6 @@
       bindTreeClicks();
     });
   </script>
-<script src="common.js?v=8"></script>
+<script src="common.js?v=6"></script>
 </body>
 </html>
