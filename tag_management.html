@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -69,7 +69,7 @@
             <div class="split-header"><div class="split-header-title" id="tagTableTitle">党员标签 - 基本属性<span class="tag tag-blue" style="margin-left:8px;" id="tagTableCount">共 36 个标签</span></div><div class="flex" style="gap:8px;"><button class="btn btn-sm btn-secondary" onclick="batchDeleteTags()">🗑 批量删除</button><button class="btn btn-sm btn-primary" onclick="openTagDialog()">+ 新增标签</button></div></div>
             <div class="split-body">
               <table class="table" id="tagTable">
-                <thead><tr><th style="width: 40px;"><div class="checkbox" onclick="toggleAllCheckboxes(this)"></div></th><th>标签名称</th><th style="width: 100px;">关联数量</th><th style="width: 140px;">使用热度</th><th style="width: 80px;">状态</th><th style="width: 130px;">创建时间</th><th style="width: 140px;">操作</th></tr></thead>
+                <thead><tr><th style="width: 40px;"><div class="checkbox" onclick="toggleAllCheckboxes(this)"></div></th><th>标签名称</th><th style="width: 100px;">关联数量</th><th style="width: 80px;">状态</th><th style="width: 130px;">创建时间</th><th style="width: 140px;">操作</th></tr></thead>
                 <tbody id="tagTableBody"></tbody>
               </table>
             </div>
@@ -111,7 +111,6 @@
             '<td><div class="checkbox" onclick="event.stopPropagation(); toggleRowCheckbox(this)"></div></td>' +
             '<td><span class="color-swatch" style="background:' + tag.color + ';margin-right:8px;vertical-align:middle;"></span>' + tag.name + '</td>' +
             '<td>' + tag.count + '</td>' +
-            '<td><div class="heat-bar"><div class="heat-bar-fill" style="width:' + tag.heat + '%;"></div></div></td>' +
             '<td>' + statusBadge + '</td>' +
             '<td>' + tag.date + '</td>' +
             '<td><div class="action-links"><span class="action-link" onclick="openTagDialog(' + tag.id + ')">编辑</span><span class="divider"></span><span class="action-link danger" onclick="deleteTag(' + tag.id + ')">删除</span></div></td>' +
