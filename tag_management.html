@@ -6,411 +6,82 @@
   <title>标签管理 - 党建数字化平台</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* 页面特有样式 */
-    .split-layout {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 16px;
-    }
-    .split-left, .split-right {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--shadow-sm);
-      min-height: 600px;
-    }
-    .split-header {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border-light);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .split-header-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-    .split-body {
-      flex: 1;
-      overflow-y: auto;
-    }
-    .table-toolbar {
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    /* 表单样式（与项目其他弹窗对齐） */
+    .split-layout { display: grid; grid-template-columns: 280px 1fr; gap: 16px; }
+    .split-left, .split-right { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-sm); min-height: 600px; }
+    .split-header { padding: 14px 16px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .split-header-title { font-size: 15px; font-weight: 600; color: var(--text-main); }
+    .split-body { flex: 1; overflow-y: auto; }
+    .table-toolbar { padding: 12px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-light); }
     .tag-form { padding: 4px 0; }
     .tag-form .form-group { margin-bottom: 14px; }
     .tag-form .form-label { display: block; font-size: 13px; color: var(--text-main); margin-bottom: 6px; }
-    .tag-form .form-input, .tag-form .form-select {
-      width: 100%; height: 34px; padding: 0 12px;
-      border: 1px solid var(--border); border-radius: 4px;
-      background: #fff; color: var(--text-main); font-size: 13px; outline: none;
-    }
+    .tag-form .form-input, .tag-form .form-select { width: 100%; height: 34px; padding: 0 12px; border: 1px solid var(--border); border-radius: 4px; background: #fff; color: var(--text-main); font-size: 13px; outline: none; }
     .tag-form .form-input:focus, .tag-form .form-select:focus { border-color: #c41e3a; }
-    .tag-form .form-textarea {
-      width: 100%; min-height: 70px; padding: 8px 12px;
-      border: 1px solid var(--border); border-radius: 4px;
-      background: #fff; color: var(--text-main); font-size: 13px; outline: none; resize: vertical;
-    }
+    .tag-form .form-textarea { width: 100%; min-height: 70px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 4px; background: #fff; color: var(--text-main); font-size: 13px; outline: none; resize: vertical; }
     .tag-form .form-textarea:focus { border-color: #c41e3a; }
     .tag-form .form-row { display: flex; gap: 12px; }
     .tag-form .form-row .form-group { flex: 1; }
-    .tag-form .color-row { display: flex; align-items: center; gap: 10px; }
-    .tag-form .color-swatch-box {
-      width: 32px; height: 32px; border-radius: 4px; border: 1px solid var(--border);
-      background: #c41e3a; flex-shrink: 0;
-    }
-    .tag-form .color-presets { display: flex; gap: 8px; flex-wrap: wrap; }
-    .tag-form .color-preset {
-      width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
-      border: 2px solid transparent;
-    }
-    .tag-form .color-preset.active { border-color: #303133; }
   </style>
 </head>
 <body>
   <div class="layout">
-    <!-- 侧边栏 -->
-        <aside class="sidebar">
-      <div class="sidebar-logo">
-        <div class="logo-icon">党</div>
-        <span class="logo-text">党建数字化平台</span>
-      </div>
+    <aside class="sidebar">
+      <div class="sidebar-logo"><div class="logo-icon">党</div><span class="logo-text">党建数字化平台</span></div>
       <nav class="sidebar-menu">
-        <div class="menu-group">
-          <div class="menu-title">
-            <span class="menu-icon">🏠</span>
-            <span>首页概览</span>
-            <span class="menu-arrow">▶</span>
-          </div>
-          <ul class="menu-sub">
-            <li><a href="dashboard.html">工作台</a></li>
-          </ul>
-        </div>
-
-        <div class="menu-group">
-          <div class="menu-title">
-            <span class="menu-icon">🏛️</span>
-            <span>党建基础</span>
-            <span class="menu-arrow">▶</span>
-          </div>
-          <ul class="menu-sub">
-            <li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_data.html">组织数据管理</a></li><li><a href="org_committee.html">党委工委管理</a></li>
-
-          </ul>
-        </div>
-
-        <div class="menu-group">
-          <div class="menu-title">
-            <span class="menu-icon">🏭</span>
-            <span>产业基础</span>
-            <span class="menu-arrow">▶</span>
-          </div>
-          <ul class="menu-sub">
-            <li><a href="industry_management.html">产业数据管理</a></li>
-            <li><a href="enterprise_analysis.html">企业分析</a></li>
-            <li><a href="enterprise.html">企业管理</a>
-            
-            <li><a href="enterprise_publish.html">企业数据发布</a></li>
-          </ul>
-        </div>
-
-        <div class="menu-group">
-          <div class="menu-title">
-            <span class="menu-icon">👥</span>
-            <span>党员管理</span>
-            <span class="menu-arrow">▶</span>
-          </div>
-          <ul class="menu-sub">
-            <li><a href="member_analysis.html">党员分析</a></li>
-            <li><a href="member.html">党员管理</a></li>
-            <li><a href="member_development.html">党员发展</a></li>
-          </ul>
-        </div>
-
-        <div class="menu-group">
-          <div class="menu-title">
-            <span class="menu-icon">🎓</span>
-            <span>人才培养</span>
-            <span class="menu-arrow">▶</span>
-          </div>
-          <ul class="menu-sub">
-            <li><a href="talent_analysis.html">人才分析</a></li>
-            <li><a href="talent_management.html">人才管理</a></li>
-          </ul>
-        </div>
-
-        <div class="menu-group">
-          <div class="menu-title">
-            <span class="menu-icon">📢</span>
-            <span>信息发布</span>
-            <span class="menu-arrow">▶</span>
-          </div>
-          <ul class="menu-sub">
-            <li><a href="info_publish.html">信息发布</a></li>
-            <li><a href="activity.html">活动管理</a></li>
-          </ul>
-        </div>
-
-        <div class="menu-group">
-          <div class="menu-title">
-            <span class="menu-icon">📊</span>
-            <span>智能报告</span>
-            <span class="menu-arrow">▶</span>
-          </div>
-          <ul class="menu-sub">
-            <li><a href="report.html">报表管理</a></li>
-            <li><a href="report_builder.html">报表构建器</a></li>
-          </ul>
-        </div>
-
-        <div class="menu-group expanded">
-          <div class="menu-title">
-            <span class="menu-icon">📁</span>
-            <span>数据管理</span>
-            <span class="menu-arrow">▶</span>
-          </div>
-          <ul class="menu-sub">
-            <li><a href="data_management.html">数据管理</a></li>
-            <li><a href="tag_management.html" class="active">标签管理</a></li>
-          </ul>
-        </div>
-
-        <div class="menu-group">
-          <div class="menu-title">
-            <span class="menu-icon">⚙️</span>
-            <span>系统管理</span>
-            <span class="menu-arrow">▶</span>
-          </div>
-          <ul class="menu-sub">
-            <li><a href="system_management.html">用户管理</a></li>
-            <li><a href="form_management.html">表单管理</a></li>
-            <li><a href="role.html">角色权限</a></li>
-          </ul>
-        </div>
-
-        <div class="menu-group">
-          <div class="menu-title">
-            <span class="menu-icon">🤖</span>
-            <span>AI智能体</span>
-            <span class="menu-arrow">▶</span>
-          </div>
-          <ul class="menu-sub">
-            <li><a href="agent_knowledge.html">知识库</a></li>
-            <li><a href="agent_workflow.html">工作流</a></li>
-            <li><a href="agent_finetune.html">微调训练</a></li>
-          </ul>
-        </div>
-
+        <div class="menu-group"><div class="menu-title"><span class="menu-icon">🏠</span><span>首页概览</span><span class="menu-arrow">▶</span></div><ul class="menu-sub"><li><a href="dashboard.html">工作台</a></li></ul></div>
+        <div class="menu-group"><div class="menu-title"><span class="menu-icon">🏛️</span><span>党建基础</span><span class="menu-arrow">▶</span></div><ul class="menu-sub"><li><a href="org_analysis.html">党建数据分析</a></li><li><a href="org_data.html">组织数据管理</a></li><li><a href="org_committee.html">党委工委管理</a></li></ul></div>
+        <div class="menu-group"><div class="menu-title"><span class="menu-icon">🏭</span><span>产业基础</span><span class="menu-arrow">▶</span></div><ul class="menu-sub"><li><a href="industry_management.html">产业数据管理</a></li><li><a href="enterprise_analysis.html">企业分析</a></li><li><a href="enterprise.html">企业管理</a></li><li><a href="enterprise_publish.html">企业数据发布</a></li></ul></div>
+        <div class="menu-group"><div class="menu-title"><span class="menu-icon">👥</span><span>党员管理</span><span class="menu-arrow">▶</span></div><ul class="menu-sub"><li><a href="member_analysis.html">党员分析</a></li><li><a href="member.html">党员管理</a></li><li><a href="member_development.html">党员发展</a></li></ul></div>
+        <div class="menu-group"><div class="menu-title"><span class="menu-icon">🎓</span><span>人才培养</span><span class="menu-arrow">▶</span></div><ul class="menu-sub"><li><a href="talent_analysis.html">人才分析</a></li><li><a href="talent_management.html">人才管理</a></li></ul></div>
+        <div class="menu-group"><div class="menu-title"><span class="menu-icon">📢</span><span>信息发布</span><span class="menu-arrow">▶</span></div><ul class="menu-sub"><li><a href="info_publish.html">信息发布</a></li><li><a href="activity.html">活动管理</a></li></ul></div>
+        <div class="menu-group"><div class="menu-title"><span class="menu-icon">📊</span><span>智能报告</span><span class="menu-arrow">▶</span></div><ul class="menu-sub"><li><a href="report.html">报表管理</a></li><li><a href="report_builder.html">报表构建器</a></li></ul></div>
+        <div class="menu-group expanded"><div class="menu-title"><span class="menu-icon">📁</span><span>数据管理</span><span class="menu-arrow">▶</span></div><ul class="menu-sub"><li><a href="data_management.html">数据管理</a></li><li><a href="tag_management.html" class="active">标签管理</a></li></ul></div>
+        <div class="menu-group"><div class="menu-title"><span class="menu-icon">⚙️</span><span>系统管理</span><span class="menu-arrow">▶</span></div><ul class="menu-sub"><li><a href="system_management.html">用户管理</a></li><li><a href="form_management.html">表单管理</a></li><li><a href="role.html">角色权限</a></li></ul></div>
+        <div class="menu-group"><div class="menu-title"><span class="menu-icon">🤖</span><span>AI智能体</span><span class="menu-arrow">▶</span></div><ul class="menu-sub"><li><a href="agent_knowledge.html">知识库</a></li><li><a href="agent_workflow.html">工作流</a></li><li><a href="agent_finetune.html">微调训练</a></li></ul></div>
       </nav>
     </aside>
-
-      <!-- 主内容区 -->
     <div class="main-wrapper">
-      <!-- 顶部导航栏 -->
-      <header class="header">
-        <div class="header-left">
-          
-        </div>
-        <div class="header-right">
-          
-          <div class="header-icon">
-            <span>⚙</span>
-          </div>
-          <div class="header-user">
-            <div class="header-avatar">张</div>
-            <span class="header-username">张管理员</span>
-          </div>
-        </div>
-      </header>
-
-      <!-- 面包屑 -->
-      <div class="breadcrumb">
-        <div class="breadcrumb-item"><a href="index.html">首页</a></div>
-        <div class="breadcrumb-separator">/</div>
-        <div class="breadcrumb-item"><a href="#">数据管理</a></div>
-        <div class="breadcrumb-separator">/</div>
-        <div class="breadcrumb-item active">标签管理</div>
-      </div>
-
-      <!-- 主内容 -->
+      <header class="header"><div class="header-left"></div><div class="header-right"><div class="header-icon"><span>⚙</span></div><div class="header-user"><div class="header-avatar">张</div><span class="header-username">张管理员</span></div></div></header>
+      <div class="breadcrumb"><div class="breadcrumb-item"><a href="index.html">首页</a></div><div class="breadcrumb-separator">/</div><div class="breadcrumb-item"><a href="#">数据管理</a></div><div class="breadcrumb-separator">/</div><div class="breadcrumb-item active">标签管理</div></div>
       <main class="main-content">
-
-        <div class="section-title">
-          标签管理
-          <span class="section-subtitle">管理系统全局标签分类及标签值，支持多维度打标</span>
-        </div>
-
-        <!-- 左右分栏布局 -->
+        <div class="section-title">标签管理<span class="section-subtitle">管理系统全局标签分类及标签值，支持多维度打标</span></div>
         <div class="split-layout">
-          <!-- 左侧：标签分类 -->
           <div class="split-left">
-            <div class="split-header">
-              <div class="split-header-title">标签分类</div>
-              <button class="btn btn-sm btn-primary" onclick="openCategoryDialog()">+ 新增分类</button>
-            </div>
+            <div class="split-header"><div class="split-header-title">标签分类</div><button class="btn btn-sm btn-primary" onclick="openCategoryDialog()">+ 新增分类</button></div>
             <div class="split-body">
               <div class="category-tree">
-                <!-- 一级分类 -->
-                <div class="tree-item expanded active" data-cat="党员标签">
-                  <span class="tree-arrow">›</span>
-                  <span class="tree-icon">👤</span>
-                  <span class="tree-name">党员标签</span>
-                  <span class="tree-count">128</span>
-                  <div class="tree-actions">
-                    <span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('党员标签', event)">✎</span>
-                    <span class="tree-action-btn" title="删除" onclick="deleteCategory('党员标签', event)">✕</span>
-                  </div>
-                </div>
+                <div class="tree-item expanded active" data-cat="党员标签"><span class="tree-arrow">›</span><span class="tree-icon">👤</span><span class="tree-name">党员标签</span><span class="tree-count">128</span><div class="tree-actions"><span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('党员标签', event)">✎</span><span class="tree-action-btn" title="删除" onclick="deleteCategory('党员标签', event)">✕</span></div></div>
                 <div class="tree-children" style="display:block;">
-                  <div class="tree-item" data-cat="党员标签" data-sub="基本属性">
-                    <span class="tree-arrow">›</span>
-                    <span class="tree-icon">·</span>
-                    <span class="tree-name">基本属性</span>
-                    <span class="tree-count">36</span>
-                  </div>
-                  <div class="tree-item" data-cat="党员标签" data-sub="党龄党籍">
-                    <span class="tree-arrow">›</span>
-                    <span class="tree-icon">·</span>
-                    <span class="tree-name">党龄党籍</span>
-                    <span class="tree-count">24</span>
-                  </div>
-                  <div class="tree-item" data-cat="党员标签" data-sub="荣誉表彰">
-                    <span class="tree-arrow">›</span>
-                    <span class="tree-icon">·</span>
-                    <span class="tree-name">荣誉表彰</span>
-                    <span class="tree-count">18</span>
-                  </div>
-                  <div class="tree-item" data-cat="党员标签" data-sub="培训教育">
-                    <span class="tree-arrow">›</span>
-                    <span class="tree-icon">·</span>
-                    <span class="tree-name">培训教育</span>
-                    <span class="tree-count">28</span>
-                  </div>
-                  <div class="tree-item" data-cat="党员标签" data-sub="特长技能">
-                    <span class="tree-arrow">›</span>
-                    <span class="tree-icon">·</span>
-                    <span class="tree-name">特长技能</span>
-                    <span class="tree-count">22</span>
-                  </div>
+                  <div class="tree-item" data-cat="党员标签" data-sub="基本属性"><span class="tree-arrow">›</span><span class="tree-icon">·</span><span class="tree-name">基本属性</span><span class="tree-count">36</span></div>
+                  <div class="tree-item" data-cat="党员标签" data-sub="党龄党籍"><span class="tree-arrow">›</span><span class="tree-icon">·</span><span class="tree-name">党龄党籍</span><span class="tree-count">24</span></div>
+                  <div class="tree-item" data-cat="党员标签" data-sub="荣誉表彰"><span class="tree-arrow">›</span><span class="tree-icon">·</span><span class="tree-name">荣誉表彰</span><span class="tree-count">18</span></div>
+                  <div class="tree-item" data-cat="党员标签" data-sub="培训教育"><span class="tree-arrow">›</span><span class="tree-icon">·</span><span class="tree-name">培训教育</span><span class="tree-count">28</span></div>
+                  <div class="tree-item" data-cat="党员标签" data-sub="特长技能"><span class="tree-arrow">›</span><span class="tree-icon">·</span><span class="tree-name">特长技能</span><span class="tree-count">22</span></div>
                 </div>
-
-                <div class="tree-item" data-cat="企业标签">
-                  <span class="tree-arrow">›</span>
-                  <span class="tree-icon">🏢</span>
-                  <span class="tree-name">企业标签</span>
-                  <span class="tree-count">86</span>
-                  <div class="tree-actions">
-                    <span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('企业标签', event)">✎</span>
-                    <span class="tree-action-btn" title="删除" onclick="deleteCategory('企业标签', event)">✕</span>
-                  </div>
-                </div>
-
-                <div class="tree-item" data-cat="产业标签">
-                  <span class="tree-arrow">›</span>
-                  <span class="tree-icon">📊</span>
-                  <span class="tree-name">产业标签</span>
-                  <span class="tree-count">32</span>
-                  <div class="tree-actions">
-                    <span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('产业标签', event)">✎</span>
-                    <span class="tree-action-btn" title="删除" onclick="deleteCategory('产业标签', event)">✕</span>
-                  </div>
-                </div>
-
-                <div class="tree-item" data-cat="人才标签">
-                  <span class="tree-arrow">›</span>
-                  <span class="tree-icon">💎</span>
-                  <span class="tree-name">人才标签</span>
-                  <span class="tree-count">56</span>
-                  <div class="tree-actions">
-                    <span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('人才标签', event)">✎</span>
-                    <span class="tree-action-btn" title="删除" onclick="deleteCategory('人才标签', event)">✕</span>
-                  </div>
-                </div>
-
-                <div class="tree-item" data-cat="活动标签">
-                  <span class="tree-arrow">›</span>
-                  <span class="tree-icon">🎉</span>
-                  <span class="tree-name">活动标签</span>
-                  <span class="tree-count">24</span>
-                  <div class="tree-actions">
-                    <span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('活动标签', event)">✎</span>
-                    <span class="tree-action-btn" title="删除" onclick="deleteCategory('活动标签', event)">✕</span>
-                  </div>
-                </div>
+                <div class="tree-item" data-cat="企业标签"><span class="tree-arrow">›</span><span class="tree-icon">🏢</span><span class="tree-name">企业标签</span><span class="tree-count">86</span><div class="tree-actions"><span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('企业标签', event)">✎</span><span class="tree-action-btn" title="删除" onclick="deleteCategory('企业标签', event)">✕</span></div></div>
+                <div class="tree-item" data-cat="产业标签"><span class="tree-arrow">›</span><span class="tree-icon">📊</span><span class="tree-name">产业标签</span><span class="tree-count">32</span><div class="tree-actions"><span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('产业标签', event)">✎</span><span class="tree-action-btn" title="删除" onclick="deleteCategory('产业标签', event)">✕</span></div></div>
+                <div class="tree-item" data-cat="人才标签"><span class="tree-arrow">›</span><span class="tree-icon">💎</span><span class="tree-name">人才标签</span><span class="tree-count">56</span><div class="tree-actions"><span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('人才标签', event)">✎</span><span class="tree-action-btn" title="删除" onclick="deleteCategory('人才标签', event)">✕</span></div></div>
+                <div class="tree-item" data-cat="活动标签"><span class="tree-arrow">›</span><span class="tree-icon">🎉</span><span class="tree-name">活动标签</span><span class="tree-count">24</span><div class="tree-actions"><span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('活动标签', event)">✎</span><span class="tree-action-btn" title="删除" onclick="deleteCategory('活动标签', event)">✕</span></div></div>
               </div>
             </div>
           </div>
-
-          <!-- 右侧：标签值管理 -->
           <div class="split-right">
-            <div class="split-header">
-              <div class="split-header-title" id="tagTableTitle">
-                党员标签 - 基本属性
-                <span class="tag tag-blue" style="margin-left:8px;" id="tagTableCount">共 36 个标签</span>
-              </div>
-              <div class="flex" style="gap:8px;">
-                <button class="btn btn-sm btn-secondary" onclick="batchDeleteTags()">🗑 批量删除</button>
-                <button class="btn btn-sm btn-primary" onclick="openTagDialog()">+ 新增标签</button>
-              </div>
-            </div>
+            <div class="split-header"><div class="split-header-title" id="tagTableTitle">党员标签 - 基本属性<span class="tag tag-blue" style="margin-left:8px;" id="tagTableCount">共 36 个标签</span></div><div class="flex" style="gap:8px;"><button class="btn btn-sm btn-secondary" onclick="batchDeleteTags()">🗑 批量删除</button><button class="btn btn-sm btn-primary" onclick="openTagDialog()">+ 新增标签</button></div></div>
             <div class="split-body">
               <table class="table" id="tagTable">
-                <thead>
-                  <tr>
-                    <th style="width: 40px;">
-                      <div class="checkbox" onclick="toggleAllCheckboxes(this)"></div>
-                    </th>
-                    <th>标签名称</th>
-                    <th style="width: 100px;">标签编码</th>
-                    <th style="width: 80px;">标签颜色</th>
-                    <th style="width: 100px;">关联数量</th>
-                    <th style="width: 140px;">使用热度</th>
-                    <th style="width: 80px;">状态</th>
-                    <th style="width: 130px;">创建时间</th>
-                    <th style="width: 140px;">操作</th>
-                  </tr>
-                </thead>
-                <tbody id="tagTableBody">
-                  <!-- 由 JS 动态渲染 -->
-                </tbody>
+                <thead><tr><th style="width: 40px;"><div class="checkbox" onclick="toggleAllCheckboxes(this)"></div></th><th>标签名称</th><th style="width: 100px;">关联数量</th><th style="width: 140px;">使用热度</th><th style="width: 80px;">状态</th><th style="width: 130px;">创建时间</th><th style="width: 140px;">操作</th></tr></thead>
+                <tbody id="tagTableBody"></tbody>
               </table>
             </div>
-            <!-- 分页 -->
-            <div class="card-footer" style="padding:12px 20px;display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-size:13px;color:var(--text-muted);">共 <span id="tagTotalCount">36</span> 条记录，每页显示 10 条</span>
-              <div class="pagination" id="tagPagination" style="padding:0;">
-                <div class="pagination-item">‹</div>
-                <div class="pagination-item active">1</div>
-                <div class="pagination-item">2</div>
-                <div class="pagination-item">3</div>
-                <div class="pagination-item">4</div>
-                <div class="pagination-item">›</div>
-              </div>
-            </div>
+            <div class="card-footer" style="padding:12px 20px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;color:var(--text-muted);">共 <span id="tagTotalCount">36</span> 条记录，每页显示 10 条</span><div class="pagination" id="tagPagination" style="padding:0;"><div class="pagination-item">‹</div><div class="pagination-item active">1</div><div class="pagination-item">2</div><div class="pagination-item">3</div><div class="pagination-item">4</div><div class="pagination-item">›</div></div></div>
           </div>
         </div>
-            </main>
+      </main>
     </div>
   </div>
-
   <script>
-    /* ================ 数据层 ================ */
-    // 当前选中：分类 / 子分类（用于右侧表格标题）
     var currentCategory = '党员标签';
     var currentSubCategory = '基本属性';
-
-    // 标签数据（供右侧表格渲染，初始就是图上那 10 行）
     var tagData = [
       { id: 1, name: '正式党员',   code: 'member_formal',      color: '#c41e3a', count: '2,856 人', heat: 95, status: '启用', date: '2023-01-15' },
       { id: 2, name: '预备党员',   code: 'member_probation',    color: '#2b6cb0', count: '328 人',   heat: 70, status: '启用', date: '2023-01-15' },
@@ -423,338 +94,120 @@
       { id: 9, name: '优秀共产党员', code: 'honor_excellent',    color: '#e53e3e', count: '186 人',   heat: 65, status: '启用', date: '2023-03-15' },
       { id:10, name: '流动党员',   code: 'member_floating',     color: '#718096', count: '42 人',    heat: 25, status: '停用', date: '2023-04-20' }
     ];
-
-    var presetColors = ['#c41e3a','#2b6cb0','#d4af37','#2f855a','#805ad5','#c05621','#b83280','#2c7a7b','#e53e3e','#718096','#38a169','#3182ce'];
-
-    /* ================ 渲染右侧表格 ================ */
     function renderTagTable() {
       var tbody = document.getElementById('tagTableBody');
       var titleEl = document.getElementById('tagTableTitle');
       var countEl = document.getElementById('tagTableCount');
       var totalEl = document.getElementById('tagTotalCount');
       if (!tbody) return;
-
-      if (currentSubCategory) {
-        titleEl.innerHTML = currentCategory + ' - ' + currentSubCategory +
-          '<span class="tag tag-blue" style="margin-left:8px;">共 ' + tagData.length + ' 个标签</span>';
-      } else {
-        titleEl.innerHTML = currentCategory +
-          '<span class="tag tag-blue" style="margin-left:8px;">共 ' + tagData.length + ' 个标签</span>';
-      }
+      if (currentSubCategory) { titleEl.innerHTML = currentCategory + ' - ' + currentSubCategory + '<span class="tag tag-blue" style="margin-left:8px;">共 ' + tagData.length + ' 个标签</span>'; }
+      else { titleEl.innerHTML = currentCategory + '<span class="tag tag-blue" style="margin-left:8px;">共 ' + tagData.length + ' 个标签</span>'; }
       countEl.textContent = '共 ' + tagData.length + ' 个标签';
       totalEl.textContent = tagData.length;
-
       var rows = tagData.map(function(tag) {
-        var statusBadge = tag.status === '启用'
-          ? '<span class="badge badge-green">启用</span>'
-          : '<span class="badge badge-orange">停用</span>';
+        var statusBadge = tag.status === '启用' ? '<span class="badge badge-green">启用</span>' : '<span class="badge badge-orange">停用</span>';
         return '' +
           '<tr data-id="' + tag.id + '">' +
             '<td><div class="checkbox" onclick="event.stopPropagation(); toggleRowCheckbox(this)"></div></td>' +
-            '<td>' +
-              '<span class="color-swatch" style="background:' + tag.color + ';margin-right:8px;vertical-align:middle;"></span>' +
-              tag.name +
-            '</td>' +
-            '<td><code style="font-size:12px;color:var(--text-muted);">' + tag.code + '</code></td>' +
-            '<td><span class="color-swatch" style="background:' + tag.color + ';"></span></td>' +
+            '<td><span class="color-swatch" style="background:' + tag.color + ';margin-right:8px;vertical-align:middle;"></span>' + tag.name + '</td>' +
             '<td>' + tag.count + '</td>' +
             '<td><div class="heat-bar"><div class="heat-bar-fill" style="width:' + tag.heat + '%;"></div></div></td>' +
             '<td>' + statusBadge + '</td>' +
             '<td>' + tag.date + '</td>' +
-            '<td>' +
-              '<div class="action-links">' +
-                '<span class="action-link" onclick="openTagDialog(' + tag.id + ')">编辑</span>' +
-                '<span class="divider"></span>' +
-                '<span class="action-link danger" onclick="deleteTag(' + tag.id + ')">删除</span>' +
-              '</div>' +
-            '</td>' +
+            '<td><div class="action-links"><span class="action-link" onclick="openTagDialog(' + tag.id + ')">编辑</span><span class="divider"></span><span class="action-link danger" onclick="deleteTag(' + tag.id + ')">删除</span></div></td>' +
           '</tr>';
       }).join('');
-
       tbody.innerHTML = rows;
     }
-
-    /* ================ 分类：新增 / 编辑 / 删除 ================ */
     function openCategoryDialog(name, evt) {
       if (evt) { evt.stopPropagation(); evt.preventDefault(); }
-      var isEdit = !!name;
-      var initialName = isEdit ? name : '';
-
-      var body = '' +
-        '<div class="tag-form">' +
-          '<div class="form-group">' +
-            '<label class="form-label">分类名称 <span style="color:#e53e3e;">*</span></label>' +
-            '<input type="text" class="form-input" id="cat-name" placeholder="请输入分类名称" value="' + initialName.replace(/"/g, '&quot;') + '">' +
-          '</div>' +
-          '<div class="form-group">' +
-            '<label class="form-label">描述</label>' +
-            '<textarea class="form-textarea" id="cat-desc" placeholder="请输入分类描述信息"></textarea>' +
-          '</div>' +
-          '<div class="form-group">' +
-            '<label class="form-label">关联模块</label>' +
-            '<select class="form-select" id="cat-scope">' +
-              '<option>党员</option><option>企业</option><option>产业</option><option>人才</option><option>活动</option><option>全部</option>' +
-            '</select>' +
-          '</div>' +
-        '</div>';
-
-      showModal({
-        title: isEdit ? '编辑分类「' + name + '」' : '新增分类',
-        width: '520px',
-        body: body,
-        confirmText: '确定',
-        onConfirm: function(mask) {
-          var catName = (mask.querySelector('#cat-name').value || '').trim();
-          if (!catName) { showToast('请填写分类名称', 'error'); return false; }
-          if (isEdit) {
-            // 编辑：只更新左侧树的名称显示
-            var treeItems = document.querySelectorAll('.tree-item[data-cat="' + name + '"]');
-            treeItems.forEach(function(item) {
-              var nameSpan = item.querySelector('.tree-name');
-              if (nameSpan) nameSpan.textContent = catName;
-              item.setAttribute('data-cat', catName);
-            });
-            if (currentCategory === name) currentCategory = catName;
-            showToast('分类更新成功');
-          } else {
-            // 新增：左侧树追加一个节点
-            var tree = document.querySelector('.category-tree');
-            if (tree) {
-              var count = (document.querySelectorAll('.tree-item[data-cat]').length + 1) * 10;
-              var div = document.createElement('div');
-              div.className = 'tree-item';
-              div.setAttribute('data-cat', catName);
-              div.innerHTML =
-                '<span class="tree-arrow">›</span>' +
-                '<span class="tree-icon">📌</span>' +
-                '<span class="tree-name">' + catName + '</span>' +
-                '<span class="tree-count">0</span>' +
-                '<div class="tree-actions">' +
-                  '<span class="tree-action-btn" title="编辑" onclick="openCategoryDialog(\'' + catName + '\', event)">✎</span>' +
-                  '<span class="tree-action-btn" title="删除" onclick="deleteCategory(\'' + catName + '\', event)">✕</span>' +
-                '</div>';
-              tree.appendChild(div);
-            }
-            showToast('分类「' + catName + '」新增成功');
+      var isEdit = !!name; var initialName = isEdit ? name : '';
+      var body = '<div class="tag-form"><div class="form-group"><label class="form-label">分类名称 <span style="color:#e53e3e;">*</span></label><input type="text" class="form-input" id="cat-name" placeholder="请输入分类名称" value="' + initialName.replace(/"/g, '&quot;') + '"></div><div class="form-group"><label class="form-label">描述</label><textarea class="form-textarea" id="cat-desc" placeholder="请输入分类描述信息"></textarea></div><div class="form-group"><label class="form-label">关联模块</label><select class="form-select" id="cat-scope"><option>党员</option><option>企业</option><option>产业</option><option>人才</option><option>活动</option><option>全部</option></select></div></div>';
+      showModal({ title: isEdit ? '编辑分类「' + name + '」' : '新增分类', width: '520px', body: body, confirmText: '确定', onConfirm: function(mask) {
+        var catName = (mask.querySelector('#cat-name').value || '').trim();
+        if (!catName) { showToast('请填写分类名称', 'error'); return false; }
+        if (isEdit) {
+          var treeItems = document.querySelectorAll('.tree-item[data-cat="' + name + '"]');
+          treeItems.forEach(function(item) { var nameSpan = item.querySelector('.tree-name'); if (nameSpan) nameSpan.textContent = catName; item.setAttribute('data-cat', catName); });
+          if (currentCategory === name) currentCategory = catName; showToast('分类更新成功');
+        } else {
+          var tree = document.querySelector('.category-tree');
+          if (tree) {
+            var count = (document.querySelectorAll('.tree-item[data-cat]').length + 1) * 10;
+            var div = document.createElement('div'); div.className = 'tree-item'; div.setAttribute('data-cat', catName);
+            div.innerHTML = '<span class="tree-arrow">›</span><span class="tree-icon">📌</span><span class="tree-name">' + catName + '</span><span class="tree-count">0</span><div class="tree-actions"><span class="tree-action-btn" title="编辑" onclick="openCategoryDialog(\'' + catName + '\', event)">✎</span><span class="tree-action-btn" title="删除" onclick="deleteCategory(\'' + catName + '\', event)">✕</span></div>';
+            tree.appendChild(div);
           }
+          showToast('分类「' + catName + '」新增成功');
         }
-      });
+      }});
     }
-
     function deleteCategory(name, evt) {
       if (evt) { evt.stopPropagation(); evt.preventDefault(); }
-      showModal({
-        title: '删除确认',
-        width: '420px',
-        body: '<div style="padding:8px 0;line-height:1.7;">' +
-             '<div style="font-size:22px;margin-bottom:10px;">⚠️</div>' +
-             '<div>确定删除分类 <b>「' + name + '」</b> 吗？</div>' +
-             '<div style="color:#909399;font-size:12px;margin-top:6px;">删除后该分类下的标签将失去归属，请谨慎操作。</div>' +
-             '</div>',
-        confirmText: '删除',
-        cancelText: '取消',
-        onConfirm: function() {
-          var items = document.querySelectorAll('.tree-item[data-cat="' + name + '"]');
-          items.forEach(function(item) {
-            // 如果是带 tree-children 的一级项，一并移除其子项容器
-            var children = item.nextElementSibling;
-            if (children && children.classList.contains('tree-children')) {
-              children.remove();
-            }
-            item.remove();
-          });
-          // 如果删的是当前选中的，切到第一个
-          if (currentCategory === name) {
-            var first = document.querySelector('.tree-item[data-cat]');
-            if (first) {
-              first.classList.add('active');
-              currentCategory = first.getAttribute('data-cat');
-            }
-          }
-          showToast('分类已删除');
-        }
-      });
+      showModal({ title: '删除确认', width: '420px', body: '<div style="padding:8px 0;line-height:1.7;"><div style="font-size:22px;margin-bottom:10px;">⚠️</div><div>确定删除分类 <b>「' + name + '」</b> 吗？</div><div style="color:#909399;font-size:12px;margin-top:6px;">删除后该分类下的标签将失去归属，请谨慎操作。</div></div>', confirmText: '删除', cancelText: '取消', onConfirm: function() {
+        var items = document.querySelectorAll('.tree-item[data-cat="' + name + '"]');
+        items.forEach(function(item) { var children = item.nextElementSibling; if (children && children.classList.contains('tree-children')) children.remove(); item.remove(); });
+        if (currentCategory === name) { var first = document.querySelector('.tree-item[data-cat]'); if (first) { first.classList.add('active'); currentCategory = first.getAttribute('data-cat'); } }
+        showToast('分类已删除');
+      }});
     }
-
-    /* ================ 标签：新增 / 编辑 / 删除 / 批量删除 ================ */
-    // 自动生成标签编码：类别英文缩写 + 标签名 slug + 去重后缀
-    var CATEGORY_CODE_MAP = {
-      '党员标签': 'member', '企业标签': 'enterprise', '产业标签': 'industry',
-      '人才标签': 'talent', '活动标签': 'activity'
-    };
-    function slug(str) {
-      // 提取其中的英文字母 + 数字；如果没有英文则用 tag 退化
-      var letters = (str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (letters.length === 0) letters = 'tag';
-      return letters;
-    }
+    var CATEGORY_CODE_MAP = { '党员标签': 'member', '企业标签': 'enterprise', '产业标签': 'industry', '人才标签': 'talent', '活动标签': 'activity' };
+    function slug(str) { var letters = (str || '').toLowerCase().replace(/[^a-z0-9]/g, ''); if (letters.length === 0) letters = 'tag'; return letters; }
     function generateTagCode(name, category) {
-      var prefix = CATEGORY_CODE_MAP[category] || 'tag';
-      var base = prefix + '_' + slug(name);
+      var prefix = CATEGORY_CODE_MAP[category] || 'tag'; var base = prefix + '_' + slug(name);
       if (tagData.every(function(t){ return t.code !== base; })) return base;
-      var i = 2;
-      while (!tagData.every(function(t){ return t.code !== base + '_' + i; })) i++;
+      var i = 2; while (!tagData.every(function(t){ return t.code !== base + '_' + i; })) i++;
       return base + '_' + i;
     }
-
     function openTagDialog(id) {
-      var isEdit = !!id;
-      var tag = isEdit ? (tagData.find(function(t){return t.id===id;}) || null) : null;
-
-      var body = '' +
-        '<div class="tag-form">' +
-          '<div class="form-group">' +
-            '<label class="form-label">标签名称 <span style="color:#e53e3e;">*</span></label>' +
-            '<input type="text" class="form-input" id="tag-name" placeholder="请输入标签名称" value="' + (tag ? tag.name : '') + '">' +
-          '</div>' +
-          '<div class="form-group">' +
-            '<label class="form-label">状态</label>' +
-            '<select class="form-select" id="tag-status">' +
-              '<option' + (!tag || tag.status === '启用' ? ' selected' : '') + '>启用</option>' +
-              '<option' + (tag && tag.status === '停用' ? ' selected' : '') + '>停用</option>' +
-            '</select>' +
-          '</div>' +
-          '<div class="form-group">' +
-            '<label class="form-label">描述</label>' +
-            '<textarea class="form-textarea" id="tag-desc" placeholder="请输入标签描述信息"></textarea>' +
-          '</div>' +
-        '</div>';
-
-      var mask = showModal({
-        title: isEdit ? '编辑标签「' + (tag ? tag.name : '') + '」' : '新增标签',
-        width: '520px',
-        body: body,
-        confirmText: '确定',
-        onConfirm: function(maskEl) {
-          var name = (maskEl.querySelector('#tag-name').value || '').trim();
-          if (!name) { showToast('请填写标签名称', 'error'); return false; }
-          var status = maskEl.querySelector('#tag-status').value;
-          var color = tag ? tag.color : '#c41e3a';
-
-          if (isEdit) {
-            // 编辑保留原编码
-            tag.name = name; tag.status = status;
-            showToast('标签更新成功');
-          } else {
-            var code = generateTagCode(name, currentCategory);
-            var newId = tagData.length ? Math.max.apply(null, tagData.map(function(t){return t.id;})) + 1 : 1;
-            tagData.push({
-              id: newId, name: name, code: code, color: color,
-              count: '0 人', heat: 0, status: status,
-              date: new Date().toISOString().slice(0,10)
-            });
-            showToast('标签「' + name + '」新增成功，编码：' + code);
-          }
-          renderTagTable();
+      var isEdit = !!id; var tag = isEdit ? (tagData.find(function(t){return t.id===id;}) || null) : null;
+      var body = '<div class="tag-form"><div class="form-group"><label class="form-label">标签名称 <span style="color:#e53e3e;">*</span></label><input type="text" class="form-input" id="tag-name" placeholder="请输入标签名称" value="' + (tag ? tag.name : '') + '"></div><div class="form-group"><label class="form-label">状态</label><select class="form-select" id="tag-status"><option' + (!tag || tag.status === '启用' ? ' selected' : '') + '>启用</option><option' + (tag && tag.status === '停用' ? ' selected' : '') + '>停用</option></select></div><div class="form-group"><label class="form-label">描述</label><textarea class="form-textarea" id="tag-desc" placeholder="请输入标签描述信息"></textarea></div></div>';
+      var mask = showModal({ title: isEdit ? '编辑标签「' + (tag ? tag.name : '') + '」' : '新增标签', width: '520px', body: body, confirmText: '确定', onConfirm: function(maskEl) {
+        var name = (maskEl.querySelector('#tag-name').value || '').trim();
+        if (!name) { showToast('请填写标签名称', 'error'); return false; }
+        var status = maskEl.querySelector('#tag-status').value;
+        var color = tag ? tag.color : '#c41e3a';
+        if (isEdit) { tag.name = name; tag.status = status; showToast('标签更新成功'); }
+        else {
+          var code = generateTagCode(name, currentCategory);
+          var newId = tagData.length ? Math.max.apply(null, tagData.map(function(t){return t.id;})) + 1 : 1;
+          tagData.push({ id: newId, name: name, code: code, color: color, count: '0 人', heat: 0, status: status, date: new Date().toISOString().slice(0,10) });
+          showToast('标签「' + name + '」新增成功，编码：' + code);
         }
-      });
+        renderTagTable();
+      }});
     }
-
     function deleteTag(id) {
-      var tag = tagData.find(function(t){return t.id===id;});
-      if (!tag) return;
-      showModal({
-        title: '删除确认',
-        width: '420px',
-        body: '<div style="padding:8px 0;line-height:1.7;">' +
-             '<div style="font-size:22px;margin-bottom:10px;">⚠️</div>' +
-             '<div>确定删除标签 <b>「' + tag.name + '」</b> 吗？</div>' +
-             '<div style="color:#909399;font-size:12px;margin-top:6px;">删除后不可恢复。</div>' +
-             '</div>',
-        confirmText: '删除',
-        cancelText: '取消',
-        onConfirm: function() {
-          tagData = tagData.filter(function(t){return t.id !== id;});
-          renderTagTable();
-          showToast('标签已删除');
-        }
-      });
+      var tag = tagData.find(function(t){return t.id===id;}); if (!tag) return;
+      showModal({ title: '删除确认', width: '420px', body: '<div style="padding:8px 0;line-height:1.7;"><div style="font-size:22px;margin-bottom:10px;">⚠️</div><div>确定删除标签 <b>「' + tag.name + '」</b> 吗？</div><div style="color:#909399;font-size:12px;margin-top:6px;">删除后不可恢复。</div></div>', confirmText: '删除', cancelText: '取消', onConfirm: function() { tagData = tagData.filter(function(t){return t.id !== id;}); renderTagTable(); showToast('标签已删除'); }});
     }
-
     function batchDeleteTags() {
-      var ids = [];
-      document.querySelectorAll('#tagTable tbody tr').forEach(function(tr) {
-        var cb = tr.querySelector('.checkbox.checked');
-        if (cb) ids.push(Number(tr.getAttribute('data-id')));
-      });
+      var ids = []; document.querySelectorAll('#tagTable tbody tr').forEach(function(tr) { var cb = tr.querySelector('.checkbox.checked'); if (cb) ids.push(Number(tr.getAttribute('data-id'))); });
       if (ids.length === 0) { showToast('请先勾选需要删除的标签', 'error'); return; }
-      showModal({
-        title: '批量删除确认',
-        width: '420px',
-        body: '<div style="padding:8px 0;line-height:1.7;">' +
-             '<div style="font-size:22px;margin-bottom:10px;">⚠️</div>' +
-             '<div>确定删除选中的 <b>' + ids.length + '</b> 个标签吗？</div>' +
-             '<div style="color:#909399;font-size:12px;margin-top:6px;">删除后不可恢复。</div>' +
-             '</div>',
-        confirmText: '删除',
-        cancelText: '取消',
-        onConfirm: function() {
-          tagData = tagData.filter(function(t){ return ids.indexOf(t.id) === -1; });
-          renderTagTable();
-          showToast('已批量删除 ' + ids.length + ' 个标签');
-        }
-      });
+      showModal({ title: '批量删除确认', width: '420px', body: '<div style="padding:8px 0;line-height:1.7;"><div style="font-size:22px;margin-bottom:10px;">⚠️</div><div>确定删除选中的 <b>' + ids.length + '</b> 个标签吗？</div><div style="color:#909399;font-size:12px;margin-top:6px;">删除后不可恢复。</div></div>', confirmText: '删除', cancelText: '取消', onConfirm: function() { tagData = tagData.filter(function(t){ return ids.indexOf(t.id) === -1; }); renderTagTable(); showToast('已批量删除 ' + ids.length + ' 个标签'); }});
     }
-
-    /* ================ 复选框 ================ */
     function toggleAllCheckboxes(master) {
       master.classList.toggle('checked');
-      var rows = document.querySelectorAll('#tagTable tbody tr .checkbox');
-      rows.forEach(function(cb) {
-        if (master.classList.contains('checked')) cb.classList.add('checked');
-        else cb.classList.remove('checked');
-      });
+      document.querySelectorAll('#tagTable tbody tr .checkbox').forEach(function(cb) { if (master.classList.contains('checked')) cb.classList.add('checked'); else cb.classList.remove('checked'); });
     }
-    function toggleRowCheckbox(cb) {
-      cb.classList.toggle('checked');
-    }
-
-    /* ================ 树节点点击联动右侧（事件委托，兼容动态新增） ================ */
+    function toggleRowCheckbox(cb) { cb.classList.toggle('checked'); }
     function bindTreeClicks() {
-      var tree = document.querySelector('.category-tree');
-      if (!tree) return;
-
+      var tree = document.querySelector('.category-tree'); if (!tree) return;
       tree.addEventListener('click', function(e) {
-        var arrow = e.target.closest('.tree-arrow');
-        var action = e.target.closest('.tree-actions');
-        // 点击操作按钮和箭头分别由各自的 onclick / 箭头逻辑处理
-        if (action || arrow) return;
-
-        var item = e.target.closest('.tree-item');
-        if (!item) return;
-
-        // 选中态切换
-        document.querySelectorAll('.tree-item').forEach(function(i) { i.classList.remove('active'); });
-        item.classList.add('active');
-
-        var cat = item.getAttribute('data-cat') || '';
-        var sub = item.getAttribute('data-sub') || '';
-        if (cat) currentCategory = cat;
-        currentSubCategory = sub;
-        renderTagTable();
+        var arrow = e.target.closest('.tree-arrow'); var action = e.target.closest('.tree-actions'); if (action || arrow) return;
+        var item = e.target.closest('.tree-item'); if (!item) return;
+        document.querySelectorAll('.tree-item').forEach(function(i) { i.classList.remove('active'); }); item.classList.add('active');
+        var cat = item.getAttribute('data-cat') || ''; var sub = item.getAttribute('data-sub') || '';
+        if (cat) currentCategory = cat; currentSubCategory = sub; renderTagTable();
       });
-
-      // 箭头展开/收起（事件委托）
       tree.addEventListener('click', function(e) {
-        var arrow = e.target.closest('.tree-arrow');
-        if (!arrow) return;
-        var item = arrow.closest('.tree-item');
-        if (!item) return;
-        e.stopPropagation();
-        item.classList.toggle('expanded');
-        var next = item.nextElementSibling;
-        if (next && next.classList.contains('tree-children')) {
-          next.style.display = item.classList.contains('expanded') ? 'block' : 'none';
-        }
+        var arrow = e.target.closest('.tree-arrow'); if (!arrow) return;
+        var item = arrow.closest('.tree-item'); if (!item) return; e.stopPropagation();
+        item.classList.toggle('expanded'); var next = item.nextElementSibling;
+        if (next && next.classList.contains('tree-children')) { next.style.display = item.classList.contains('expanded') ? 'block' : 'none'; }
       });
     }
-
-    /* ================ 初始化 ================ */
-    document.addEventListener('DOMContentLoaded', function() {
-      // 先清理 HTML 里旧的 checkbox 绑定（避免重复）
-      renderTagTable();
-      bindTreeClicks();
-    });
+    document.addEventListener('DOMContentLoaded', function() { renderTagTable(); bindTreeClicks(); });
   </script>
 <script src="common.js?v=6"></script>
 </body>
