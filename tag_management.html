@@ -46,6 +46,36 @@
       gap: 12px;
       border-bottom: 1px solid var(--border-light);
     }
+
+    /* 表单样式（与项目其他弹窗对齐） */
+    .tag-form { padding: 4px 0; }
+    .tag-form .form-group { margin-bottom: 14px; }
+    .tag-form .form-label { display: block; font-size: 13px; color: var(--text-main); margin-bottom: 6px; }
+    .tag-form .form-input, .tag-form .form-select {
+      width: 100%; height: 34px; padding: 0 12px;
+      border: 1px solid var(--border); border-radius: 4px;
+      background: #fff; color: var(--text-main); font-size: 13px; outline: none;
+    }
+    .tag-form .form-input:focus, .tag-form .form-select:focus { border-color: #c41e3a; }
+    .tag-form .form-textarea {
+      width: 100%; min-height: 70px; padding: 8px 12px;
+      border: 1px solid var(--border); border-radius: 4px;
+      background: #fff; color: var(--text-main); font-size: 13px; outline: none; resize: vertical;
+    }
+    .tag-form .form-textarea:focus { border-color: #c41e3a; }
+    .tag-form .form-row { display: flex; gap: 12px; }
+    .tag-form .form-row .form-group { flex: 1; }
+    .tag-form .color-row { display: flex; align-items: center; gap: 10px; }
+    .tag-form .color-swatch-box {
+      width: 32px; height: 32px; border-radius: 4px; border: 1px solid var(--border);
+      background: #c41e3a; flex-shrink: 0;
+    }
+    .tag-form .color-presets { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag-form .color-preset {
+      width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .tag-form .color-preset.active { border-color: #303133; }
   </style>
 </head>
 <body>
@@ -89,7 +119,7 @@
           <ul class="menu-sub">
             <li><a href="industry_management.html">产业数据管理</a></li>
             <li><a href="enterprise_analysis.html">企业分析</a></li>
-            <li><a href="enterprise.html">企业管理</a></li>
+            <li><a href="enterprise.html">企业管理</a>
             
             <li><a href="enterprise_publish.html">企业数据发布</a></li>
           </ul>
@@ -227,47 +257,47 @@
           <div class="split-left">
             <div class="split-header">
               <div class="split-header-title">标签分类</div>
-              <button class="btn btn-sm btn-primary">+ 新增分类</button>
+              <button class="btn btn-sm btn-primary" onclick="openCategoryDialog()">+ 新增分类</button>
             </div>
             <div class="split-body">
               <div class="category-tree">
                 <!-- 一级分类 -->
-                <div class="tree-item expanded active">
+                <div class="tree-item expanded active" data-cat="党员标签">
                   <span class="tree-arrow">›</span>
                   <span class="tree-icon">👤</span>
                   <span class="tree-name">党员标签</span>
                   <span class="tree-count">128</span>
                   <div class="tree-actions">
-                    <span class="tree-action-btn" title="编辑">✎</span>
-                    <span class="tree-action-btn" title="删除">✕</span>
+                    <span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('党员标签', event)">✎</span>
+                    <span class="tree-action-btn" title="删除" onclick="deleteCategory('党员标签', event)">✕</span>
                   </div>
                 </div>
                 <div class="tree-children" style="display:block;">
-                  <div class="tree-item">
+                  <div class="tree-item" data-cat="党员标签" data-sub="基本属性">
                     <span class="tree-arrow">›</span>
                     <span class="tree-icon">·</span>
                     <span class="tree-name">基本属性</span>
                     <span class="tree-count">36</span>
                   </div>
-                  <div class="tree-item">
+                  <div class="tree-item" data-cat="党员标签" data-sub="党龄党籍">
                     <span class="tree-arrow">›</span>
                     <span class="tree-icon">·</span>
                     <span class="tree-name">党龄党籍</span>
                     <span class="tree-count">24</span>
                   </div>
-                  <div class="tree-item">
+                  <div class="tree-item" data-cat="党员标签" data-sub="荣誉表彰">
                     <span class="tree-arrow">›</span>
                     <span class="tree-icon">·</span>
                     <span class="tree-name">荣誉表彰</span>
                     <span class="tree-count">18</span>
                   </div>
-                  <div class="tree-item">
+                  <div class="tree-item" data-cat="党员标签" data-sub="培训教育">
                     <span class="tree-arrow">›</span>
                     <span class="tree-icon">·</span>
                     <span class="tree-name">培训教育</span>
                     <span class="tree-count">28</span>
                   </div>
-                  <div class="tree-item">
+                  <div class="tree-item" data-cat="党员标签" data-sub="特长技能">
                     <span class="tree-arrow">›</span>
                     <span class="tree-icon">·</span>
                     <span class="tree-name">特长技能</span>
@@ -275,47 +305,47 @@
                   </div>
                 </div>
 
-                <div class="tree-item">
+                <div class="tree-item" data-cat="企业标签">
                   <span class="tree-arrow">›</span>
                   <span class="tree-icon">🏢</span>
                   <span class="tree-name">企业标签</span>
                   <span class="tree-count">86</span>
                   <div class="tree-actions">
-                    <span class="tree-action-btn" title="编辑">✎</span>
-                    <span class="tree-action-btn" title="删除">✕</span>
+                    <span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('企业标签', event)">✎</span>
+                    <span class="tree-action-btn" title="删除" onclick="deleteCategory('企业标签', event)">✕</span>
                   </div>
                 </div>
 
-                <div class="tree-item">
+                <div class="tree-item" data-cat="产业标签">
                   <span class="tree-arrow">›</span>
                   <span class="tree-icon">📊</span>
                   <span class="tree-name">产业标签</span>
                   <span class="tree-count">32</span>
                   <div class="tree-actions">
-                    <span class="tree-action-btn" title="编辑">✎</span>
-                    <span class="tree-action-btn" title="删除">✕</span>
+                    <span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('产业标签', event)">✎</span>
+                    <span class="tree-action-btn" title="删除" onclick="deleteCategory('产业标签', event)">✕</span>
                   </div>
                 </div>
 
-                <div class="tree-item">
+                <div class="tree-item" data-cat="人才标签">
                   <span class="tree-arrow">›</span>
                   <span class="tree-icon">💎</span>
                   <span class="tree-name">人才标签</span>
                   <span class="tree-count">56</span>
                   <div class="tree-actions">
-                    <span class="tree-action-btn" title="编辑">✎</span>
-                    <span class="tree-action-btn" title="删除">✕</span>
+                    <span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('人才标签', event)">✎</span>
+                    <span class="tree-action-btn" title="删除" onclick="deleteCategory('人才标签', event)">✕</span>
                   </div>
                 </div>
 
-                <div class="tree-item">
+                <div class="tree-item" data-cat="活动标签">
                   <span class="tree-arrow">›</span>
                   <span class="tree-icon">🎉</span>
                   <span class="tree-name">活动标签</span>
                   <span class="tree-count">24</span>
                   <div class="tree-actions">
-                    <span class="tree-action-btn" title="编辑">✎</span>
-                    <span class="tree-action-btn" title="删除">✕</span>
+                    <span class="tree-action-btn" title="编辑" onclick="openCategoryDialog('活动标签', event)">✎</span>
+                    <span class="tree-action-btn" title="删除" onclick="deleteCategory('活动标签', event)">✕</span>
                   </div>
                 </div>
               </div>
@@ -325,21 +355,21 @@
           <!-- 右侧：标签值管理 -->
           <div class="split-right">
             <div class="split-header">
-              <div class="split-header-title">
+              <div class="split-header-title" id="tagTableTitle">
                 党员标签 - 基本属性
-                <span class="tag tag-blue" style="margin-left:8px;">共 36 个标签</span>
+                <span class="tag tag-blue" style="margin-left:8px;" id="tagTableCount">共 36 个标签</span>
               </div>
               <div class="flex" style="gap:8px;">
-                <button class="btn btn-sm btn-secondary">🗑 批量删除</button>
-                <button class="btn btn-sm btn-primary">+ 新增标签</button>
+                <button class="btn btn-sm btn-secondary" onclick="batchDeleteTags()">🗑 批量删除</button>
+                <button class="btn btn-sm btn-primary" onclick="openTagDialog()">+ 新增标签</button>
               </div>
             </div>
             <div class="split-body">
-              <table class="table">
+              <table class="table" id="tagTable">
                 <thead>
                   <tr>
                     <th style="width: 40px;">
-                      <div class="checkbox"></div>
+                      <div class="checkbox" onclick="toggleAllCheckboxes(this)"></div>
                     </th>
                     <th>标签名称</th>
                     <th style="width: 100px;">标签编码</th>
@@ -351,234 +381,15 @@
                     <th style="width: 140px;">操作</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td><div class="checkbox"></div></td>
-                    <td>
-                      <span class="color-swatch" style="background:#c41e3a;margin-right:8px;vertical-align:middle;"></span>
-                      正式党员
-                    </td>
-                    <td><code style="font-size:12px;color:var(--text-muted);">member_formal</code></td>
-                    <td><span class="color-swatch" style="background:#c41e3a;"></span></td>
-                    <td>2,856 人</td>
-                    <td>
-                      <div class="heat-bar"><div class="heat-bar-fill" style="width: 95%;"></div></div>
-                    </td>
-                    <td><span class="badge badge-green">启用</span></td>
-                    <td>2023-01-15</td>
-                    <td>
-                      <div class="action-links">
-                        <span class="action-link">编辑</span>
-                        <span class="divider"></span>
-                        <span class="action-link danger">删除</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div class="checkbox"></div></td>
-                    <td>
-                      <span class="color-swatch" style="background:#2b6cb0;margin-right:8px;vertical-align:middle;"></span>
-                      预备党员
-                    </td>
-                    <td><code style="font-size:12px;color:var(--text-muted);">member_probation</code></td>
-                    <td><span class="color-swatch" style="background:#2b6cb0;"></span></td>
-                    <td>328 人</td>
-                    <td>
-                      <div class="heat-bar"><div class="heat-bar-fill" style="width: 70%;"></div></div>
-                    </td>
-                    <td><span class="badge badge-green">启用</span></td>
-                    <td>2023-01-15</td>
-                    <td>
-                      <div class="action-links">
-                        <span class="action-link">编辑</span>
-                        <span class="divider"></span>
-                        <span class="action-link danger">删除</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div class="checkbox"></div></td>
-                    <td>
-                      <span class="color-swatch" style="background:#d4af37;margin-right:8px;vertical-align:middle;"></span>
-                      入党积极分子
-                    </td>
-                    <td><code style="font-size:12px;color:var(--text-muted);">member_active</code></td>
-                    <td><span class="color-swatch" style="background:#d4af37;"></span></td>
-                    <td>156 人</td>
-                    <td>
-                      <div class="heat-bar"><div class="heat-bar-fill" style="width: 55%;"></div></div>
-                    </td>
-                    <td><span class="badge badge-green">启用</span></td>
-                    <td>2023-01-16</td>
-                    <td>
-                      <div class="action-links">
-                        <span class="action-link">编辑</span>
-                        <span class="divider"></span>
-                        <span class="action-link danger">删除</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div class="checkbox"></div></td>
-                    <td>
-                      <span class="color-swatch" style="background:#2f855a;margin-right:8px;vertical-align:middle;"></span>
-                      发展对象
-                    </td>
-                    <td><code style="font-size:12px;color:var(--text-muted);">member_candidate</code></td>
-                    <td><span class="color-swatch" style="background:#2f855a;"></span></td>
-                    <td>89 人</td>
-                    <td>
-                      <div class="heat-bar"><div class="heat-bar-fill" style="width: 40%;"></div></div>
-                    </td>
-                    <td><span class="badge badge-green">启用</span></td>
-                    <td>2023-01-16</td>
-                    <td>
-                      <div class="action-links">
-                        <span class="action-link">编辑</span>
-                        <span class="divider"></span>
-                        <span class="action-link danger">删除</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div class="checkbox checked"></div></td>
-                    <td>
-                      <span class="color-swatch" style="background:#805ad5;margin-right:8px;vertical-align:middle;"></span>
-                      青年党员
-                    </td>
-                    <td><code style="font-size:12px;color:var(--text-muted);">member_youth</code></td>
-                    <td><span class="color-swatch" style="background:#805ad5;"></span></td>
-                    <td>1,245 人</td>
-                    <td>
-                      <div class="heat-bar"><div class="heat-bar-fill" style="width: 85%;"></div></div>
-                    </td>
-                    <td><span class="badge badge-green">启用</span></td>
-                    <td>2023-02-10</td>
-                    <td>
-                      <div class="action-links">
-                        <span class="action-link">编辑</span>
-                        <span class="divider"></span>
-                        <span class="action-link danger">删除</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div class="checkbox"></div></td>
-                    <td>
-                      <span class="color-swatch" style="background:#c05621;margin-right:8px;vertical-align:middle;"></span>
-                      老党员
-                    </td>
-                    <td><code style="font-size:12px;color:var(--text-muted);">member_senior</code></td>
-                    <td><span class="color-swatch" style="background:#c05621;"></span></td>
-                    <td>568 人</td>
-                    <td>
-                      <div class="heat-bar"><div class="heat-bar-fill" style="width: 60%;"></div></div>
-                    </td>
-                    <td><span class="badge badge-green">启用</span></td>
-                    <td>2023-02-10</td>
-                    <td>
-                      <div class="action-links">
-                        <span class="action-link">编辑</span>
-                        <span class="divider"></span>
-                        <span class="action-link danger">删除</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div class="checkbox"></div></td>
-                    <td>
-                      <span class="color-swatch" style="background:#b83280;margin-right:8px;vertical-align:middle;"></span>
-                      女党员
-                    </td>
-                    <td><code style="font-size:12px;color:var(--text-muted);">member_female</code></td>
-                    <td><span class="color-swatch" style="background:#b83280;"></span></td>
-                    <td>986 人</td>
-                    <td>
-                      <div class="heat-bar"><div class="heat-bar-fill" style="width: 75%;"></div></div>
-                    </td>
-                    <td><span class="badge badge-green">启用</span></td>
-                    <td>2023-02-11</td>
-                    <td>
-                      <div class="action-links">
-                        <span class="action-link">编辑</span>
-                        <span class="divider"></span>
-                        <span class="action-link danger">删除</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div class="checkbox"></div></td>
-                    <td>
-                      <span class="color-swatch" style="background:#2c7a7b;margin-right:8px;vertical-align:middle;"></span>
-                      党支部书记
-                    </td>
-                    <td><code style="font-size:12px;color:var(--text-muted);">position_secretary</code></td>
-                    <td><span class="color-swatch" style="background:#2c7a7b;"></span></td>
-                    <td>126 人</td>
-                    <td>
-                      <div class="heat-bar"><div class="heat-bar-fill" style="width: 50%;"></div></div>
-                    </td>
-                    <td><span class="badge badge-green">启用</span></td>
-                    <td>2023-03-05</td>
-                    <td>
-                      <div class="action-links">
-                        <span class="action-link">编辑</span>
-                        <span class="divider"></span>
-                        <span class="action-link danger">删除</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div class="checkbox"></div></td>
-                    <td>
-                      <span class="color-swatch" style="background:#e53e3e;margin-right:8px;vertical-align:middle;"></span>
-                      优秀共产党员
-                    </td>
-                    <td><code style="font-size:12px;color:var(--text-muted);">honor_excellent</code></td>
-                    <td><span class="color-swatch" style="background:#e53e3e;"></span></td>
-                    <td>186 人</td>
-                    <td>
-                      <div class="heat-bar"><div class="heat-bar-fill" style="width: 65%;"></div></div>
-                    </td>
-                    <td><span class="badge badge-green">启用</span></td>
-                    <td>2023-03-15</td>
-                    <td>
-                      <div class="action-links">
-                        <span class="action-link">编辑</span>
-                        <span class="divider"></span>
-                        <span class="action-link danger">删除</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div class="checkbox"></div></td>
-                    <td>
-                      <span class="color-swatch" style="background:#718096;margin-right:8px;vertical-align:middle;"></span>
-                      流动党员
-                    </td>
-                    <td><code style="font-size:12px;color:var(--text-muted);">member_floating</code></td>
-                    <td><span class="color-swatch" style="background:#718096;"></span></td>
-                    <td>42 人</td>
-                    <td>
-                      <div class="heat-bar"><div class="heat-bar-fill" style="width: 25%;"></div></div>
-                    </td>
-                    <td><span class="badge badge-orange">停用</span></td>
-                    <td>2023-04-20</td>
-                    <td>
-                      <div class="action-links">
-                        <span class="action-link">编辑</span>
-                        <span class="divider"></span>
-                        <span class="action-link danger">删除</span>
-                      </div>
-                    </td>
-                  </tr>
+                <tbody id="tagTableBody">
+                  <!-- 由 JS 动态渲染 -->
                 </tbody>
               </table>
             </div>
             <!-- 分页 -->
             <div class="card-footer" style="padding:12px 20px;display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-size:13px;color:var(--text-muted);">共 36 条记录，每页显示 10 条</span>
-              <div class="pagination" style="padding:0;">
+              <span style="font-size:13px;color:var(--text-muted);">共 <span id="tagTotalCount">36</span> 条记录，每页显示 10 条</span>
+              <div class="pagination" id="tagPagination" style="padding:0;">
                 <div class="pagination-item">‹</div>
                 <div class="pagination-item active">1</div>
                 <div class="pagination-item">2</div>
@@ -594,32 +405,372 @@
   </div>
 
   <script>
-    // 复选框切换
-    document.querySelectorAll('.checkbox').forEach(cb => {
-      cb.addEventListener('click', function(e) {
-        e.stopPropagation();
-        this.classList.toggle('checked');
-      });
-    });
+    /* ================ 数据层 ================ */
+    // 当前选中：分类 / 子分类（用于右侧表格标题）
+    var currentCategory = '党员标签';
+    var currentSubCategory = '基本属性';
 
-    // 树节点展开/收起
-    document.querySelectorAll('.tree-item .tree-arrow').forEach(arrow => {
-      arrow.addEventListener('click', function(e) {
-        e.stopPropagation();
-        this.parentElement.classList.toggle('expanded');
-      });
-    });
+    // 标签数据（供右侧表格渲染，初始就是图上那 10 行）
+    var tagData = [
+      { id: 1, name: '正式党员',   code: 'member_formal',      color: '#c41e3a', count: '2,856 人', heat: 95, status: '启用', date: '2023-01-15' },
+      { id: 2, name: '预备党员',   code: 'member_probation',    color: '#2b6cb0', count: '328 人',   heat: 70, status: '启用', date: '2023-01-15' },
+      { id: 3, name: '入党积极分子', code: 'member_active',    color: '#d4af37', count: '156 人',   heat: 55, status: '启用', date: '2023-01-16' },
+      { id: 4, name: '发展对象',   code: 'member_candidate',    color: '#2f855a', count: '89 人',    heat: 40, status: '启用', date: '2023-01-16' },
+      { id: 5, name: '青年党员',   code: 'member_youth',        color: '#805ad5', count: '1,245 人', heat: 85, status: '启用', date: '2023-02-10' },
+      { id: 6, name: '老党员',     code: 'member_senior',       color: '#c05621', count: '568 人',   heat: 60, status: '启用', date: '2023-02-10' },
+      { id: 7, name: '女党员',     code: 'member_female',       color: '#b83280', count: '986 人',   heat: 75, status: '启用', date: '2023-02-11' },
+      { id: 8, name: '党支部书记', code: 'position_secretary',  color: '#2c7a7b', count: '126 人',   heat: 50, status: '启用', date: '2023-03-05' },
+      { id: 9, name: '优秀共产党员', code: 'honor_excellent',    color: '#e53e3e', count: '186 人',   heat: 65, status: '启用', date: '2023-03-15' },
+      { id:10, name: '流动党员',   code: 'member_floating',     color: '#718096', count: '42 人',    heat: 25, status: '停用', date: '2023-04-20' }
+    ];
 
-    // 树节点选中
-    document.querySelectorAll('.tree-item').forEach(item => {
-      item.addEventListener('click', function(e) {
-        if (e.target.closest('.tree-actions') || e.target.closest('.tree-arrow')) return;
-        document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
-        this.classList.add('active');
+    var presetColors = ['#c41e3a','#2b6cb0','#d4af37','#2f855a','#805ad5','#c05621','#b83280','#2c7a7b','#e53e3e','#718096','#38a169','#3182ce'];
+
+    /* ================ 渲染右侧表格 ================ */
+    function renderTagTable() {
+      var tbody = document.getElementById('tagTableBody');
+      var titleEl = document.getElementById('tagTableTitle');
+      var countEl = document.getElementById('tagTableCount');
+      var totalEl = document.getElementById('tagTotalCount');
+      if (!tbody) return;
+
+      if (currentSubCategory) {
+        titleEl.innerHTML = currentCategory + ' - ' + currentSubCategory +
+          '<span class="tag tag-blue" style="margin-left:8px;">共 ' + tagData.length + ' 个标签</span>';
+      } else {
+        titleEl.innerHTML = currentCategory +
+          '<span class="tag tag-blue" style="margin-left:8px;">共 ' + tagData.length + ' 个标签</span>';
+      }
+      countEl.textContent = '共 ' + tagData.length + ' 个标签';
+      totalEl.textContent = tagData.length;
+
+      var rows = tagData.map(function(tag) {
+        var statusBadge = tag.status === '启用'
+          ? '<span class="badge badge-green">启用</span>'
+          : '<span class="badge badge-orange">停用</span>';
+        return '' +
+          '<tr data-id="' + tag.id + '">' +
+            '<td><div class="checkbox" onclick="event.stopPropagation(); toggleRowCheckbox(this)"></div></td>' +
+            '<td>' +
+              '<span class="color-swatch" style="background:' + tag.color + ';margin-right:8px;vertical-align:middle;"></span>' +
+              tag.name +
+            '</td>' +
+            '<td><code style="font-size:12px;color:var(--text-muted);">' + tag.code + '</code></td>' +
+            '<td><span class="color-swatch" style="background:' + tag.color + ';"></span></td>' +
+            '<td>' + tag.count + '</td>' +
+            '<td><div class="heat-bar"><div class="heat-bar-fill" style="width:' + tag.heat + '%;"></div></div></td>' +
+            '<td>' + statusBadge + '</td>' +
+            '<td>' + tag.date + '</td>' +
+            '<td>' +
+              '<div class="action-links">' +
+                '<span class="action-link" onclick="openTagDialog(' + tag.id + ')">编辑</span>' +
+                '<span class="divider"></span>' +
+                '<span class="action-link danger" onclick="deleteTag(' + tag.id + ')">删除</span>' +
+              '</div>' +
+            '</td>' +
+          '</tr>';
+      }).join('');
+
+      tbody.innerHTML = rows;
+    }
+
+    /* ================ 分类：新增 / 编辑 / 删除 ================ */
+    function openCategoryDialog(name, evt) {
+      if (evt) { evt.stopPropagation(); evt.preventDefault(); }
+      var isEdit = !!name;
+      var icon = '';
+      var desc = '';
+
+      var body = '' +
+        '<div class="tag-form">' +
+          '<div class="form-group">' +
+            '<label class="form-label">分类名称 <span style="color:#e53e3e;">*</span></label>' +
+            '<input type="text" class="form-input" id="cat-name" placeholder="请输入分类名称" value="' + icon + '">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">分类图标</label>' +
+            '<input type="text" class="form-input" id="cat-icon" placeholder="emoji 图标，如 👤">' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">描述</label>' +
+            '<textarea class="form-textarea" id="cat-desc" placeholder="请输入分类描述信息"></textarea>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">关联模块</label>' +
+            '<select class="form-select" id="cat-scope">' +
+              '<option>党员</option><option>企业</option><option>产业</option><option>人才</option><option>活动</option><option>全部</option>' +
+            '</select>' +
+          '</div>' +
+        '</div>';
+
+      showModal({
+        title: isEdit ? '编辑分类「' + name + '」' : '新增分类',
+        width: '520px',
+        body: body,
+        confirmText: '确定',
+        onConfirm: function(mask) {
+          var catName = (mask.querySelector('#cat-name').value || '').trim();
+          if (!catName) { showToast('请填写分类名称', 'error'); return false; }
+          if (isEdit) {
+            // 编辑：只更新左侧树的名称显示
+            var treeItems = document.querySelectorAll('.tree-item[data-cat="' + name + '"]');
+            treeItems.forEach(function(item) {
+              var nameSpan = item.querySelector('.tree-name');
+              if (nameSpan) nameSpan.textContent = catName;
+              item.setAttribute('data-cat', catName);
+            });
+            if (currentCategory === name) currentCategory = catName;
+            showToast('分类更新成功');
+          } else {
+            // 新增：左侧树追加一个节点
+            var tree = document.querySelector('.category-tree');
+            if (tree) {
+              var count = (document.querySelectorAll('.tree-item[data-cat]').length + 1) * 10;
+              var div = document.createElement('div');
+              div.className = 'tree-item';
+              div.setAttribute('data-cat', catName);
+              div.innerHTML =
+                '<span class="tree-arrow">›</span>' +
+                '<span class="tree-icon">📌</span>' +
+                '<span class="tree-name">' + catName + '</span>' +
+                '<span class="tree-count">0</span>' +
+                '<div class="tree-actions">' +
+                  '<span class="tree-action-btn" title="编辑" onclick="openCategoryDialog(\'' + catName + '\', event)">✎</span>' +
+                  '<span class="tree-action-btn" title="删除" onclick="deleteCategory(\'' + catName + '\', event)">✕</span>' +
+                '</div>';
+              tree.appendChild(div);
+            }
+            showToast('分类「' + catName + '」新增成功');
+          }
+        }
       });
+    }
+
+    function deleteCategory(name, evt) {
+      if (evt) { evt.stopPropagation(); evt.preventDefault(); }
+      showModal({
+        title: '删除确认',
+        width: '420px',
+        body: '<div style="padding:8px 0;line-height:1.7;">' +
+             '<div style="font-size:22px;margin-bottom:10px;">⚠️</div>' +
+             '<div>确定删除分类 <b>「' + name + '」</b> 吗？</div>' +
+             '<div style="color:#909399;font-size:12px;margin-top:6px;">删除后该分类下的标签将失去归属，请谨慎操作。</div>' +
+             '</div>',
+        confirmText: '删除',
+        cancelText: '取消',
+        onConfirm: function() {
+          var items = document.querySelectorAll('.tree-item[data-cat="' + name + '"]');
+          items.forEach(function(item) {
+            // 如果是带 tree-children 的一级项，一并移除其子项容器
+            var children = item.nextElementSibling;
+            if (children && children.classList.contains('tree-children')) {
+              children.remove();
+            }
+            item.remove();
+          });
+          // 如果删的是当前选中的，切到第一个
+          if (currentCategory === name) {
+            var first = document.querySelector('.tree-item[data-cat]');
+            if (first) {
+              first.classList.add('active');
+              currentCategory = first.getAttribute('data-cat');
+            }
+          }
+          showToast('分类已删除');
+        }
+      });
+    }
+
+    /* ================ 标签：新增 / 编辑 / 删除 / 批量删除 ================ */
+    function openTagDialog(id) {
+      var isEdit = !!id;
+      var tag = isEdit ? (tagData.find(function(t){return t.id===id;}) || null) : null;
+
+      var body = '' +
+        '<div class="tag-form">' +
+          '<div class="form-row">' +
+            '<div class="form-group">' +
+              '<label class="form-label">标签名称 <span style="color:#e53e3e;">*</span></label>' +
+              '<input type="text" class="form-input" id="tag-name" placeholder="请输入标签名称" value="' + (tag ? tag.name : '') + '">' +
+            '</div>' +
+            '<div class="form-group">' +
+              '<label class="form-label">标签编码</label>' +
+              '<input type="text" class="form-input" id="tag-code" placeholder="英文编码，如 member_formal" value="' + (tag ? tag.code : '') + '">' +
+            '</div>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">标签颜色 <span style="color:#e53e3e;">*</span></label>' +
+            '<div class="color-row">' +
+              '<div class="color-swatch-box" id="tagColorSwatch" style="background:' + (tag ? tag.color : '#c41e3a') + ';"></div>' +
+              '<input type="hidden" id="tag-color" value="' + (tag ? tag.color : '#c41e3a') + '">' +
+              '<div class="color-presets" id="tagColorPresets">' +
+                presetColors.map(function(c, i) {
+                  var activeCls = (tag ? tag.color : '#c41e3a') === c ? ' active' : '';
+                  return '<span class="color-preset' + activeCls + '" style="background:' + c + ';" data-color="' + c + '"></span>';
+                }).join('') +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">状态</label>' +
+            '<select class="form-select" id="tag-status">' +
+              '<option' + (!tag || tag.status === '启用' ? ' selected' : '') + '>启用</option>' +
+              '<option' + (tag && tag.status === '停用' ? ' selected' : '') + '>停用</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="form-group">' +
+            '<label class="form-label">描述</label>' +
+            '<textarea class="form-textarea" id="tag-desc" placeholder="请输入标签描述信息"></textarea>' +
+          '</div>' +
+        '</div>';
+
+      var mask = showModal({
+        title: isEdit ? '编辑标签「' + (tag ? tag.name : '') + '」' : '新增标签',
+        width: '520px',
+        body: body,
+        confirmText: '确定',
+        onConfirm: function(maskEl) {
+          var name = (maskEl.querySelector('#tag-name').value || '').trim();
+          if (!name) { showToast('请填写标签名称', 'error'); return false; }
+          var code  = (maskEl.querySelector('#tag-code').value || '').trim();
+          var color = maskEl.querySelector('#tag-color').value || '#c41e3a';
+          var status = maskEl.querySelector('#tag-status').value;
+
+          if (isEdit) {
+            tag.name = name; tag.code = code; tag.color = color; tag.status = status;
+            showToast('标签更新成功');
+          } else {
+            var newId = tagData.length ? Math.max.apply(null, tagData.map(function(t){return t.id;})) + 1 : 1;
+            tagData.push({
+              id: newId, name: name, code: code, color: color,
+              count: '0 人', heat: 0, status: status,
+              date: new Date().toISOString().slice(0,10)
+            });
+            showToast('标签「' + name + '」新增成功');
+          }
+          renderTagTable();
+        }
+      });
+
+      // 绑定颜色预设点击
+      setTimeout(function() {
+        var presets = mask.querySelectorAll('#tagColorPresets .color-preset');
+        var box = mask.querySelector('#tagColorSwatch');
+        var hidden = mask.querySelector('#tag-color');
+        presets.forEach(function(p) {
+          p.addEventListener('click', function() {
+            presets.forEach(function(x){ x.classList.remove('active'); });
+            p.classList.add('active');
+            var c = p.getAttribute('data-color');
+            box.style.background = c;
+            hidden.value = c;
+          });
+        });
+      }, 0);
+    }
+
+    function deleteTag(id) {
+      var tag = tagData.find(function(t){return t.id===id;});
+      if (!tag) return;
+      showModal({
+        title: '删除确认',
+        width: '420px',
+        body: '<div style="padding:8px 0;line-height:1.7;">' +
+             '<div style="font-size:22px;margin-bottom:10px;">⚠️</div>' +
+             '<div>确定删除标签 <b>「' + tag.name + '」</b> 吗？</div>' +
+             '<div style="color:#909399;font-size:12px;margin-top:6px;">删除后不可恢复。</div>' +
+             '</div>',
+        confirmText: '删除',
+        cancelText: '取消',
+        onConfirm: function() {
+          tagData = tagData.filter(function(t){return t.id !== id;});
+          renderTagTable();
+          showToast('标签已删除');
+        }
+      });
+    }
+
+    function batchDeleteTags() {
+      var ids = [];
+      document.querySelectorAll('#tagTable tbody tr').forEach(function(tr) {
+        var cb = tr.querySelector('.checkbox.checked');
+        if (cb) ids.push(Number(tr.getAttribute('data-id')));
+      });
+      if (ids.length === 0) { showToast('请先勾选需要删除的标签', 'error'); return; }
+      showModal({
+        title: '批量删除确认',
+        width: '420px',
+        body: '<div style="padding:8px 0;line-height:1.7;">' +
+             '<div style="font-size:22px;margin-bottom:10px;">⚠️</div>' +
+             '<div>确定删除选中的 <b>' + ids.length + '</b> 个标签吗？</div>' +
+             '<div style="color:#909399;font-size:12px;margin-top:6px;">删除后不可恢复。</div>' +
+             '</div>',
+        confirmText: '删除',
+        cancelText: '取消',
+        onConfirm: function() {
+          tagData = tagData.filter(function(t){ return ids.indexOf(t.id) === -1; });
+          renderTagTable();
+          showToast('已批量删除 ' + ids.length + ' 个标签');
+        }
+      });
+    }
+
+    /* ================ 复选框 ================ */
+    function toggleAllCheckboxes(master) {
+      master.classList.toggle('checked');
+      var rows = document.querySelectorAll('#tagTable tbody tr .checkbox');
+      rows.forEach(function(cb) {
+        if (master.classList.contains('checked')) cb.classList.add('checked');
+        else cb.classList.remove('checked');
+      });
+    }
+    function toggleRowCheckbox(cb) {
+      cb.classList.toggle('checked');
+    }
+
+    /* ================ 树节点点击联动右侧 ================ */
+    function bindTreeClicks() {
+      document.querySelectorAll('.tree-item').forEach(function(item) {
+        item.addEventListener('click', function(e) {
+          // 如果点击的是操作按钮，不做切换
+          if (e.target.closest('.tree-actions')) return;
+          // 箭头自己处理展开
+          if (e.target.classList.contains('tree-arrow')) return;
+
+          // 选中态切换
+          document.querySelectorAll('.tree-item').forEach(function(i) { i.classList.remove('active'); });
+          item.classList.add('active');
+
+          var cat = item.getAttribute('data-cat') || '';
+          var sub = item.getAttribute('data-sub') || '';
+          if (cat) currentCategory = cat;
+          currentSubCategory = sub;
+          renderTagTable();
+        });
+
+        // 箭头展开/收起
+        var arrow = item.querySelector('.tree-arrow');
+        if (arrow) {
+          arrow.addEventListener('click', function(e) {
+            e.stopPropagation();
+            item.classList.toggle('expanded');
+            // 收起/展开其后面紧随的 tree-children
+            var next = item.nextElementSibling;
+            if (next && next.classList.contains('tree-children')) {
+              next.style.display = item.classList.contains('expanded') ? 'block' : 'none';
+            }
+          });
+        }
+      });
+    }
+
+    /* ================ 初始化 ================ */
+    document.addEventListener('DOMContentLoaded', function() {
+      // 先清理 HTML 里旧的 checkbox 绑定（避免重复）
+      renderTagTable();
+      bindTreeClicks();
     });
   </script>
-<script src="common.js?v=6"></script>
+<script src="common.js?v=8"></script>
 </body>
 </html>
-
