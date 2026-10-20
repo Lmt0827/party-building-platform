@@ -487,10 +487,6 @@
             '<input type="text" class="form-input" id="cat-name" placeholder="请输入分类名称" value="' + initialName.replace(/"/g, '&quot;') + '">' +
           '</div>' +
           '<div class="form-group">' +
-            '<label class="form-label">分类图标</label>' +
-            '<input type="text" class="form-input" id="cat-icon" placeholder="emoji 图标，如 👤">' +
-          '</div>' +
-          '<div class="form-group">' +
             '<label class="form-label">描述</label>' +
             '<textarea class="form-textarea" id="cat-desc" placeholder="请输入分类描述信息"></textarea>' +
           '</div>' +
@@ -581,34 +577,35 @@
     }
 
     /* ================ 标签：新增 / 编辑 / 删除 / 批量删除 ================ */
+    // 自动生成标签编码：类别英文缩写 + 标签名 slug + 去重后缀
+    var CATEGORY_CODE_MAP = {
+      '党员标签': 'member', '企业标签': 'enterprise', '产业标签': 'industry',
+      '人才标签': 'talent', '活动标签': 'activity'
+    };
+    function slug(str) {
+      // 提取其中的英文字母 + 数字；如果没有英文则用 tag 退化
+      var letters = (str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (letters.length === 0) letters = 'tag';
+      return letters;
+    }
+    function generateTagCode(name, category) {
+      var prefix = CATEGORY_CODE_MAP[category] || 'tag';
+      var base = prefix + '_' + slug(name);
+      if (tagData.every(function(t){ return t.code !== base; })) return base;
+      var i = 2;
+      while (!tagData.every(function(t){ return t.code !== base + '_' + i; })) i++;
+      return base + '_' + i;
+    }
+
     function openTagDialog(id) {
       var isEdit = !!id;
       var tag = isEdit ? (tagData.find(function(t){return t.id===id;}) || null) : null;
 
       var body = '' +
         '<div class="tag-form">' +
-          '<div class="form-row">' +
-            '<div class="form-group">' +
-              '<label class="form-label">标签名称 <span style="color:#e53e3e;">*</span></label>' +
-              '<input type="text" class="form-input" id="tag-name" placeholder="请输入标签名称" value="' + (tag ? tag.name : '') + '">' +
-            '</div>' +
-            '<div class="form-group">' +
-              '<label class="form-label">标签编码</label>' +
-              '<input type="text" class="form-input" id="tag-code" placeholder="英文编码，如 member_formal" value="' + (tag ? tag.code : '') + '">' +
-            '</div>' +
-          '</div>' +
           '<div class="form-group">' +
-            '<label class="form-label">标签颜色 <span style="color:#e53e3e;">*</span></label>' +
-            '<div class="color-row">' +
-              '<div class="color-swatch-box" id="tagColorSwatch" style="background:' + (tag ? tag.color : '#c41e3a') + ';"></div>' +
-              '<input type="hidden" id="tag-color" value="' + (tag ? tag.color : '#c41e3a') + '">' +
-              '<div class="color-presets" id="tagColorPresets">' +
-                presetColors.map(function(c, i) {
-                  var activeCls = (tag ? tag.color : '#c41e3a') === c ? ' active' : '';
-                  return '<span class="color-preset' + activeCls + '" style="background:' + c + ';" data-color="' + c + '"></span>';
-                }).join('') +
-              '</div>' +
-            '</div>' +
+            '<label class="form-label">标签名称 <span style="color:#e53e3e;">*</span></label>' +
+            '<input type="text" class="form-input" id="tag-name" placeholder="请输入标签名称" value="' + (tag ? tag.name : '') + '">' +
           '</div>' +
           '<div class="form-group">' +
             '<label class="form-label">状态</label>' +
@@ -631,41 +628,26 @@
         onConfirm: function(maskEl) {
           var name = (maskEl.querySelector('#tag-name').value || '').trim();
           if (!name) { showToast('请填写标签名称', 'error'); return false; }
-          var code  = (maskEl.querySelector('#tag-code').value || '').trim();
-          var color = maskEl.querySelector('#tag-color').value || '#c41e3a';
           var status = maskEl.querySelector('#tag-status').value;
+          var color = tag ? tag.color : '#c41e3a';
 
           if (isEdit) {
-            tag.name = name; tag.code = code; tag.color = color; tag.status = status;
+            // 编辑保留原编码
+            tag.name = name; tag.status = status;
             showToast('标签更新成功');
           } else {
+            var code = generateTagCode(name, currentCategory);
             var newId = tagData.length ? Math.max.apply(null, tagData.map(function(t){return t.id;})) + 1 : 1;
             tagData.push({
               id: newId, name: name, code: code, color: color,
               count: '0 人', heat: 0, status: status,
               date: new Date().toISOString().slice(0,10)
             });
-            showToast('标签「' + name + '」新增成功');
+            showToast('标签「' + name + '」新增成功，编码：' + code);
           }
           renderTagTable();
         }
       });
-
-      // 绑定颜色预设点击
-      setTimeout(function() {
-        var presets = mask.querySelectorAll('#tagColorPresets .color-preset');
-        var box = mask.querySelector('#tagColorSwatch');
-        var hidden = mask.querySelector('#tag-color');
-        presets.forEach(function(p) {
-          p.addEventListener('click', function() {
-            presets.forEach(function(x){ x.classList.remove('active'); });
-            p.classList.add('active');
-            var c = p.getAttribute('data-color');
-            box.style.background = c;
-            hidden.value = c;
-          });
-        });
-      }, 0);
     }
 
     function deleteTag(id) {
